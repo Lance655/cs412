@@ -1,0 +1,16 @@
+body {
+    background-color: #fff;
+    color: slategray;
+    font-family: arial;
+}
+
+h1,h2,h3,h4,h5 {
+    font-weight: normal;
+    background: aliceblue;
+    margin: 0;
+}
+
+a, a:visited {
+    color: slategrey;
+    text-decoration: none;
+}

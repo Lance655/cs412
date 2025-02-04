@@ -1,0 +1,38 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Quote of the Day</title>
+    </head>
+    <body>
+        <header>
+            <h1>Michelangelo Quote of the Day</h1>
+            <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+        </header>
+
+        <nav>
+            <ul>
+                <li> <a href="{% url 'quote' %}">Quote of the Day</a></li>
+                <li> <a href="{% url 'show_all' %}">Show All</a> </li>
+                <li> <a href="{% url 'about' %}">About</a> </li>
+            </ul>
+        </nav>
+    
+        <main>
+
+            <!-- put page specific content here -->
+            {% block content %}
+            {% endblock %}
+
+        </main>
+
+
+        <footer>
+            <p>Page created by ssinson@bu.edu</p>
+            <p>Generated at: {{time}} </p>
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,27 @@
+
+{% extends 'quotes/base.html' %}
+{% load static %} 
+
+
+
+{% block content %}
+
+<h2>All Quotes</h2>
+
+<!-- Loop to display all quotes -->
+<ul>
+    {% for quote in quotes %}
+        <li>"{{ quote }}"</li>
+    {% endfor %}
+</ul>
+
+<h2>All Images</h2>
+
+<!-- Loop to display all images -->
+<div class="all_images">
+    {% for image in images %}
+        <img src="{{ image }}" alt="Random Image" width="200">
+    {% endfor %}
+</div>
+
+{% endblock %}

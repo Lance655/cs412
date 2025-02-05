@@ -1,8 +1,14 @@
+
 {% extends 'quotes/base.html' %}
+{% load static %}
 
-{% block content%}
-<h1>Hello, world!</h1>
 
-    hello, world!!
+
+{% block content %}
+
+    <h2>Michelangelo Quote of the Day</h2>  
+
+    <img src="{{ image }}" alt="Michelangelo">
+    <p> {{quote}}</p>
     
 {% endblock %}

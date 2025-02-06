@@ -7,15 +7,14 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-    background-color: #D1DEDE;
-    color: white;
+    background-color: #D95B26;
     font-family: arial;
 }
 
 /* ----------- navigation ----------- */
 
 nav {
-    background-color: #FF5A5F;
+    background-color: black;
 }
 
 nav ul {
@@ -26,10 +25,12 @@ nav ul {
 
 nav ul li {
     margin: auto;
+    padding: 1% 0;
+    font-size: calc(4px + 2vw);
 }
 
 a, a:visited {
-    color: orange;
+    color: #C0C0C0;
     text-decoration: none;
 }
 
@@ -42,37 +43,64 @@ a, a:visited {
 /* ----------- main content ----------- */
 
 header h1 {
-    color: orange;
+    color: #D95B26;
     text-align: left;
+    font-size: calc(15px + 2vw);
 }
 
 header {
-    padding: 5%;
-    background-color: #FF5A5F;
+    /* padding: 5%; */
+    background-color: #C0C0C0;
+    padding: 3% 3% 3% 2%;
 }
 
 h2, h3 {
-    text-align: center;
-    font-weight: normal;
-    background: #FF5A5F;
-    margin: 5%;
+    font-size: calc(2px + 2vw);
+    background: #C0C0C0;
+    color: #D95B26;
+    /* margin: 5%; */
+    /* width: 100%; */
+    width: 100%;
+    padding: 1%;
+    margin: 4% auto;    
 }
 
 img {
     display: block;
+    width: 30%;
+    margin: 3% auto;
+    border: 7px outset black;
+}
+
+main p {
+    font-size: calc(1px + 1.5vw);
+    text-align: center;
+    color: white;
+    margin: 1%;
+}
+
+.about {
+    width: 70%;
     margin: auto;
-    width: 50%;
+}
+.about p {
+    width: 100%;
 }
 
-p {
-    color: black;
-}
-
-/* .all_images {
+.quote_image_pair {
     display: flex;
     flex-direction: row;
+    justify-content: space-around;
+}
+
+.quote_image_wrapper {
+    width: 70%;
     margin: auto;
-} */
+}
+
+.quote_image_pair p {
+    align-content: center;
+}
 
 /* ----------- main content ----------- */
 
@@ -80,11 +108,17 @@ p {
 
 /* ----------- footer ----------- */
 
+
 footer p {
     color: white;
     text-align: center;
-    background-color: #FF5A5F;
 }
+
+footer {
+    padding: 1%;
+    background-color: black;
+}
+
 
 
 

@@ -6,9 +6,13 @@
 
 {% block content %}
 
-    <h2>Michelangelo Quote of the Day</h2>  
+    <div class="quote_image_wrapper">
+        <h2>Michelangelo Quote of the Day</h2>  
 
-    <img src="{{ image }}" alt="Michelangelo">
-    <p> {{quote}}</p>
+        <div class="quote_image_pair">
+        <img src="{{ image }}" alt="Michelangelo">
+        <p> "{{quote}}" </p>
+        </div>
+    </div>
     
 {% endblock %}

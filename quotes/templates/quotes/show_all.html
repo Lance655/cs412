@@ -9,11 +9,10 @@
 <h2>All Quotes</h2>
 
 <!-- Loop to display all quotes -->
-<ul>
-    {% for quote in quotes %}
-        <li>"{{ quote }}"</li>
-    {% endfor %}
-</ul>
+{% for quote in quotes %}
+    <p>"{{ quote }}"</p>
+{% endfor %}
+
 
 <h2>All Images</h2>
 

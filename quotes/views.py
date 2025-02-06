@@ -14,7 +14,7 @@ QUOTES = [
 ]
 IMAGES = [
     "../../static/michelangelo_1.jpg",
-    "../../static/michelangelo_2.jpeg",
+    "../../static/michelangelo_22.jpg",
     "../../static/michelangelo_3.jpg",
 ]
 

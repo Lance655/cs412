@@ -1,16 +1,129 @@
-body {
-    background-color: #fff;
-    color: slategray;
-    font-family: arial;
+* {
+    margin: 0;
+    box-sizing: border-box;
 }
 
-h1,h2,h3,h4,h5 {
-    font-weight: normal;
-    background: aliceblue;
-    margin: 0;
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    background-color: #D95B26;
+    font-family: arial;
+
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../../static/overlay.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* ----------- navigation ----------- */
+
+nav {
+    background-color: black;
+}
+
+nav ul {
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+}
+
+nav ul li {
+    margin: auto;
+    padding: 1% 0;
+    font-size: calc(4px + 2vw);
 }
 
 a, a:visited {
-    color: slategrey;
+    color: #C0C0C0;
     text-decoration: none;
 }
+
+
+/* ----------- navigation ----------- */
+
+
+
+
+/* ----------- main content ----------- */
+
+header h1 {
+    color: #D95B26;
+    text-align: left;
+    font-size: calc(15px + 2vw);
+}
+
+header {
+    /* padding: 5%; */
+    background-color: #C0C0C0;
+    padding: 3% 3% 3% 2%;
+}
+
+h2, h3 {
+    font-size: calc(2px + 2vw);
+    background: #C0C0C0;
+    color: #D95B26;
+    /* margin: 5%; */
+    /* width: 100%; */
+    width: 100%;
+    padding: 1%;
+    margin: 4% auto;    
+}
+
+img {
+    display: block;
+    width: 30%;
+    margin: 3% auto;
+    border: 7px outset black;
+}
+
+main p {
+    font-size: calc(1px + 1.5vw);
+    text-align: center;
+    color: white;
+    margin: 1%;
+}
+
+.about {
+    width: 70%;
+    margin: auto;
+}
+.about p {
+    width: 100%;
+}
+
+.quote_image_pair {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.quote_image_wrapper {
+    width: 70%;
+    margin: auto;
+}
+
+.quote_image_pair p {
+    align-content: center;
+}
+
+/* ----------- main content ----------- */
+
+
+
+/* ----------- footer ----------- */
+
+
+footer p {
+    color: white;
+    text-align: center;
+}
+
+footer {
+    padding: 1%;
+    background-color: black;
+}
+
+
+
+

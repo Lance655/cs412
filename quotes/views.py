@@ -13,9 +13,9 @@ QUOTES = [
     "If people knew how hard I worked to get my mastery, it wouldn't seem so wonderful at all",
 ]
 IMAGES = [
-    "../../static/michelangelo_1.jpg",
-    "../../static/michelangelo_22.jpg",
-    "../../static/michelangelo_3.jpg",
+    "../static/michelangelo_1.jpg",
+    "../static/michelangelo_22.jpg",
+    "../static/michelangelo_3.jpg",
 ]
 
 def quote(request):

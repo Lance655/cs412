@@ -1,3 +1,7 @@
+# File: urls.py
+# Author: Lance Sinson (ssinson@bu.edu), 2/7/25
+# Description: The urls file for redirecting http requests.
+
 # quotes/urls.py
 from django.urls import path
 

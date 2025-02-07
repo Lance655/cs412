@@ -19,6 +19,10 @@ IMAGES = [
 ]
 
 def quote(request):
+    """ Takes an http request as input and redirects
+    to the quote of the day or home page of the quotes 
+    website
+    """
 
     template_name = 'quotes/quote.html'
     # a dict of context variables (key-value pairs)
@@ -32,6 +36,10 @@ def quote(request):
 
 
 def show_all(request):
+    """ Takes an http request as input and redirects
+    to the show_all page of the quotes website
+    """
+    
     template_name = 'quotes/show_all.html'
 
     context = {
@@ -44,6 +52,9 @@ def show_all(request):
 
 
 def about(request):
+    """ Takes an http request as input and redirects
+    to the about page of the quotes website
+    """
     template_name = 'quotes/about.html'
 
     context = {

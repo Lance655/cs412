@@ -1,0 +1,46 @@
+<!-- 
+File: order.html
+Author: Lance Sinson (ssinson@bu.edu), 2/14/25
+Description: The order html template for the restaurant website. 
+-->
+
+{% extends 'restaurant/base.html' %}
+
+{% block content %}
+
+    <h2>Place an Order</h2>
+
+    <form action="">
+
+        {% csrf_token %}
+        
+        Select your items:
+        <input type="checkbox" name="food_item_1">Chicken Madiera<br>
+        <input type="checkbox" name="food_item_2">Chicken and Shrimp Gumbo><br>
+        <input type="checkbox" name="food_item_3">Jambalaya><br>
+        <input type="checkbox" name="food_item_4">Crispy Chicken Caesar Salad><br>
+
+
+
+    </form>
+
+    <!-- <form action="{% url 'submit' %}" method="POST">
+        {% csrf_token %}
+
+        Name: <input type="text" name="name">
+        Favorite color: <input type="text" name="favorite_color">
+        <input type="submit">
+
+    </form> -->
+
+    <!-- <form>
+        <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
+        <label for="vehicle1"> I have a bike</label><br>
+        <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
+        <label for="vehicle2"> I have a car</label><br>
+        <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
+        <label for="vehicle3"> I have a boat</label>
+      </form> -->
+
+
+{% endblock %}

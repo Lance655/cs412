@@ -1,0 +1,24 @@
+<!-- 
+File: base.html
+Author: Lance Sinson (ssinson@bu.edu), 2/14/25
+Description: The base html template for the restaurant website. 
+-->
+
+{% load static %} 
+
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>The Cheesecake Factory</title>
+        <!-- <link rel="stylesheet" href="restaurant_styles.css"> -->
+    </head>
+    <body>
+        <h1>The Cheesecake Factory</h1>
+
+        <!-- put page specific content here -->
+        {% block content %}
+        {% endblock %}
+        
+    </body>
+</html>

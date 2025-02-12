@@ -8,6 +8,37 @@ Description: The confirmation html template for the restaurant website.
 
 {% block content %}
 
-hello confirmation page!
+<h2>Confirmation</h2>
+
+<h3>Your order is confirmed:</h3>
+
+    <h4>Customer Information:</h4>
+    <p> Name: {{customer_name}} </p>
+    <p> Phone: {{customer_phone}} </p>
+    <p> Email: {{customer_email}} </p>
+
+
+
+    <h4>Order Details</h4>
+        <ul>
+            <!-- 
+            Loop through the ordered_items context variable
+            and print out all the items ordered and their prices
+            -->
+            {% for item in ordered_items %}
+                <li>{{ item.name }} - ${{ item.price }}</li>
+            {% endfor %}
+        </ul>
+        
+    <h4>Total:</h4>
+
+        <p> <strong> ${{total_price}} </strong> </p>
+
+    <h4>Estimated Ready Time:</h4>
+    
+        <p> <strong> {{ ready_time }} </strong> </p>
+
+
+
 
 {% endblock %}

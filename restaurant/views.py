@@ -33,8 +33,12 @@ MENU_ITEMS = {
 def main(request):
     '''Show the main page to the user.'''
 
+    context = {
+        "time": time.ctime(),
+    }
+
     template_name = 'restaurant/main.html'
-    return render(request, template_name)
+    return render(request, template_name, context)
 
 def order(request):
     '''The view for the ordering page. Also creates a daily special 
@@ -47,6 +51,7 @@ def order(request):
     context = {
         "special_item": special_item,
         "special_item_price": special_item_price,
+        "time": time.ctime(),
     }
 
     template_name = "restaurant/order.html"
@@ -83,14 +88,14 @@ def confirmation(request):
         wait_time = random.randint(30, 60)  # Random minutes
         ready_timestamp = time.time() + (wait_time * 60)  # Convert to seconds
 
-        current_time = time.strftime("%I:%M %p", time.localtime())
+        # current_time = time.strftime("%I:%M %p", time.localtime())
 
-        print("Current Time:", current_time)
-        print("local time:", time.localtime())
+        # print("Current Time:", current_time)
+        # print("local time:", time.localtime())
 
-        ready_time = time.ctime(ready_timestamp)
+        # ready_time = time.ctime(ready_timestamp)
 
-        # ready_time = time.strftime("%I:%M %p", time.localtime(ready_timestamp))  # Format time
+        ready_time = time.strftime("%I:%M %p", time.localtime(ready_timestamp))  # Format time
 
 
         # context variables
@@ -101,6 +106,7 @@ def confirmation(request):
             "customer_phone": customer_phone,
             "customer_email": customer_email,
             "ready_time": ready_time,
+            "time": time.ctime(),
         }
 
         template_name = "restaurant/confirmation.html"
@@ -114,6 +120,7 @@ def confirmation(request):
     context = {
         "special_item": special_item,
         "special_item_price": special_item_price,
+        "time": time.ctime(),
     }
 
     # send the user back to the order page if a get request

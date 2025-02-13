@@ -11,36 +11,38 @@ Description: The base html template for the restaurant website.
     <head lang="en">
         <meta charset="UTF-8">
         <title>The Cheesecake Factory</title>
-        <!-- <link rel="stylesheet" href="{% static 'styles.css' %}"> -->
+        <link rel="stylesheet" href="{% static 'restaurant_styles.css' %}">
     </head>
     <body>
+        <div class="wrapper">
 
-        <header>
-            <h1>The Cheesecake Factory</h1>
+            <header>
+                <h1>The Cheesecake Factory</h1>
 
-        </header>
+            </header>
 
-        <nav>
-            <ul>
-                <li> <a href="{% url 'main' %}">Main Page</a> </li>
-                <li> <a href="{% url 'order' %} ">Order Page</a> </li>
-            </ul>
+            <nav>
+                <ul>
+                    <li> <a href="{% url 'main' %}">Main Page</a> </li>
+                    <li> <a href="{% url 'order' %} ">Order Page</a> </li>
+                </ul>
+            </nav>
 
-        </nav>
-
-        <main>
+            <main>
 
 
-            <!-- put page specific content here -->
-            {% block content %}
-            {% endblock %}
+                <!-- put page specific content here -->
+                {% block content %}
+                {% endblock %}
 
-        </main>
+            </main>
 
-        <footer>
-            <p>Page created by ssinson@bu.edu</p>
-            <p>Generated at: {{time}} </p>
-        </footer>
+            <footer>
+                <p>Page created by ssinson@bu.edu</p>
+                <p>Generated at: {{time}} </p>
+            </footer>
+
+        </div>
 
     </body>
 

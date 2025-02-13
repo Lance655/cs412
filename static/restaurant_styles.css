@@ -1,0 +1,119 @@
+/* css file for the restaurants assignment 4 */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.wrapper {
+    padding: 1%;
+    background-color: tan;
+}
+
+
+
+
+
+/* ----------- header ----------- */
+header {
+    background-color: purple;
+}
+ 
+h1 {
+    text-align: center;
+    margin: 1% auto;
+    margin-left: 2%;
+    color: white;
+}
+
+h2, h3, h4 {
+    color: rgb(151, 10, 57);
+}
+
+/* ----------- header ----------- */
+
+
+
+
+/* ----------- navigation ----------- */
+
+nav {
+    margin: 1%;
+}
+
+nav ul {
+    display: flex;
+    flex-direction: row;
+    padding-left: 0;
+}
+
+nav ul li {
+    list-style: none;
+    width: 100%;
+    text-align: center;
+    background-color: purple;
+    margin: 1%;
+}
+
+nav a {
+    color: white;
+}
+
+/* ----------- navigation ----------- */
+
+
+/* ----------- main ----------- */
+
+main {
+    text-align: center;
+    padding: 2%;
+    background-color: blanchedalmond;
+    border: 3px, solid, lightskyblue;
+}
+
+.customer_info {
+    padding: 5%;
+}
+
+.select_items {
+    padding: 5%;
+}
+
+.special {
+    padding: 5%;
+}
+
+.confirm_info {
+    padding: 5%;
+}
+
+.confirm_details {
+    padding: 5%;
+}
+
+.confirm_total {
+    padding: 5%;
+}
+
+.confirm_ready_time {
+    padding: 5%;
+}
+
+.confirm_details ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+/* ----------- main ----------- */
+
+
+
+/* ----------- footer ----------- */
+
+footer {
+    text-align: center;
+    padding: 1%;
+    color: rgb(151, 10, 57);
+}
+
+/* ----------- footer ----------- */

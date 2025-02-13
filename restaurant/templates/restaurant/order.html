@@ -17,39 +17,44 @@ Description: The order html template for the restaurant website.
         <!-- 
         Ask user to input their personal information
         -->
-        <h3>Customer Information:</h3>
-        Name<input type="text" name="name"><br>
-        Phone<input type="text" name="phone"><br>
-        Email<input type="text" name="email"><br>
+        <div class="customer_info">
+            <h3>Customer Information:</h3>
+            Name<input type="text" name="name"><br>
+            Phone<input type="text" name="phone"><br>
+            Email<input type="text" name="email"><br>
+        </div>
 
         <!-- 
         Select items checkboxes
         -->
-        <h3>Select your items:</h3>
-        <input type="checkbox" name="Chicken Madeira" id="Chicken Madeira" value="Chicken Madeira">
-        <label for="Chicken Madeira">Chicken Madeira - $12.99</label>
-        <br>
+        <div class="select_items">
+            <h3>Select your items:</h3>
+            <input type="checkbox" name="Chicken Madeira" id="Chicken Madeira" value="Chicken Madeira">
+            <label for="Chicken Madeira">Chicken Madeira - $12.99</label>
+            <br>
 
-        <input type="checkbox" name="Chicken and Shrimp Gumbo" id="Chicken and Shrimp Gumbo" value="Chicken and Shrimp Gumbo">
-        <label for="Chicken and Shrimp Gumbo">Chicken and Shrimp Gumbo - $14.99</label>
-        <br>
+            <input type="checkbox" name="Chicken and Shrimp Gumbo" id="Chicken and Shrimp Gumbo" value="Chicken and Shrimp Gumbo">
+            <label for="Chicken and Shrimp Gumbo">Chicken and Shrimp Gumbo - $14.99</label>
+            <br>
 
-        <input type="checkbox" name="Jambalaya" id="Jambalaya" value="Jambalaya">
-        <label for="Jambalaya">Jambalaya - $13.99</label>
-        <br>
+            <input type="checkbox" name="Jambalaya" id="Jambalaya" value="Jambalaya">
+            <label for="Jambalaya">Jambalaya - $13.99</label>
+            <br>
 
-        <input type="checkbox" name="Crispy Chicken Caesar Salad" id="Crispy Chicken Caesar Salad" value="Crispy Chicken Caesar Salad">
-        <label for="Crispy Chicken Caesar Salad">Crispy Chicken Caesar Salad - $11.99</label>
-        <br>
+            <input type="checkbox" name="Crispy Chicken Caesar Salad" id="Crispy Chicken Caesar Salad" value="Crispy Chicken Caesar Salad">
+            <label for="Crispy Chicken Caesar Salad">Crispy Chicken Caesar Salad - $11.99</label>
+            <br>
+        </div>
 
         
         <!-- 
         Special food item
         -->
-        <h3>Today's Special:</h3>
-        <input type="checkbox" name="{{special_item}}" id="special" value="{{special_item}}">
-        <label for="special">{{special_item}} - ${{special_item_price}}</label>
-
+        <div class="special">
+            <h3>Today's Special:</h3>
+            <input type="checkbox" name="{{special_item}}" id="special" value="{{special_item}}">
+            <label for="special">{{special_item}} - ${{special_item_price}}</label>
+        </div>
 
         <!-- 
         Submit button

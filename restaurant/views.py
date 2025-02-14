@@ -1,3 +1,8 @@
+ # File: views.py
+# Author: Lance Sinson (ssinson@bu.edu), 2/14/25
+# Description: The views file for the restaurant website. 
+
+
 # restaurant/views.py
 # view functions to handle URL requests
 

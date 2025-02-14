@@ -1,3 +1,7 @@
+# File: urls.py
+# Author: Lance Sinson (ssinson@bu.edu), 2/14/25
+# Description: The urls file for the restaurant website. 
+
 ## restaurant/urls.py
 ## url patterns for the 'restaurant' app.
 

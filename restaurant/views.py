@@ -7,7 +7,7 @@ from django.http import HttpResponse
 import time
 import random
 
-
+# daily special items list
 DAILY_SPECIAL_LIST = [
     "Buffalo Bites", 
     "Mac and Cheese Balls",
@@ -15,6 +15,7 @@ DAILY_SPECIAL_LIST = [
     "Chicken Taquitos",
 ]
 
+# daily special dictionary
 DAILY_SPECIAL_DICT = {
     "Buffalo Bites": 12.99,
     "Mac and Cheese Balls": 12.99,
@@ -22,11 +23,14 @@ DAILY_SPECIAL_DICT = {
     "Chicken Taquitos": 8.99
 }
 
+# normal menu items
 MENU_ITEMS = {
     "Chicken Madeira": 12.99,
     "Chicken and Shrimp Gumbo": 14.99,
     "Jambalaya": 13.99,
     "Crispy Chicken Caesar Salad": 11.99,
+    "Extra Chicken": 5.99,
+    "Extra Shrimp": 8.99,
 }
 
 # Create your views here.
@@ -97,6 +101,9 @@ def confirmation(request):
 
         ready_time = time.strftime("%I:%M %p", time.localtime(ready_timestamp))  # Format time
 
+        # Extract the special instructions
+        special_instructions = request.POST.get("special_instructions", "")
+
 
         # context variables
         context = {
@@ -107,6 +114,7 @@ def confirmation(request):
             "customer_email": customer_email,
             "ready_time": ready_time,
             "time": time.ctime(),
+            "special_instructions": special_instructions,
         }
 
         template_name = "restaurant/confirmation.html"

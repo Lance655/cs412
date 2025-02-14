@@ -8,6 +8,10 @@
 .wrapper {
     padding: 1%;
     background-color: tan;
+    background-image: url('cheesecake_pattern.png');
+    background-size: cover; /* Adjusts the image to cover the entire element */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
 }
 
 
@@ -17,10 +21,13 @@
 /* ----------- header ----------- */
 header {
     background-color: purple;
+    width: 17%;
+    margin: auto;
+    padding: 1%;
+    border: 6px solid white;
 }
  
 h1 {
-    text-align: center;
     margin: 1% auto;
     margin-left: 2%;
     color: white;
@@ -28,7 +35,23 @@ h1 {
 
 h2, h3, h4 {
     color: rgb(151, 10, 57);
+    padding-bottom: 1%;
 }
+
+.one {
+    text-align: left;
+
+}
+
+.two {
+    text-align: center;
+}
+
+.three {
+    text-align: right;
+}
+
+
 
 /* ----------- header ----------- */
 
@@ -69,6 +92,7 @@ main {
     padding: 2%;
     background-color: blanchedalmond;
     border: 3px, solid, lightskyblue;
+    
 }
 
 .customer_info {
@@ -102,6 +126,19 @@ main {
 .confirm_details ul {
     list-style: none;
     padding-left: 0;
+}
+
+img {
+    width: 50%;
+}
+
+.our_story {
+    margin: auto;
+    width: 50%;
+}
+
+.our_story p {
+    padding-bottom: 1%;
 }
 
 /* ----------- main ----------- */

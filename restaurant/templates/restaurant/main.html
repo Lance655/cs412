@@ -6,8 +6,33 @@ Description: The main html template for the restaurant website.
 
 {% extends 'restaurant/base.html' %}
 
+{% load static %} 
+
+
 {% block content %}
 
-hello main page!
+<h2>Welcome!</h2>
+
+<img src="{% static 'cheesecake.jpeg' %}" alt="Cheesecake Factory building">
+
+<h2>Our Story</h2>
+
+<div class="our_story">
+    <p>
+        In the 1940s, Evelyn Overton found a recipe in her local Detroit newspaper that inspired her 
+        “Original” cheesecake. Everyone loved her recipe so much she decided to open a small bakery,
+        but eventually gave it up to focus on raising her children, David and Renee. She moved her 
+        baking equipment to her basement kitchen and continued to sell cakes to some of the best 
+        restaurants in town.
+    </p>
+
+    <p>
+        In 1972, Evelyn and her husband Oscar moved to Los Angeles to try one last time to have their own business. With the last of their savings, they opened The Cheesecake Factory Bakery and began selling Evelyn’s cheesecakes to restaurants throughout L.A.
+    </p>
+
+    <p>
+        Their son David decided to open a restaurant in Beverly Hills in 1978 to showcase his mother’s cakes. Somehow, he just knew that a restaurant with an extensive dessert menu would be a hit. There was a line out the door on opening day. More than forty years later, many say the line has never stopped!
+    </p>
+</div>
 
 {% endblock %}

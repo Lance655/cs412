@@ -1,0 +1,47 @@
+<!-- 
+File: base.html
+Author: Lance Sinson (ssinson@bu.edu), 2/21/25
+Description: The base html template for the mini_fb website. 
+-->
+
+
+{% load static %} 
+
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>MiniFacebook</title>
+        <link rel="stylesheet" href="{% static 'stylesfb.css' %}">
+    </head>
+    <body>
+        <div class="wrapper">
+
+            <header>
+                <h1>MiniFacebook</h1>
+            </header>
+
+            <nav>
+    
+
+            </nav>
+
+            <main>
+
+
+                <!-- put page specific content here -->
+                {% block content %}
+                {% endblock %}
+
+            </main>
+
+            <footer>
+                <p>Page created by ssinson@bu.edu</p>
+                <!-- <p>Generated at: {{time}} </p> -->
+            </footer>
+
+        </div>
+
+    </body>
+
+</html>

@@ -1,0 +1,17 @@
+/* File: stylesfb.css
+Author: Lance Sinson (ssinson@bu.edu), 2/21/25
+Description: The css file for the mini_fb website.  */
+
+img {
+    width: 30%;
+}
+
+table {
+    border: 5px solid black;
+}
+
+th, td {
+    border: 1px solid black; /* Adds visible cell borders */
+    padding: 8px;
+    text-align: center;
+}

@@ -1,0 +1,21 @@
+<!-- 
+File: base.html
+Author: Lance Sinson (ssinson@bu.edu), 2/21/25
+Description: The show_profiles html template for the mini_fb website. 
+-->
+
+{% extends 'mini_fb/base.html' %}
+
+{% block content %}
+
+<h1>{{profile.first_name}} {{profile.last_name}}</h1>
+
+<div class="profile-image-solo">
+    <img src="{{profile.image_url}}" alt="Image of {{profile.first_name}} {{profile.last_name}}">
+</div>
+
+<h2>{{profile.city}}</h2>
+<h2>{{profile.email_address}}</h2>
+
+
+{% endblock %}

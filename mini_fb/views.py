@@ -16,3 +16,10 @@ class ShowAllProfilesView(ListView):
     model = Profile
     template_name = "mini_fb/show_all_profiles.html"
     context_object_name = "profiles" # note plural variable name
+
+class ShowProfilePageView(DetailView):
+    '''Define a view class to show one profile record'''
+
+    model = Profile
+    template_name = "mini_fb/show_profile.html"
+    context_object_name = "profile" # note singular variable

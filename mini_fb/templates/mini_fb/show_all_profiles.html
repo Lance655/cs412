@@ -11,19 +11,36 @@ Description: The show_all_profiles html template for the mini_fb website.
 <table>
     <tr>
         <th>Image</th>
-        <th>First Name</th>
-        <th>Last Name</th>
+        <th>Name</th>
         <th>City</th>
     </tr>
 
     {% for profile in profiles %}
 
-    <tr>
-        <td> <img src="{{ profile.image_url }}" alt=""> </td>
-        <td>{{ profile.first_name }}</td>
-        <td>{{ profile.last_name }}</td>
-        <td>{{ profile.city }}</td>
-    </tr>
+    
+        <tr>
+            <div class="character">
+
+                <!-- image -->
+                <td> 
+                    <!-- <a href="http://127.0.0.1:8000/mini_fb/profile/{{profile.pk}}">
+                        <img src="{{ profile.image_url }}" alt=""> 
+                    </a> -->
+                    <a href="{% url 'show_profile' profile.pk %}">
+                        <div class="profile-image-all">
+                        <img src="{{ profile.image_url }}" alt="Image of {{profile.first_name}} {{profile.last_name}}"> 
+                        </div>
+                    </a>
+                <!-- name -->
+                </td>
+                <td> 
+                    <a href="{% url 'show_profile' profile.pk %}">{{ profile.first_name }} {{ profile.last_name }}</a>
+                </td>
+                <!-- city -->
+                <td>{{ profile.city }}</td>
+                
+            </div>
+        </tr>
 
     {% endfor %}
 </table>

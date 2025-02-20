@@ -2,16 +2,46 @@
 Author: Lance Sinson (ssinson@bu.edu), 2/21/25
 Description: The css file for the mini_fb website.  */
 
-img {
-    width: 30%;
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+header {
+    background-color: rgb(236, 212, 71);
+}
+
+.wrapper {
+    background: rgb(238, 136, 19);
+}
+
+
+/* ------------ main content ----------------- */
+
+.profile-image-all img {
+    width: 40%;
+}
+.profile-image-solo img {
+    width: 50%;
 }
 
 table {
-    border: 5px solid black;
+    /* border: 5px solid black; */
+    width: 70%;
+    margin: auto;
+    margin-top: 2%;
 }
 
-th, td {
-    border: 1px solid black; /* Adds visible cell borders */
+td {
+    border: 3px solid black; /* Adds visible cell borders */
     padding: 8px;
     text-align: center;
 }
+
+.character {
+    border: 3px solid blue;
+    background-color: red;
+}
+
+/* ------------ main content ----------------- */
+

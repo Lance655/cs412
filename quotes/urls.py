@@ -13,6 +13,6 @@ urlpatterns = [
     # path("quote/", ),
     path(r'', views.quote, name="home_page"),
     path(r'quote', views.quote, name="quote"),
-    path(r'show_all', views.show_all, name="show_all"),
+    path(r'show_all', views.show_all, name="show_all_quotes"),
     path(r'about', views.about, name="about"),
 ]

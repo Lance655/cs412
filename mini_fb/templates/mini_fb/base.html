@@ -21,19 +21,21 @@ Description: The base html template for the mini_fb website.
                 <h1>MiniFacebook</h1>
             </header>
 
-            <nav>
-    
+            <div class="nav-and-main">
+                <nav>
+                    <h2> <a href="{% url 'show_all_profiles' %}">Home</a> </h2>
+                    <h2>Show All</h2>
+                </nav>
 
-            </nav>
-
-            <main>
+                <main>
 
 
-                <!-- put page specific content here -->
-                {% block content %}
-                {% endblock %}
+                    <!-- put page specific content here -->
+                    {% block content %}
+                    {% endblock %}
 
-            </main>
+                </main>
+            </div>
 
             <footer>
                 <p>Page created by ssinson@bu.edu</p>

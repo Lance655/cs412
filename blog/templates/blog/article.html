@@ -8,17 +8,27 @@
 
 <main class="grid-container">
    <article>
+       <img src="{{article.image_url}}" alt="">
        <div>
             <h2>{{article.title}}</h2>
-            <h3>by {{article.author}}</h3>
+            <h3>by {{article.author}} at {{article.published}} </h3>
             <p>
                 {{article.text}}
             </p>
         </div>
 
-       <img src="{{article.image_url}}" alt="">
-
     </article>
+
+    <!-- Display the comments about this article -->
+    <!-- {{article.get_all_comments}} -->
+    {% for comment in article.get_all_comments %}
+        <div>
+            <strong>by {{comment.author}} at {{comment.published}}</strong>
+            <p>
+                {{comment.text}}
+            </p>
+        </div>
+    {% endfor %}
 
 </main>
 

@@ -4,7 +4,11 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
-<h1>Create a new Comment</h1>
+<!-- <h1>Create a new Comment about {{article.title}}</h1> -->
+<!-- (my comment) Basically, he wanted to create the above modifcation, but we don't
+have that context variable, so he made a new method in the views.py
+called get_context_data-->
+<h1>Create a new Comment about {{article.title}}</h1>
 
 <!-- display the HTML form -->
 

@@ -73,12 +73,31 @@ class CreateCommentView(CreateView):
         # call reverse to generate the URL for this Article
         return reverse('article', kwargs={'pk':pk})
 
+    # (my comment) --> he made this method because he wanted the title for each create comment page
+    # (my comment) --> to include the title of what page they were commenting on
+    def get_context_data(self):
+        '''Return the dictionary of context variables for use in the template.'''
+
+        # calling the superclass method
+        context = super().get_context_data()
+
+        # find/add the article to the context data
+        # retrieve the PK from the URL pattern
+        pk = self.kwargs['pk']
+        article = Article.objects.get(pk=pk)
+
+        # add this article into the context dictionary:
+        context['article'] = article
+        return context
+
     def form_valid(self, form): 
         '''This method handles the form submission and saves the 
         new object to the Django database.
         We need to add the foreign key (of the Article) to the Comment
         object before saving it to the database.
         '''
+        # (my comment) ---> basically, this method is called after the form is submitted
+        # (my comment) ---> this is what fixes the error message after making a comment? 
 
         print(form.cleaned_data)
         # retrieve the PK from the URL pattern

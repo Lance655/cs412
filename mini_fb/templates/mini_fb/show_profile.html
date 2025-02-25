@@ -18,4 +18,18 @@ Description: The show_profiles html template for the mini_fb website.
 <h2>{{profile.email_address}}</h2>
 
 
+
+<h3>Status Messages:</h3>
+{% for message in profile.get_status_messages %}
+<div>
+    <strong>{{message.timestamp}}</strong>
+    <p>
+        {{message.message}}
+    </p>
+</div>
+{% endfor %}
+
+
+
+
 {% endblock %}

@@ -2,6 +2,8 @@
 # define data models for the mini_fb application
 
 from django.db import models
+from django.urls import reverse
+
 
 # Create your models here.
 class Profile(models.Model):
@@ -20,6 +22,11 @@ class Profile(models.Model):
         '''Return a QuerySet of status messages about this profile.'''
         status_messages = StatusMessage.objects.filter(profile=self)
         return status_messages 
+
+    def get_absolute_url(self):
+        '''Return a URL to display one instance of this object.'''
+        return reverse('show_profile', kwargs={'pk': self.pk})
+    
 
 class StatusMessage(models.Model):
     '''Encapsulate the idea of a status message for a individual profile'''

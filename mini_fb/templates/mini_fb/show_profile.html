@@ -17,6 +17,8 @@ Description: The show_profiles html template for the mini_fb website.
 <h2>{{profile.city}}</h2>
 <h2>{{profile.email_address}}</h2>
 
+<a href="{% url 'create_status' profile.pk%}">Create Status</a>
+
 
 
 <h3>Status Messages:</h3>

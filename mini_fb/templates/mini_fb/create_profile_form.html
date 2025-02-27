@@ -1,5 +1,5 @@
 <!-- 
-File: base.html
+File: create_profile_form.html
 Author: Lance Sinson (ssinson@bu.edu), 2/28/25
 Description: The create profile form html template for the mini_fb website. 
 -->
@@ -13,7 +13,7 @@ Description: The create profile form html template for the mini_fb website.
 
 <form action="{% url 'create_profile' %}" method="POST">
     {% csrf_token %}
-    <table>
+    <table class="create-profile-table">
     {{form.as_table}}
     </table>
 

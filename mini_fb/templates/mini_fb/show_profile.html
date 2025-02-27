@@ -1,5 +1,5 @@
 <!-- 
-File: base.html
+File: show_profile.html
 Author: Lance Sinson (ssinson@bu.edu), 2/21/25
 Description: The show_profiles html template for the mini_fb website. 
 -->
@@ -8,28 +8,34 @@ Description: The show_profiles html template for the mini_fb website.
 
 {% block content %}
 
-<h1>{{profile.first_name}} {{profile.last_name}}</h1>
 
-<div class="profile-image-solo">
-    <img src="{{profile.image_url}}" alt="Image of {{profile.first_name}} {{profile.last_name}}">
+<div class="profile-wrapper">
+
+    <div class="profile-image-section">
+
+        <h1>{{profile.first_name}} {{profile.last_name}}</h1>
+
+        <img src="{{profile.image_url}}" alt="Image of {{profile.first_name}} {{profile.last_name}}">
+
+        <p>{{profile.city}}</p>
+        <p>{{profile.email_address}}</p>
+    </div>
+
+
+    <div class="profile-status-section">
+        <h3>Status Messages:</h3>
+            {% for message in profile.get_status_messages %}
+            <div class="status-messages">
+                <strong>{{message.timestamp}}</strong>
+                <p>
+                    {{message.message}}
+                </p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'create_status' profile.pk%}">Create Status</a>
 </div>
-
-<h2>{{profile.city}}</h2>
-<h2>{{profile.email_address}}</h2>
-
-<a href="{% url 'create_status' profile.pk%}">Create Status</a>
-
-
-
-<h3>Status Messages:</h3>
-{% for message in profile.get_status_messages %}
-<div>
-    <strong>{{message.timestamp}}</strong>
-    <p>
-        {{message.message}}
-    </p>
-</div>
-{% endfor %}
 
 
 

@@ -1,5 +1,5 @@
 <!-- 
-File: base.html
+File: create_status_form.html
 Author: Lance Sinson (ssinson@bu.edu), 2/28/25
 Description: The create status form html template for the mini_fb website. 
 -->
@@ -11,11 +11,11 @@ Description: The create status form html template for the mini_fb website.
    
 <!-- display the HTML form -->
 
-<h2>Post a Status message for {{profile.first_name}} {{profile.last_name}} </h2>
+<h2>Post a Status message for {{profile.first_name}} {{profile.last_name}}  {{profile.pk}} </h2>
 
 <form method="POST">
     {% csrf_token %}
-    <table>
+    <table class="create-status-table">
     {{form.as_table}}
     </table>
 

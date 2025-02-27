@@ -38,4 +38,4 @@ class StatusMessage(models.Model):
 
     def __str__(self):
         '''return a string representation of this model instance.'''
-        return f'{self.message}'
+        return f'{self.message} - {self.profile.first_name}'

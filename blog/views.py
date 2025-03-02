@@ -1,9 +1,9 @@
 # blog/views.py
 # views for the blog application
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from .models import Article
-from .forms import CreateArticleForm, CreateCommentForm
+from .forms import CreateArticleForm, CreateCommentForm, UpdateArticleForm 
 from django.urls import reverse # (my comment) allows us to create a url from a url pattern name
 
 import random
@@ -49,6 +49,14 @@ class CreateArticleView(CreateView):
     form_class = CreateArticleForm
     template_name = "blog/create_article_form.html"
 
+    def form_valid(self, form):
+        '''Override the default method to add some debug information.'''
+        
+        # print out the form data:
+        print(f'CreateArticleView.form_valid(): {form.cleaned_data}')
+
+        # delegate work to the superclass to do the rest:
+        return super().form_valid(form)
 
 class CreateCommentView(CreateView):
     '''A view to handle creation of a new Comment on an Article.'''
@@ -107,3 +115,11 @@ class CreateCommentView(CreateView):
 
         # delegate the work to the superclass method form_valid):
         return super().form_valid(form)
+
+
+class UpdateArticleView(UpdateView):
+    '''View class to handle update of an article based on its PK.'''
+
+    model = Article
+    form_class = UpdateArticleForm
+    template_name = "blog/update_article_form.html"

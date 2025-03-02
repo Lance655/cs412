@@ -21,7 +21,13 @@
 
         <!-- create a link to show this one article only -->
         <a href="{% url 'article' article.pk %}">
-        <img src="{{article.image_url}}" alt="">
+        <!-- <img src="{{article.image_url}}" alt=""> -->
+        {% if article.image_file %}
+        <img src="{{article.image_file.url}}" alt="">
+        {% else %}
+        No image
+        {% endif %}
+
         </a>
 
 

@@ -8,10 +8,18 @@ class CreateArticleForm(forms.ModelForm):
     '''A form to add an Article to the database.'''
 
     class Meta:
-        '''Associate this form with a model from our database.'''
+        '''associate this form with a model from our database.'''
         model = Article
         # specify the fields you want to be able to create with this form
-        fields = ['author', 'title', 'text', 'image_url']
+        fields = ['author', 'title', 'text', 'image_file']
+
+class UpdateArticleForm(forms.ModelForm):
+    '''A form to handle an update to an Article.'''
+
+    class Meta:
+        '''associate this form with a model in our database.'''
+        model = Article
+        fields = ['title', 'text']
 
 class CreateCommentForm(forms.ModelForm):
     '''A form to add a Comment about an Article.'''

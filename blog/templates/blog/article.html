@@ -40,6 +40,9 @@
                 <strong>by {{comment.author}} at {{comment.published}}</strong>
                 <p>
                     {{comment.text}}
+                    <br>
+                    <!-- link to delete this comment -->
+                    <a href="{% url 'delete_comment' comment.pk %}">Delete</a>
                 </p>
             </div>
         {% endfor %}

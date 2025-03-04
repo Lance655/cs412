@@ -1,8 +1,9 @@
 # blog/views.py
 # views for the blog application
+from xml.etree.ElementTree import Comment
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
-from .models import Article
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from .models import Article, Comment
 from .forms import CreateArticleForm, CreateCommentForm, UpdateArticleForm 
 from django.urls import reverse # (my comment) allows us to create a url from a url pattern name
 
@@ -123,3 +124,26 @@ class UpdateArticleView(UpdateView):
     model = Article
     form_class = UpdateArticleForm
     template_name = "blog/update_article_form.html"
+
+
+class DeleteCommentView(DeleteView):
+    '''View class to delete a comment on an Article.'''
+
+    model = Comment
+    template_name = "blog/delete_comment_form.html"
+
+
+    def get_success_url(self):
+        '''Return the URL to redirect to after a successful delete.'''
+
+        # find the PK for this Comment:
+        pk = self.kwargs['pk']
+
+        # find the Comment object:
+        comment = Comment.objects.get(pk=pk)
+
+        # find the PK of the Article to which this comment is associated:
+        article = comment.article
+
+        # return the URL to redirect to:
+        return reverse('article', kwargs={'pk':article.pk})

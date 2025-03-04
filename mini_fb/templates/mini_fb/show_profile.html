@@ -24,11 +24,15 @@ Description: The show_profiles html template for the mini_fb website.
 
     <div class="profile-status-section">
         <h3>Status Messages:</h3>
+            <!-- message is a StatusMessage object -->
             {% for message in profile.get_status_messages %}
             <div class="status-messages">
                 <strong>{{message.timestamp}}</strong>
                 <p>
                     {{message.message}}
+                    {% for img in message.get_images %}
+                    <img src='{{img.image_file.url}}' alt='{{img.image_file.url}}'>
+                    {% endfor %}
                 </p>
             </div>
         {% endfor %}

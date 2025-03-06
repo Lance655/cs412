@@ -1,0 +1,37 @@
+<!-- 
+File: update_profile_form.html
+Author: Lance Sinson (ssinson@bu.edu), 3/7/25
+Description: The update_profile_form html template for the mini_fb website. 
+-->
+
+<!-- <form action="">
+    <label for=""></label>
+    <input type="text" name="" id="">
+
+    <label for=""></label>
+    <input type="text" name="" id="">
+
+
+
+</form> -->
+
+{% extends 'mini_fb/base.html' %}
+
+{% block content %}
+
+<form action="{% url 'update_profile' profile.pk %}" method="POST">
+
+    {% csrf_token %}
+    <table>
+    {{form.as_table}}
+    </table>
+
+    <input type="submit" name="submit" value="Update">
+</form>
+
+<!-- Add a separate form for a cancel button -->
+<form action="{% url 'show_profile' profile.pk %}">
+    <input type="submit" name="subtmi" value="Cancel">
+</form>
+
+{% endblock %}

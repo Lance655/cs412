@@ -30,6 +30,7 @@ Description: The show_profiles html template for the mini_fb website.
                 <strong>{{message.timestamp}}</strong>
                 <p>
                     {{message.message}}
+                    <!-- img is a Image object -->
                     {% for img in message.get_images %}
                     <img src='{{img.image_file.url}}' alt='{{img.image_file.url}}'>
                     {% endfor %}
@@ -38,7 +39,8 @@ Description: The show_profiles html template for the mini_fb website.
         {% endfor %}
     </div>
 
-    <a href="{% url 'create_status' profile.pk%}">Create Status</a>
+    <a href="{% url 'create_status' profile.pk %}">Create Status</a>
+    <a href="{% url 'update_profile' profile.pk %}">Update Profile</a>
 </div>
 
 

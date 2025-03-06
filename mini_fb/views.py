@@ -5,9 +5,9 @@
 # mini_fb/views.py
 # views for the mini_fb application
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from .models import Profile, StatusMessage, StatusImage, Image
-from .forms import CreateProfileForm, CreateStatusMessageForm
+from .forms import CreateProfileForm, CreateStatusMessageForm, UpdateProfileForm
 import random
 from django.urls import reverse
 
@@ -79,3 +79,10 @@ class CreateStatusMessageView(CreateView):
         '''Route submitted status forms back to the original profile page'''
         pk = self.kwargs['pk']
         return reverse('show_profile', kwargs={'pk':pk})
+
+class UpdateProfileView(UpdateView):
+    '''Define a class to update a Profile'''
+
+    model = Profile
+    form_class = UpdateProfileForm
+    template_name = "mini_fb/update_profile_form.html"

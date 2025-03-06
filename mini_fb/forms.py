@@ -1,5 +1,5 @@
 # File: forms.py
-# Author: Lance Sinson (ssinson@bu.edu), 2/28/25
+# Author: Lance Sinson (ssinson@bu.edu), 3/7/25
 # Description: The forms file for the mini_fb website to create a new profile. 
 
 # mini_fb/forms.py

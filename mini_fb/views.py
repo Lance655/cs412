@@ -1,5 +1,5 @@
 # File: views.py
-# Author: Lance Sinson (ssinson@bu.edu), 2/21/25
+# Author: Lance Sinson (ssinson@bu.edu), 3/7/25
 # Description: The views file for the mini_fb website. 
 
 # mini_fb/views.py
@@ -65,6 +65,8 @@ class CreateStatusMessageView(CreateView):
         # assignment 7 stuff (creating status message with one or multiple images) 
         sm = form.save() # save the status message to database and return a reference to this object
         files = self.request.FILES.getlist('files') # read the file from the form
+
+        # create the corresponding image and status image objects for this image file
         for file in files:
             image_object = Image(profile=profile, image_file=file)
             image_object.save()

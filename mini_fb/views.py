@@ -7,7 +7,7 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Profile, StatusMessage, StatusImage, Image
-from .forms import CreateProfileForm, CreateStatusMessageForm, UpdateProfileForm
+from .forms import CreateProfileForm, CreateStatusMessageForm, UpdateProfileForm, UpdateStatusMessageForm
 import random
 from django.urls import reverse
 
@@ -96,6 +96,25 @@ class DeleteStatusMessageView(DeleteView):
     def get_success_url(self):
         '''Method to redirect the user to the profile page for whom the status
         message was deleted'''
+
+        # find the StatusMessage object
+        pk = self.kwargs['pk']
+        status_message = StatusMessage.objects.get(pk=pk)
+
+        # get the profile object related to it
+        profile = status_message.profile
+
+        return reverse('show_profile', kwargs={'pk':profile.pk} )
+
+class UpdateStatusMessageView(UpdateView):
+    '''Define a class to update a status message'''
+
+    model = StatusMessage
+    form_class = UpdateStatusMessageForm
+    template_name = "mini_fb/update_status_form.html" 
+
+    def get_success_url(self):
+        '''Method to redirect the user to the profile page after a message is updated'''
 
         # find the StatusMessage object
         pk = self.kwargs['pk']

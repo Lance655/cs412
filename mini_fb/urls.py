@@ -12,4 +12,5 @@ urlpatterns = [
     path('profile/<int:pk>/create_status', CreateStatusMessageView.as_view(), name="create_status"),
     path('profile/<int:pk>/update', UpdateProfileView.as_view(), name="update_profile"),
     path('status/<int:pk>/delete', DeleteStatusMessageView.as_view(), name="delete_status"),
+    path('status/<int:pk>/update', UpdateStatusMessageView.as_view(), name="update_status"),
 ]

@@ -35,6 +35,7 @@ Description: The show_profiles html template for the mini_fb website.
                 {% for img in message.get_images %}
                     <img src='{{img.image_file.url}}' alt='{{img.image_file.url}}'>
                 {% endfor %}
+                <a href="{% url 'update_status' message.pk %}">Update</a>
                 <a href="{% url 'delete_status' message.pk %}">Delete</a>
                 
             </div>

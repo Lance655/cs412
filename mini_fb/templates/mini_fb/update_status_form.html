@@ -1,0 +1,32 @@
+<!-- 
+File: update_status_form.html
+Author: Lance Sinson (ssinson@bu.edu), 3/7/25
+Description: The update_status_form html template for the mini_fb website. 
+-->
+
+{% extends 'mini_fb/base.html' %}
+
+{% block content %}
+
+<h2>Update Status Message</h2>
+
+<!--Update status message -->
+<form action="{% url 'update_status' statusmessage.pk %}" method="POST">
+   
+    {% csrf_token %}
+    <table>
+    {{form.as_table}}
+    </table>
+
+    <input type="submit" name="submit" value="Update">
+</form>
+
+
+<!--Cancel, and go back to profile page-->
+<form action="{% url 'show_profile' statusmessage.profile.pk %}" method="GET">
+    {% csrf_token %}
+    <input type="submit" name="submit" value="Cancel">
+</form>
+
+
+{% endblock %}

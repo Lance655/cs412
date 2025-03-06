@@ -1,8 +1,10 @@
 /* 
 File: stylesfb.css
-Author: Lance Sinson (ssinson@bu.edu), 2/28/25
+Author: Lance Sinson (ssinson@bu.edu), 3/7/25
 Description: The css file for the mini_fb website. 
  */
+
+ 
 /* General Styling */
 
 * {
@@ -91,7 +93,7 @@ nav a:hover {
 
 
 
-/* -------------------------------------- main content ------------------------------------------- */
+/* vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv main content vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv */
 table {
     width: 100%;
     margin-top: 20px;
@@ -115,16 +117,7 @@ th {
     width: 80%;
 }
 
-.create-status-table {
-    margin: auto;
-    width: 80%;
-}
-
 .create-profile-table th {
-    background-color: #111;
-}
-
-.create-status-table th {
     background-color: #111;
 }
 
@@ -132,9 +125,107 @@ th {
     margin: 3% 3%;
 }
 
+/* vvvvvvvvvvvvvvv create status css vvvvvvvvvvvvvvv */
+
+
 .create-status-title {
     margin: 3% 3%;
 }
+
+.create-status-table th, .create-status-table td {
+    background-color: #333;
+    border-bottom: 2px solid #333;
+}
+
+.create-status-table {
+    margin: auto;
+    width: 70%;
+}
+
+.create-status-wrapper img {
+    margin-top: 3%;
+    margin-left: 3%;
+    margin-bottom: 3%;
+    width: 10%;
+    border: 4px solid #ff2e63;
+    box-shadow: 0px 0px 15px #ff2e63;
+}
+
+.create-status-wrapper {
+    padding: 20px;
+    background-color: #222;
+    border-radius: 10px;
+}
+
+.create-status-header-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.create-status-main-section {
+    background-color: #333;
+    padding: 10px;
+    margin: 10px auto;
+    width: 70%;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(255, 46, 99, 0.3);
+}
+
+/* Submit Button */
+input[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    background-color: #ff2e63;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    color: black;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 0px 10px rgba(255, 46, 99, 0.5);
+}
+
+input[type="submit"][value="X"] {
+    background-color: #ff2e63; /* Red */
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    width: 60px;
+    height: 60px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 0px 10px rgba(255, 46, 99, 0.5);
+}
+
+input[type="submit"][value="O"] {
+    background-color: #007bff; /* Blue */
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    width: 60px;
+    height: 60px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 0px 10px rgba(0, 123, 255, 0.5);
+}
+
+input[type="submit"]:hover {
+    background-color: #fff;
+    color: #ff2e63;
+    box-shadow: 0px 0px 15px #ff2e63;
+}
+
+/* ^^^^^^^^^^^^^^^ update profile css ^^^^^^^^^^^^^^^ */
+
+
+
+/* ^^^^^^^^^^^^^^^ update profile css ^^^^^^^^^^^^^^^ */
 
 
 /* Profile Images */
@@ -147,6 +238,8 @@ th {
     transform: scale(1.1);
     box-shadow: 0px 0px 15px #ff2e63;
 }
+
+
 
 /* --------------------- main content - profile - --------------------- */
 
@@ -232,8 +325,7 @@ a {
     font-weight: bold;
 }
 
-/* -------------------------------------- main content ------------------------------------------- */
-
+/* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ main content ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 
 
 

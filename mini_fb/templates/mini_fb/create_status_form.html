@@ -8,38 +8,50 @@ Description: The create status form html template for the mini_fb website.
 
 {% block content %}
 
-   
-<!-- display the HTML form -->
 
-<h1 class="create-status-title">Post a Status message for {{profile.first_name}} {{profile.last_name}} </h1>
+<div class="create-status-wrapper">
 
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <!-- <table class="create-status-table"> -->
-    <!-- {{form.as_table}} -->
-    <!-- </table> -->
+    <div class="create-status-header-section">
+        <img src="{{profile.image_url}}" alt="">
+        <h1 class="create-status-title">Post a Status message for {{profile.first_name}} {{profile.last_name}} </h1>
+    </div>
+    
+    
 
-    <table class="create-status-table">
-       
-        {{form.as_table}}
-            
+        <!-- display the HTML form -->
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
 
-        <tr>       
-            <td>
-            </td>
-            <td>
-            <input type="file" name="files" multiple />
-            </td>
-        </tr>
+            <div class="create-status-main-section">
 
-    </table>
+                <table class="create-status-table">
+                
+                    {{form.as_table}}
+                        
 
+                    <tr>       
+                        <td>
+                            Image(s):
+                        </td>
 
+                        <td>
+                            <input type="file" name="files" multiple />
+                        </td>
+                    </tr>
 
+                </table>
 
-    <input type="submit" name="submit" value="submit"/>
-</form>
+            </div>
 
+            <!-- Confirm create status and go back to profile -->
+            <input type="submit" name="submit" value="Confirm"/>
+        </form>
 
+        <form action="{% url 'show_profile' profile.pk %}" method="GET">
+            <!-- Cancel create status and go back to profile -->
+            <input type="submit" name="submit" value="Cancel">
+        </form>
+
+</div>
 
 {% endblock %}

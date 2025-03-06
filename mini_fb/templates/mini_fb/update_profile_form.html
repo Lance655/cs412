@@ -4,34 +4,48 @@ Author: Lance Sinson (ssinson@bu.edu), 3/7/25
 Description: The update_profile_form html template for the mini_fb website. 
 -->
 
+
 <!-- <form action="">
     <label for=""></label>
     <input type="text" name="" id="">
 
     <label for=""></label>
     <input type="text" name="" id="">
-
-
-
 </form> -->
 
 {% extends 'mini_fb/base.html' %}
 
 {% block content %}
 
-<form action="{% url 'update_profile' profile.pk %}" method="POST">
+<div class="create-status-wrapper">
 
-    {% csrf_token %}
-    <table>
-    {{form.as_table}}
-    </table>
+    <div class="create-status-header-section">
+        <img src="{{profile.image_url}}" alt="">
+        <h1 class="create-status-title">Update Profile for {{profile.first_name}} {{profile.last_name}} </h1>
+    </div>
+    
+    <!-- Form to update a profile -->
+    <form action="{% url 'update_profile' profile.pk %}" method="POST">
 
-    <input type="submit" name="submit" value="Update">
-</form>
+        {% csrf_token %}
 
-<!-- Add a separate form for a cancel button -->
-<form action="{% url 'show_profile' profile.pk %}">
-    <input type="submit" name="subtmi" value="Cancel">
-</form>
+        <div class="create-status-main-section">
+            <table class="">
+                {{form.as_table}}
+            </table>
+        </div>
+
+         <!-- Confirm update profile and go back to profile -->
+        <input type="submit" name="submit" value="Update">
+    </form>
+
+
+    <!-- Add a separate form for a cancel button -->
+    <form action="{% url 'show_profile' profile.pk %}">
+        <input type="submit" name="submit" value="Cancel">
+    </form>
+
+
+</div>
 
 {% endblock %}

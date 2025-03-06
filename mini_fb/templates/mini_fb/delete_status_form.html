@@ -1,0 +1,30 @@
+<!-- 
+File: delete_status_form.html
+Author: Lance Sinson (ssinson@bu.edu), 3/7/25
+Description: The delete status form html template for the mini_fb website. 
+-->
+
+{% extends 'mini_fb/base.html' %}
+
+{% block content %}
+
+<h2>Delete Status Message?</h2>
+<p>
+    {{statusmessage}}
+</p>
+
+<h3>Are you sure you want to delete this status message?</h3>
+
+<!-- yes, delete the status message --->
+<form action="" method="POST">
+    {% csrf_token %}
+    <input type="submit" name="submit" value="Confirm">
+</form>
+
+<!-- no, go back to the profile page --->
+<form action="{% url 'show_profile' statusmessage.profile.pk %}" method="GET">
+    {% csrf_token %}
+    <input type="submit" value="Cancel">
+</form>
+
+{% endblock %}

@@ -5,7 +5,7 @@
 # mini_fb/views.py
 # views for the mini_fb application
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Profile, StatusMessage, StatusImage, Image
 from .forms import CreateProfileForm, CreateStatusMessageForm, UpdateProfileForm
 import random
@@ -86,3 +86,22 @@ class UpdateProfileView(UpdateView):
     model = Profile
     form_class = UpdateProfileForm
     template_name = "mini_fb/update_profile_form.html"
+
+class DeleteStatusMessageView(DeleteView):
+    '''Define a class to delete a Status Message'''
+
+    model = StatusMessage
+    template_name = "mini_fb/delete_status_form.html"
+
+    def get_success_url(self):
+        '''Method to redirect the user to the profile page for whom the status
+        message was deleted'''
+
+        # find the StatusMessage object
+        pk = self.kwargs['pk']
+        status_message = StatusMessage.objects.get(pk=pk)
+
+        # get the profile object related to it
+        profile = status_message.profile
+
+        return reverse('show_profile', kwargs={'pk':profile.pk} )

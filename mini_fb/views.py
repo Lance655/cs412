@@ -6,7 +6,7 @@
 # views for the mini_fb application
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView
-from .models import Profile, StatusMessage
+from .models import Profile, StatusMessage, StatusImage, Image
 from .forms import CreateProfileForm, CreateStatusMessageForm
 import random
 from django.urls import reverse
@@ -57,9 +57,21 @@ class CreateStatusMessageView(CreateView):
     
     def form_valid(self, form):
         '''This method attaches the profile primary key to the corresponding status message object's foreign key'''
+        
         pk = self.kwargs['pk']
         profile = Profile.objects.get(pk=pk)
         form.instance.profile = profile
+
+        # assignment 7 stuff (creating status message with one or multiple images) 
+        sm = form.save() # save the status message to database and return a reference to this object
+        files = self.request.FILES.getlist('files') # read the file from the form
+        for file in files:
+            image_object = Image(profile=profile, image_file=file)
+            image_object.save()
+
+            status_image_object = StatusImage(image_fk=image_object, status_message_fk=sm)
+            status_image_object.save() 
+
 
         return super().form_valid(form)
 

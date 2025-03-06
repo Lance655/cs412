@@ -191,6 +191,11 @@ th {
     box-shadow: 0px 0px 10px rgba(255, 46, 99, 0.3);
 }
 
+.status-messages img {
+    width: 50%;
+    display: block;
+}
+
 .status-messages strong {
     color: #ff2e63;
 }

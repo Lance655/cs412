@@ -26,7 +26,20 @@ class Profile(models.Model):
     def get_absolute_url(self):
         '''Return a URL to display one instance of this object.'''
         return reverse('show_profile', kwargs={'pk': self.pk})
+
+    def get_friends(self):
+        '''Return a list of a profile's friends'''
+        friends1 = Friend.objects.filter(profile1=self)
+        friends2 = Friend.objects.filter(profile2=self)
+
+        # Extract the actual Profile objects
+        friend_profiles = [friend.profile2 for friend in friends1] + [friend.profile1 for friend in friends2]
+
+        return friend_profiles
+
+       
     
+
 
 class StatusMessage(models.Model):
     '''Encapsulate the idea of a status message for a individual profile'''
@@ -73,3 +86,15 @@ class StatusImage(models.Model):
     def __str__(self):
         '''return a string representation of this model instance'''
         return f'Linking image ("{self.image_fk}") and status message ("{self.status_message_fk}")'
+
+class Friend(models.Model):
+    '''Encapsulates the idea of an edge connecting two nodes within the social network (e.g., 
+    two Profiles that are friends with each other).
+    '''
+    profile1 = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="profile1")
+    profile2 = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="profile2")
+    timestamp = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        '''return a string representation of this model instance'''
+        return f'{self.profile1.first_name} {self.profile1.last_name} & {self.profile2.first_name} {self.profile2.last_name}'

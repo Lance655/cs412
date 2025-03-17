@@ -297,6 +297,21 @@ input[type="submit"]:hover {
     color: #fff;
 }
 
+.profile-friends {
+    margin: 3%;
+}
+
+.profile-friends h3 {
+    color: #ff2e63;
+    margin-bottom: 10px;
+}
+
+.profile-single-friend {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+
 /* Create Status Button */
 .profile-wrapper a {
     display: inline-block;

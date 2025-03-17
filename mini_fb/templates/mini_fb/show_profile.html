@@ -42,6 +42,26 @@ Description: The show_profiles html template for the mini_fb website.
         {% endfor %}
     </div>
 
+    <div class="profile-friends">
+        <h3>Friends</h3>
+        <!-- loop through each friend profile -->
+        {% for profile in profile.get_friends %}
+        
+            <div class="profile-single-friend">
+
+                <a href="{% url 'show_profile' profile.pk %}">
+                    <div class="profile-image-all">
+                    <img src="{{ profile.image_url }}" alt="Image of {{profile.first_name}} {{profile.last_name}}"> 
+                    </div>
+                </a>
+    
+                <a href="{% url 'show_profile' profile.pk %}">{{ profile.first_name }} {{ profile.last_name }}</a>
+                
+            </div>
+
+        {% endfor %}
+    </div>
+
     <a href="{% url 'create_status' profile.pk %}">Create Status</a>
     <a href="{% url 'update_profile' profile.pk %}">Update Profile</a>
 </div>

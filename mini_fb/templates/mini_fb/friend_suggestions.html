@@ -1,0 +1,48 @@
+<!-- 
+File: friend_suggestions.html
+Author: Lance Sinson (ssinson@bu.edu), 3/21/25
+Description: The friend suggestions html template for the mini_fb website. 
+-->
+
+{% extends 'mini_fb/base.html' %}
+
+{% block content %}
+
+    <!-- loop thru each profile in the suggestion list -->
+    <a href="{% url 'show_profile' profile.pk %}">Back to {{profile.first_name}} {{profile.last_name}}'s page</a>
+
+    <table>
+        {% for friend_suggestion in profile.get_friend_suggestions %}
+
+            <tr>
+                <div class="character">
+
+                    <!-- image -->
+                    <td> 
+                        <a href="{% url 'show_profile' friend_suggestion.pk %}">
+                            <div class="profile-image-all">
+                            <img src="{{ friend_suggestion.image_url }}" alt="Image of {{friend_suggestion.first_name}} {{friend_suggestion.last_name}}"> 
+                            </div>
+                        </a>
+                    <!-- name -->
+                    </td>
+                    <td> 
+                        <a href="{% url 'show_profile' friend_suggestion.pk %}">{{ friend_suggestion.first_name }} {{ friend_suggestion.last_name }}</a>
+                    </td>
+                    <!-- city -->
+                    <td>{{ friend_suggestion.city }}</td>
+
+                </div>
+
+            </tr>
+
+        {% endfor %}
+    </table>
+
+            
+
+
+
+
+
+{% endblock %}

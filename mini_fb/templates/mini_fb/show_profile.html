@@ -60,6 +60,8 @@ Description: The show_profiles html template for the mini_fb website.
             </div>
 
         {% endfor %}
+
+        <a href="{% url 'show_friend_suggestions' profile.pk %}">Friend Suggestions</a>
     </div>
 
     <a href="{% url 'create_status' profile.pk %}">Create Status</a>

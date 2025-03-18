@@ -37,6 +37,29 @@ class Profile(models.Model):
 
         return friend_profiles
 
+    def add_friend(self, other):
+        '''Takes a parameter other, which refers to another Profile instance, 
+        and the effect of the method should be add a Friend relation for the 
+        two Profiles: self and other.'''
+ 
+        if self != other:
+            # Check if a friend object already exists between the two profiles
+            check_friends = Friend.objects.filter(profile1=self, profile2=other) | Friend.objects.filter(profile1=other, profile2=self)
+            if len(check_friends) == 0:
+                Friend.objects.create(profile1=self, profile2=other)
+
+    def get_friend_suggestions(self):
+        '''Return a list (or QuerySet) of possible friends for a Profile.'''
+
+        friends = self.get_friends()
+        suggestions = []
+        for friend in friends:
+            for potential_friend in friend.get_friends():
+                if (potential_friend not in friends) and (potential_friend != self):
+                    suggestions += [potential_friend]
+        return suggestions
+        
+
        
     
 
@@ -98,3 +121,5 @@ class Friend(models.Model):
     def __str__(self):
         '''return a string representation of this model instance'''
         return f'{self.profile1.first_name} {self.profile1.last_name} & {self.profile2.first_name} {self.profile2.last_name}'
+
+

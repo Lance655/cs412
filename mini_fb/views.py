@@ -4,8 +4,8 @@
 
 # mini_fb/views.py
 # views for the mini_fb application
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.shortcuts import render, redirect
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from .models import Profile, StatusMessage, StatusImage, Image
 from .forms import CreateProfileForm, CreateStatusMessageForm, UpdateProfileForm, UpdateStatusMessageForm
 import random
@@ -126,3 +126,28 @@ class UpdateStatusMessageView(UpdateView):
         profile = status_message.profile
 
         return reverse('show_profile', kwargs={'pk':profile.pk} )
+
+class CreateFriendView(View):
+    '''A class to extract the primary keys to add a friend'''
+    
+    def dispatch(self, request, *args, **kwargs):
+        pk = self.kwargs['pk']
+        other_pk = self.kwargs['other_pk']
+        
+        profile1 = Profile.objects.get(pk=pk)
+        other = Profile.objects.get(pk=other_pk)
+
+        profile1.add_friend(other)
+
+        # return super(CreateFriendView, self).dispatch(request, *args, **kwargs)
+        return redirect( reverse('show_profile', kwargs={'pk':pk} ) )
+        # return reverse('show_profile', kwargs={'pk':pk} )
+
+class ShowFriendSuggestionsView(DetailView):
+    '''A class to show friend suggestions for a profile'''
+
+    model = Profile
+    template_name = 'mini_fb/friend_suggestions.html'
+    context_object_name = "profile"
+
+    

@@ -4,6 +4,7 @@
 
 # mini_fb/views.py
 # views for the mini_fb application
+from re import L
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from .models import Profile, StatusMessage, StatusImage, Image
@@ -150,4 +151,9 @@ class ShowFriendSuggestionsView(DetailView):
     template_name = 'mini_fb/friend_suggestions.html'
     context_object_name = "profile"
 
-    
+class ShowNewsFeedView(DetailView):
+    '''A class to show a profile's news feed'''
+
+    model = Profile
+    template_name = 'mini_fb/news_feed.html'
+    context_objects_Name = "profile"

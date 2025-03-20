@@ -1,6 +1,7 @@
 # mini_fb/models.py
 # define data models for the mini_fb application
 
+from re import A
 from django.db import models
 from django.urls import reverse
 
@@ -47,6 +48,21 @@ class Profile(models.Model):
             check_friends = Friend.objects.filter(profile1=self, profile2=other) | Friend.objects.filter(profile1=other, profile2=self)
             if len(check_friends) == 0:
                 Friend.objects.create(profile1=self, profile2=other)
+
+    def get_news_feed(self):
+        '''Finds all the status messages of a profile plus that profile's friends, 
+        and orders them by earliest to latest
+        '''
+        friend_profiles = self.get_friends() 
+        
+        # Combine them (as a list) along with 'self'
+        feed_profiles = list(friend_profiles) + [self]
+
+        # Get all status messages for all relevant profiles
+        all_status_messages = StatusMessage.objects.filter(profile__in=feed_profiles)
+
+        # Order them from earliest to latest
+        return all_status_messages.order_by("-timestamp")
 
     def get_friend_suggestions(self):
         '''Return a list (or QuerySet) of possible friends for a Profile.'''

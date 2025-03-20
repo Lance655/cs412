@@ -8,10 +8,11 @@ Description: The friend suggestions html template for the mini_fb website.
 
 {% block content %}
 
-    <!-- loop thru each profile in the suggestion list -->
+    
     <a href="{% url 'show_profile' profile.pk %}">Back to {{profile.first_name}} {{profile.last_name}}'s page</a>
 
     <table>
+        <!-- loop thru each profile in the suggestion list -->
         {% for friend_suggestion in profile.get_friend_suggestions %}
 
             <tr>
@@ -31,6 +32,11 @@ Description: The friend suggestions html template for the mini_fb website.
                     </td>
                     <!-- city -->
                     <td>{{ friend_suggestion.city }}</td>
+
+                    <!-- button -->
+                    <td>
+                        <a href="{% url 'create_friend' profile.pk friend_suggestion.pk %}">Add friend</a>
+                    </td>
 
                 </div>
 

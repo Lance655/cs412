@@ -19,6 +19,8 @@ Description: The show_profiles html template for the mini_fb website.
 
         <p>{{profile.city}}</p>
         <p>{{profile.email_address}}</p>
+
+        <a href="{% url 'news_feed' profile.pk %}">News Feed</a>
     </div>
 
 

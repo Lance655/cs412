@@ -20,7 +20,11 @@ Description: The show_profiles html template for the mini_fb website.
         <p>{{profile.city}}</p>
         <p>{{profile.email_address}}</p>
 
-        <a href="{% url 'news_feed' profile.pk %}">News Feed</a>
+        <div class="profile-main-links">
+            <a href="{% url 'news_feed' profile.pk %}">News Feed</a>
+            <a href="{% url 'create_status' profile.pk %}">Create Status</a>
+            <a href="{% url 'update_profile' profile.pk %}">Update Profile</a>
+        </div>
     </div>
 
 
@@ -47,17 +51,17 @@ Description: The show_profiles html template for the mini_fb website.
     <div class="profile-friends">
         <h3>Friends</h3>
         <!-- loop through each friend profile -->
-        {% for profile in profile.get_friends %}
+        {% for friend in profile.get_friends %}
         
             <div class="profile-single-friend">
 
-                <a href="{% url 'show_profile' profile.pk %}">
+                <a href="{% url 'show_profile' friend.pk %}">
                     <div class="profile-image-all">
-                    <img src="{{ profile.image_url }}" alt="Image of {{profile.first_name}} {{profile.last_name}}"> 
+                    <img src="{{ friend.image_url }}" alt="Image of {{friend.first_name}} {{friend.last_name}}"> 
                     </div>
                 </a>
     
-                <a href="{% url 'show_profile' profile.pk %}">{{ profile.first_name }} {{ profile.last_name }}</a>
+                <a href="{% url 'show_profile' friend.pk %}">{{ friend.first_name }} {{ friend.last_name }}</a>
                 
             </div>
 
@@ -66,8 +70,6 @@ Description: The show_profiles html template for the mini_fb website.
         <a href="{% url 'show_friend_suggestions' profile.pk %}">Friend Suggestions</a>
     </div>
 
-    <a href="{% url 'create_status' profile.pk %}">Create Status</a>
-    <a href="{% url 'update_profile' profile.pk %}">Update Profile</a>
 </div>
 
 

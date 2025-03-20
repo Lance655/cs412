@@ -8,27 +8,46 @@ Description: The news feed html template for the mini_fb website.
 
 {% block content %}
 
-    <a href="{% url 'show_profile' profile.pk %}">Back to {{profile.first_name}} {{profile.last_name}}'s page</a>
+<div class="news-feed-container">
 
-    <!-- status_message is a StatusMessage object -->
+    <!-- Link back to the profile page -->
+    <a href="{% url 'show_profile' profile.pk %}" class="back-link">
+        Back to {{ profile.first_name }} {{ profile.last_name }}'s page
+    </a>
+
+    <!-- Loop through each status in the news feed -->
     {% for status_message in profile.get_news_feed %}
+        <div class="feed-status-message">
+            
+            <!-- User info row: user photo + user name -->
+            <div class="feed-user-info">
+                <img class="user-photo"
+                     src="{{ status_message.profile.image_url }}"
+                     alt="Photo of {{ status_message.profile.first_name }} {{ status_message.profile.last_name }}">
 
-        <img src="{{ status_message.profile.image_url }}" alt="Photo of {{ status_message.profile.first_name }} {{ status_message.profile.last_name}}">
-        <p>
-            {{ status_message.timestamp }}
-        </p>
-        <p>
-            {{ status_message.message }}
-        </p>
-        
-        <!-- loop thru a status message's photos -->
-        <!-- img is an Image object -->
-        {% for img in status_message.get_images %}
-            <img src='{{img.image_file.url}}' alt='{{img.image_file.url}}'>
-        {% endfor %}
+                <h4 class="feed-user-name">
+                    {{ status_message.profile.first_name }} {{ status_message.profile.last_name }}
+                </h4>
+            </div>
 
+            <!-- Timestamp -->
+            <div class="feed-timestamp">
+                {{ status_message.timestamp }}
+            </div>
+
+            <!-- Status message text -->
+            <div class="feed-message-text">
+                {{ status_message.message }}
+            </div>
+
+            <!-- Loop through images for this status -->
+            {% for img in status_message.get_images %}
+                <img class="status-image" src="{{ img.image_file.url }}" alt="{{ img.image_file.url }}">
+            {% endfor %}
+        </div>
     {% endfor %}
 
+</div>
+
+
 {% endblock %}
-
-

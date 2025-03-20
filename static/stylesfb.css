@@ -221,11 +221,195 @@ input[type="submit"]:hover {
     box-shadow: 0px 0px 15px #ff2e63;
 }
 
-/* ^^^^^^^^^^^^^^^ update profile css ^^^^^^^^^^^^^^^ */
+/* ^^^^^^^^^^^^^^^ create status css ^^^^^^^^^^^^^^^ */
 
 
 
-/* ^^^^^^^^^^^^^^^ update profile css ^^^^^^^^^^^^^^^ */
+
+
+/* vvvvvvvvvvvvvvv news feed css vvvvvvvvvvvvvvv */
+
+
+/* Overall container for the news feed page */
+.news-feed-container {
+    margin: 20px auto;
+    width: 70%;         
+    text-align: left;    /* Left align feed content */
+}
+
+/* Link back to profile page */
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    background-color: #ff2e63;
+    color: #000;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+.back-link:hover {
+    background-color: #fff;
+    color: #ff2e63;
+    box-shadow: 0px 0px 10px #ff2e63;
+}
+
+/* Each status update "card" */
+.feed-status-message {
+    background-color: #333;
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(255, 46, 99, 0.3);
+}
+
+/* Row with the user’s profile image + name */
+.feed-user-info {
+    display: flex;
+    align-items: center; /* Vertically center photo + text */
+    margin-bottom: 10px;
+}
+
+/* User's photo (in the feed) */
+.user-photo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #ff2e63;
+    margin-right: 10px;
+    box-shadow: 0px 0px 10px #ff2e63;
+}
+
+/* The user's name next to the photo */
+.feed-user-name {
+    margin: 0;         
+    color: #ff2e63;
+}
+
+/* Timestamp styling */
+.feed-timestamp {
+    color: #ccc;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+/* The text of the status message */
+.feed-message-text {
+    margin-bottom: 10px;
+    color: #fff;
+    font-size: 1rem;
+}
+
+/* Images attached to the status message */
+.status-image {
+    display: block;      
+    width: 50%;           
+    margin: 10px 0;
+    border: 2px solid #ff2e63;
+    border-radius: 5px;
+}
+
+/* ^^^^^^^^^^^^^^^ news feed css ^^^^^^^^^^^^^^^ */
+
+
+
+/* vvvvvvvvvvvvvvv friend suggestions css vvvvvvvvvvvvvvv */
+
+/* Container for the entire page content */
+.friend-suggestions-container {
+    margin: 20px auto;
+    width: 80%;             
+    text-align: center;
+}
+
+/* Back link styling */
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    background-color: #ff2e63;
+    color: #000;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+.back-link:hover {
+    background-color: #fff;
+    color: #ff2e63;
+    box-shadow: 0px 0px 10px #ff2e63;
+}
+
+/* Grid container for the friend suggestion cards */
+.friend-suggestions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px; /* space between cards */
+    margin-top: 20px;
+}
+
+/* Each individual card */
+.friend-suggestion-card {
+    background-color: #333;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(255, 46, 99, 0.3);
+    text-align: center;  /* Center images, text inside the card */
+}
+
+/* Friend's profile photo in suggestions */
+.friend-suggestion-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid #ff2e63;
+    box-shadow: 0px 0px 10px #ff2e63;
+    margin-bottom: 10px;
+    object-fit: cover; 
+}
+
+/* The friend's name */
+.friend-suggestion-name {
+    margin: 10px 0;
+    color: #ff2e63;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* The friend's city */
+.friend-suggestion-city {
+    margin: 5px 0;
+    color: #fff;
+    font-size: 0.9rem;
+}
+
+/* “Add Friend” link/button */
+.add-friend-link {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 12px;
+    background-color: #ff2e63;
+    color: #000;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+.add-friend-link:hover {
+    background-color: #fff;
+    color: #ff2e63;
+    box-shadow: 0px 0px 10px #ff2e63;    
+}
+
+
+/* ^^^^^^^^^^^^^^^ friend suggestions css ^^^^^^^^^^^^^^^ */
+
+
+
 
 
 /* Profile Images */
@@ -330,6 +514,11 @@ input[type="submit"]:hover {
     color: #ff2e63;
     box-shadow: 0px 0px 10px #ff2e63;
 }
+
+.profile-main-links {
+    display: flex;
+    flex-direction: column;
+}
 /* --------------------- main content - profile - --------------------- */
 
 
@@ -339,6 +528,7 @@ a {
     text-decoration: none;
     font-weight: bold;
 }
+
 
 /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ main content ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 

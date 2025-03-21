@@ -1,5 +1,5 @@
 # File: views.py
-# Author: Lance Sinson (ssinson@bu.edu), 3/7/25
+# Author: Lance Sinson (ssinson@bu.edu), 3/21/25
 # Description: The views file for the mini_fb website. 
 
 # mini_fb/views.py
@@ -132,6 +132,7 @@ class CreateFriendView(View):
     '''A class to extract the primary keys to add a friend'''
     
     def dispatch(self, request, *args, **kwargs):
+        '''Method to redirect the user after adding a friend'''
         pk = self.kwargs['pk']
         other_pk = self.kwargs['other_pk']
         

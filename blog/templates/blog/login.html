@@ -1,0 +1,23 @@
+<!-- blog/templates/login.html -->
+
+{% extends 'blog/base.html' %}
+
+{% block content %}
+
+<h1>Login to our Blog</h1>
+<form action="{% url 'login' %}" method="POST">
+    {% csrf_token %}
+    {{form}}
+    <input type="submit" value="Login">
+    <!-- This basic login form works, but after login in
+    assumed the existance of a page at /registration/profile, which
+    does not exist.  -->
+    {% if request.GET.next %}
+    <input type="hidden" name="next" value="{{request.GET.next}}">
+    {% else %}
+    <input type="hidden" name="next" value="{% url 'show_all' %}">
+    {% endif %}
+    
+</form>
+
+{% endblock %}

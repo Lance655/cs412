@@ -12,10 +12,39 @@
             <h1>Our Blog</h1>
             <nav>
                 <ul>
+
+                    <!-- URLs for users who are not logged in -->
                     <li><a href="{% url 'random' %}">Random</a></li>
                     <li><a href="{% url 'show_all' %}">Show All</a></li>
-                    <li><a href="{% url 'create_article' %}">Create</a></li>
+                    
+                    
+                    <!-- URLs for logged in users only -->
+                    {% if request.user.is_authenticated %}   
+
+                        
+                        <li><a href="{% url 'create_article' %}">Create</a></li>
+
+                        <!-- This section I added because of the piazza post logout issue -->
+                        <form action="{% url 'logout' %}" method="POST" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
+                        </form>
+                        <!-- This section I added because of the piazza post logout issue -->
+
+
+                        
+                    <!-- URLs for users who are not logged in -->
+                    {% else %}
+                        <li><a href="{% url 'login' %}">Log in</a></li>
+                    {% endif %}
+
                 </ul>
+                <hr>
+                {% if request.user.is_authenticated %}
+                Logged in as: {{request.user}}
+                {% else %}
+                Not logged in.
+                {% endif %} 
             </nav>
         </head>
 
@@ -23,5 +52,3 @@
         {% endblock %}
     </body>
 </html>
-
-

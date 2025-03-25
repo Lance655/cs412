@@ -7,6 +7,9 @@ from .models import Article, Comment
 from .forms import CreateArticleForm, CreateCommentForm, UpdateArticleForm 
 from django.urls import reverse # (my comment) allows us to create a url from a url pattern name
 from django.contrib.auth.mixins import LoginRequiredMixin ## NEW
+from django.contrib.auth.forms import UserCreationForm ## NEW
+from django.contrib.auth.models import User ## NEW
+from django.contrib.auth import login # NEW
 
 
 import random
@@ -172,3 +175,18 @@ class DeleteCommentView(DeleteView):
 
         # return the URL to redirect to:
         return reverse('article', kwargs={'pk':article.pk})
+
+
+class RegistrationView(CreateView):
+    '''
+    show/process form for account registration
+    '''
+
+    template_name = 'blog/register.html'
+    form_class = UserCreationForm
+    model = User
+    
+    def get_success_url(self):
+        '''The URL to redirect to after creating a new User.'''
+        return reverse('login')
+  	       

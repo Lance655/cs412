@@ -17,7 +17,10 @@
     {% else %}
     <input type="hidden" name="next" value="{% url 'show_all' %}">
     {% endif %}
-    
+
 </form>
+
+<hr>
+Don't have an account? <a href="{% url 'register' %}">Register here</a>.
 
 {% endblock %}

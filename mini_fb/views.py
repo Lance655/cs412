@@ -11,6 +11,7 @@ from .models import Profile, StatusMessage, StatusImage, Image
 from .forms import CreateProfileForm, CreateStatusMessageForm, UpdateProfileForm, UpdateStatusMessageForm
 import random
 from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin ## NEW
 
 
 # Create your views here.
@@ -35,11 +36,15 @@ class CreateProfileView(CreateView):
     form_class = CreateProfileForm
     template_name = "mini_fb/create_profile_form.html"
 
-class CreateStatusMessageView(CreateView):
+class CreateStatusMessageView(LoginRequiredMixin, CreateView):
     '''Define a class to create a status message for a profile'''
 
     form_class = CreateStatusMessageForm
     template_name = "mini_fb/create_status_form.html"
+
+    # def get_login_url(self) -> str:
+    #     '''return the URL required for login'''
+    #     return reverse('login') 
 
     def get_context_data(self):
         '''Return the dictionary of context variables for use in the template.'''
@@ -83,14 +88,15 @@ class CreateStatusMessageView(CreateView):
         pk = self.kwargs['pk']
         return reverse('show_profile', kwargs={'pk':pk})
 
-class UpdateProfileView(UpdateView):
+class UpdateProfileView(LoginRequiredMixin, UpdateView):
     '''Define a class to update a Profile'''
 
     model = Profile
     form_class = UpdateProfileForm
     template_name = "mini_fb/update_profile_form.html"
 
-class DeleteStatusMessageView(DeleteView):
+
+class DeleteStatusMessageView(LoginRequiredMixin, DeleteView):
     '''Define a class to delete a Status Message'''
 
     model = StatusMessage
@@ -109,7 +115,7 @@ class DeleteStatusMessageView(DeleteView):
 
         return reverse('show_profile', kwargs={'pk':profile.pk} )
 
-class UpdateStatusMessageView(UpdateView):
+class UpdateStatusMessageView(LoginRequiredMixin, UpdateView):
     '''Define a class to update a status message'''
 
     model = StatusMessage

@@ -20,11 +20,13 @@ Description: The show_profiles html template for the mini_fb website.
         <p>{{profile.city}}</p>
         <p>{{profile.email_address}}</p>
 
-        <div class="profile-main-links">
-            <a href="{% url 'news_feed' profile.pk %}">News Feed</a>
-            <a href="{% url 'create_status' profile.pk %}">Create Status</a>
-            <a href="{% url 'update_profile' profile.pk %}">Update Profile</a>
-        </div>
+            {% if request.user.is_authenticated and request.user.pk == profile.user.pk %}
+                <div class="profile-main-links">
+                    <a href="{% url 'news_feed' profile.pk %}">News Feed</a>
+                    <a href="{% url 'create_status' profile.pk %}">Create Status</a>
+                    <a href="{% url 'update_profile' profile.pk %}">Update Profile</a>
+                </div>
+            {% endif %}
     </div>
 
 
@@ -41,8 +43,11 @@ Description: The show_profiles html template for the mini_fb website.
                 {% for img in message.get_images %}
                     <img src='{{img.image_file.url}}' alt='{{img.image_file.url}}'>
                 {% endfor %}
-                <a href="{% url 'update_status' message.pk %}">Update</a>
-                <a href="{% url 'delete_status' message.pk %}">Delete</a>
+
+                {% if request.user.is_authenticated and request.user.pk == profile.user.pk %}
+                    <a href="{% url 'update_status' message.pk %}">Update</a>
+                    <a href="{% url 'delete_status' message.pk %}">Delete</a>
+                {% endif %}
                 
             </div>
         {% endfor %}
@@ -67,7 +72,9 @@ Description: The show_profiles html template for the mini_fb website.
 
         {% endfor %}
 
-        <a href="{% url 'show_friend_suggestions' profile.pk %}">Friend Suggestions</a>
+        {% if request.user.is_authenticated and request.user.pk == profile.user.pk %}
+            <a href="{% url 'show_friend_suggestions' profile.pk %}">Friend Suggestions</a>
+        {% endif %}
     </div>
 
 </div>

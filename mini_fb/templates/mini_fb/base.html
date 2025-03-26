@@ -27,6 +27,12 @@ Description: The base html template for the mini_fb website.
                     <h2> <a href="{% url 'show_all_profiles' %}">Home</a> </h2>
                     <h2> <a href="{% url 'create_profile' %}">Create Profile</a> </h2>
                 </nav>
+
+                {% if request.user.is_authenticated %}
+                <h3> Logged in as: {{request.user}} </h3>
+                {% else %}
+                <h3> Not logged in </h3>
+                {% endif %} 
             </header>
 
             <main>

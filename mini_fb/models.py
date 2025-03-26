@@ -4,6 +4,7 @@
 from re import A
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User  # new
 
 
 # Create your models here.
@@ -14,6 +15,9 @@ class Profile(models.Model):
     city = models.TextField(blank=True)
     email_address = models.TextField(blank=True)
     image_url = models.URLField(blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE) ## NEW
+
+
 
     def __str__(self): 
         '''return a string representation of this model instance.'''

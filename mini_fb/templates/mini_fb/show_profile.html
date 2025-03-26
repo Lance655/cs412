@@ -24,7 +24,7 @@ Description: The show_profiles html template for the mini_fb website.
                 <div class="profile-main-links">
                     <a href="{% url 'news_feed' profile.pk %}">News Feed</a>
                     <a href="{% url 'create_status' profile.pk %}">Create Status</a>
-                    <a href="{% url 'update_profile' profile.pk %}">Update Profile</a>
+                    <a href="{% url 'update_profile' %}">Update Profile</a>
                 </div>
             {% endif %}
     </div>

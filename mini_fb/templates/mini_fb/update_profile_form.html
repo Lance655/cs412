@@ -25,7 +25,7 @@ Description: The update_profile_form html template for the mini_fb website.
     </div>
     
     <!-- Form to update a profile -->
-    <form action="{% url 'update_profile' profile.pk %}" method="POST">
+    <form action="{% url 'update_profile' %}" method="POST">
 
         {% csrf_token %}
 

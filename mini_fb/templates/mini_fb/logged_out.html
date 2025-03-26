@@ -1,0 +1,15 @@
+<!-- 
+File: logged_out.html
+Author: Lance Sinson (ssinson@bu.edu), 3/28/25
+Description: The logout html template for the mini_fb website. 
+-->
+
+{% extends 'mini_fb/base.html' %}
+
+{% block content %}
+
+<h2> You have been logged out </h2>
+
+Return to the Login Page: <a href="{% url 'login' %}">Login</a>
+
+{% endblock %}

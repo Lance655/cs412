@@ -12,7 +12,12 @@ from .forms import CreateProfileForm, CreateStatusMessageForm, UpdateProfileForm
 import random
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin ## NEW
+from django.contrib.auth.models import User ## NEW
 
+class MyLoginRequiredMixin(LoginRequiredMixin):
+    '''Class to create a custom mixin for logins'''
+    def get_login_url(self):
+        return reverse('login')
 
 # Create your views here.
 class ShowAllProfilesView(ListView):
@@ -21,6 +26,18 @@ class ShowAllProfilesView(ListView):
     model = Profile
     template_name = "mini_fb/show_all_profiles.html"
     context_object_name = "profiles" # note plural variable name
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        user_object = self.request.user
+
+        # Add the user's profile (if they are logged in)
+        if self.request.user.is_authenticated:
+            my_profile = Profile.objects.get(user=user_object)
+
+            context['my_profile'] = my_profile
+
+        return context
 
 class ShowProfilePageView(DetailView):
     '''Define a view class to show one profile record'''
@@ -36,7 +53,7 @@ class CreateProfileView(CreateView):
     form_class = CreateProfileForm
     template_name = "mini_fb/create_profile_form.html"
 
-class CreateStatusMessageView(LoginRequiredMixin, CreateView):
+class CreateStatusMessageView(MyLoginRequiredMixin, CreateView):
     '''Define a class to create a status message for a profile'''
 
     form_class = CreateStatusMessageForm
@@ -88,15 +105,19 @@ class CreateStatusMessageView(LoginRequiredMixin, CreateView):
         pk = self.kwargs['pk']
         return reverse('show_profile', kwargs={'pk':pk})
 
-class UpdateProfileView(LoginRequiredMixin, UpdateView):
+class UpdateProfileView(MyLoginRequiredMixin, UpdateView):
     '''Define a class to update a Profile'''
 
     model = Profile
     form_class = UpdateProfileForm
     template_name = "mini_fb/update_profile_form.html"
 
+    def get_object(self):
+        """Return the Profile for the currently-logged-in User."""
+        return Profile.objects.get(user=self.request.user)
 
-class DeleteStatusMessageView(LoginRequiredMixin, DeleteView):
+
+class DeleteStatusMessageView(MyLoginRequiredMixin, DeleteView):
     '''Define a class to delete a Status Message'''
 
     model = StatusMessage
@@ -115,7 +136,7 @@ class DeleteStatusMessageView(LoginRequiredMixin, DeleteView):
 
         return reverse('show_profile', kwargs={'pk':profile.pk} )
 
-class UpdateStatusMessageView(LoginRequiredMixin, UpdateView):
+class UpdateStatusMessageView(MyLoginRequiredMixin, UpdateView):
     '''Define a class to update a status message'''
 
     model = StatusMessage
@@ -134,7 +155,7 @@ class UpdateStatusMessageView(LoginRequiredMixin, UpdateView):
 
         return reverse('show_profile', kwargs={'pk':profile.pk} )
 
-class CreateFriendView(View):
+class CreateFriendView(MyLoginRequiredMixin,View):
     '''A class to extract the primary keys to add a friend'''
     
     def dispatch(self, request, *args, **kwargs):

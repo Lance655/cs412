@@ -30,6 +30,7 @@ Description: The base html template for the mini_fb website.
                     <!-- if logged in, show the logout button -->
                     {% if request.user.is_authenticated %}
 
+                        <a href="{% url 'show_profile' my_profile.pk %}">My Profile</a>
 
                         <form action="{% url 'logout' %}" method="POST">
                             {% csrf_token %}

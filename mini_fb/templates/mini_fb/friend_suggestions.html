@@ -41,7 +41,7 @@ Description: The friend suggestions html template for the mini_fb website.
                 </p>
 
                 <!-- “Add friend” link or button -->
-                <a href="{% url 'create_friend' profile.pk friend_suggestion.pk %}" class="add-friend-link">
+                <a href="{% url 'create_friend' friend_suggestion.pk %}" class="add-friend-link">
                     Add Friend
                 </a>
             </div>

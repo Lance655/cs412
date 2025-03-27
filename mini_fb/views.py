@@ -68,6 +68,10 @@ class CreateStatusMessageView(MyProfile, MyLoginRequiredMixin, CreateView):
     #     '''return the URL required for login'''
     #     return reverse('login') 
 
+    def get_object(self):
+        """Return the Profile for the currently-logged-in User."""
+        return Profile.objects.get(user=self.request.user)
+
     def get_context_data(self):
         '''Return the dictionary of context variables for use in the template.'''
 
@@ -76,11 +80,12 @@ class CreateStatusMessageView(MyProfile, MyLoginRequiredMixin, CreateView):
 
         # find/add the profile to the context data
         # retrieve the PK from the URL pattern
-        pk = self.kwargs['pk']
-        profile = Profile.objects.get(pk=pk)
+            # pk = self.kwargs['pk']
+            # profile = Profile.objects.get(pk=pk)
 
         # add this article into the context dictionary:
-        context['profile'] = profile
+            # context['profile'] = profile
+        context['profile'] = Profile.objects.get(user=self.request.user)
         return context
     
     def form_valid(self, form):
@@ -165,17 +170,22 @@ class CreateFriendView(MyProfile, MyLoginRequiredMixin,View):
     
     def dispatch(self, request, *args, **kwargs):
         '''Method to redirect the user after adding a friend'''
-        pk = self.kwargs['pk']
+        # pk = self.kwargs['pk']
         other_pk = self.kwargs['other_pk']
         
-        profile1 = Profile.objects.get(pk=pk)
+        # profile1 = Profile.objects.get(pk=pk)
+        profile1= Profile.objects.get(user=self.request.user)
         other = Profile.objects.get(pk=other_pk)
 
         profile1.add_friend(other)
 
         # return super(CreateFriendView, self).dispatch(request, *args, **kwargs)
-        return redirect( reverse('show_profile', kwargs={'pk':pk} ) )
+        return redirect( reverse('show_profile', kwargs={'pk': profile1.pk} ) )
         # return reverse('show_profile', kwargs={'pk':pk} )
+
+    def get_object(self):
+        """Return the Profile for the currently-logged-in User."""
+        return Profile.objects.get(user=self.request.user)
 
 class ShowFriendSuggestionsView(MyProfile, DetailView):
     '''A class to show friend suggestions for a profile'''
@@ -184,9 +194,17 @@ class ShowFriendSuggestionsView(MyProfile, DetailView):
     template_name = 'mini_fb/friend_suggestions.html'
     context_object_name = "profile"
 
+    def get_object(self):
+        """Return the Profile for the currently-logged-in User."""
+        return Profile.objects.get(user=self.request.user)
+
 class ShowNewsFeedView(MyProfile, DetailView):
     '''A class to show a profile's news feed'''
 
     model = Profile
     template_name = 'mini_fb/news_feed.html'
     context_objects_Name = "profile"
+
+    def get_object(self):
+        """Return the Profile for the currently-logged-in User."""
+        return Profile.objects.get(user=self.request.user)

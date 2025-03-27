@@ -22,9 +22,9 @@ Description: The show_profiles html template for the mini_fb website.
 
             {% if request.user.is_authenticated and request.user.pk == profile.user.pk %}
                 <div class="profile-main-links">
-                    <a href="{% url 'news_feed' profile.pk %}">News Feed</a>
-                    <a href="{% url 'create_status' profile.pk %}">Create Status</a>
-                    <a href="{% url 'update_profile' %}">Update Profile</a>
+                    <a href="{% url 'news_feed' %}">News Feed</a>               <!-- removed profile.pk here-->
+                    <a href="{% url 'create_status' %}">Create Status</a>       <!-- removed profile.pk here-->
+                    <a href="{% url 'update_profile' %}">Update Profile</a>     <!-- removed profile.pk here-->
                 </div>
             {% endif %}
     </div>
@@ -73,7 +73,7 @@ Description: The show_profiles html template for the mini_fb website.
         {% endfor %}
 
         {% if request.user.is_authenticated and request.user.pk == profile.user.pk %}
-            <a href="{% url 'show_friend_suggestions' profile.pk %}">Friend Suggestions</a>
+            <a href="{% url 'show_friend_suggestions' %}">Friend Suggestions</a>
         {% endif %}
     </div>
 

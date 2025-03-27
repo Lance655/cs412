@@ -13,8 +13,13 @@ Description: The create profile form html template for the mini_fb website.
 
 <form action="{% url 'create_profile' %}" method="POST">
     {% csrf_token %}
+
     <table class="create-profile-table">
-    {{form.as_table}}
+        {{user_creation_form}}
+    </table>
+
+    <table class="create-profile-table">
+        {{form.as_table}}
     </table>
 
     <input type="submit" name="submit" value="submit">

@@ -13,15 +13,19 @@ import random
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin ## NEW
 from django.contrib.auth.models import User ## NEW
+from django.contrib.auth.forms import UserCreationForm ## NEW
+from django.contrib.auth import login ## NEW
 
 class MyLoginRequiredMixin(LoginRequiredMixin):
     '''Class to create a custom mixin for logins'''
     def get_login_url(self):
+        '''Redirect to the login page'''
         return reverse('login')
 
 class MyProfile:
     '''Class to add my profile button'''
     def get_context_data(self, **kwargs):
+        '''Return the dictionary of context variables for use in the template.'''
 
         context = super().get_context_data(**kwargs)
         user_object = self.request.user
@@ -58,6 +62,41 @@ class CreateProfileView(MyProfile, CreateView):
     form_class = CreateProfileForm
     template_name = "mini_fb/create_profile_form.html"
 
+    def get_context_data(self, **kwargs):
+        '''Return the dictionary of context variables for use in the template.'''
+
+        context = super().get_context_data(**kwargs)
+
+        form = UserCreationForm
+
+        context['user_creation_form'] = form
+
+        return context
+     
+    def form_valid(self, form):
+        '''This method attaches the profile primary key to the corresponding status message object's foreign key'''
+
+        # Step 1: Reconstruct UserCreationForm from POST data
+        user_form = UserCreationForm(self.request.POST)
+        
+        # Validate and save new user
+        if user_form.is_valid():
+            # Create and save the User object
+            user = user_form.save()
+            
+            # Log the user in
+            login(self.request, user)
+            
+            # Associate this user with the Profile (the form’s instance)
+            form.instance.user = user
+            
+    
+            return super().form_valid(form)
+
+
+        return super().form_valid(form)
+
+
 class CreateStatusMessageView(MyProfile, MyLoginRequiredMixin, CreateView):
     '''Define a class to create a status message for a profile'''
 
@@ -91,8 +130,9 @@ class CreateStatusMessageView(MyProfile, MyLoginRequiredMixin, CreateView):
     def form_valid(self, form):
         '''This method attaches the profile primary key to the corresponding status message object's foreign key'''
         
-        pk = self.kwargs['pk']
-        profile = Profile.objects.get(pk=pk)
+        # pk = self.kwargs['pk']
+        # profile = Profile.objects.get(pk=pk)
+        profile = Profile.objects.get(user=self.request.user)
         form.instance.profile = profile
 
         # assignment 7 stuff (creating status message with one or multiple images) 
@@ -112,8 +152,9 @@ class CreateStatusMessageView(MyProfile, MyLoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         '''Route submitted status forms back to the original profile page'''
-        pk = self.kwargs['pk']
-        return reverse('show_profile', kwargs={'pk':pk})
+        # pk = self.kwargs['pk']
+        profile = Profile.objects.get(user=self.request.user)
+        return reverse('show_profile', kwargs={'pk':profile.pk})
 
 class UpdateProfileView(MyProfile, MyLoginRequiredMixin, UpdateView):
     '''Define a class to update a Profile'''

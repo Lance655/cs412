@@ -112,7 +112,7 @@ nav a:hover {
     box-shadow: 0px 0px 10px #ff2e63;
 }
 
-/* Style the logout button similarly to the links: */
+
 .user-info form button {
     font-size: 1.1rem;
     font-weight: bold;
@@ -134,7 +134,6 @@ nav a:hover {
 .user-info h3 {
     font-size: 1rem;
     margin-left: 20px;
-    /* keep the color white, or pick #ff2e63 for highlight */
     margin-bottom: 7px;
 }
 

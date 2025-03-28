@@ -1,5 +1,5 @@
 # File: forms.py
-# Author: Lance Sinson (ssinson@bu.edu), 3/21/25
+# Author: Lance Sinson (ssinson@bu.edu), 3/28/25
 # Description: The forms file for the mini_fb website to create a new profile. 
 
 # mini_fb/forms.py
@@ -40,3 +40,5 @@ class UpdateStatusMessageForm(forms.ModelForm):
         '''Associate this form with a model from our database'''
         model = StatusMessage
         fields = ['message']
+
+        

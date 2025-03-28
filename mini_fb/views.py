@@ -1,5 +1,5 @@
 # File: views.py
-# Author: Lance Sinson (ssinson@bu.edu), 3/21/25
+# Author: Lance Sinson (ssinson@bu.edu), 3/28/25
 # Description: The views file for the mini_fb website. 
 
 # mini_fb/views.py

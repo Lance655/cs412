@@ -15,7 +15,7 @@ class Article(models.Model):
     published = models.DateTimeField(auto_now=True)
     # image_url = models.URLField(blank=True) # url as a string
     image_file = models.ImageField(blank=True)
-    # user = models.ForeignKey(User, on_delete=models.CASCADE) ## NEW
+    user = models.ForeignKey(User, on_delete=models.CASCADE) ## NEW
 
     def __str__(self): 
         '''return a string representation of this model instance.'''

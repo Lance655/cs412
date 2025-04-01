@@ -15,7 +15,7 @@ class Voter(models.Model):
     date_of_birth = models.TextField()
     date_of_registration = models.TextField()
     party_affiliation = models.CharField(max_length=2)
-    precinct_number = models.IntegerField() 
+    precinct_number = models.CharField(max_length=2)
 
     # fields to indicate whether or not a given voter participated in several recent elections
     v20state = models.BooleanField()
@@ -56,14 +56,15 @@ def load_data():
                     party_affiliation = fields[9],
                     precinct_number = fields[10],
 
-                    v20state = fields[11],
-                    v21town = fields[12],
-                    v21primary = fields[13],
-                    v22general = fields[14],
-                    v23town = fields[15],
+                    v20state = (fields[11].strip().upper() == 'TRUE'),
+                    v21town = (fields[12].strip().upper() == 'TRUE'),
+                    v21primary = (fields[13].strip().upper() == 'TRUE'),
+                    v22general = (fields[14].strip().upper() == 'TRUE'),
+                    v23town = (fields[15].strip().upper() == 'TRUE'),
+
 
                     voter_score = fields[16]
-                        )
+                    )
 
             voter.save() # commit this voter to the database
 

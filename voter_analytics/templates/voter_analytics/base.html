@@ -1,0 +1,29 @@
+<!-- 
+File: base.html
+Author: Lance Sinson (ssinson@bu.edu), 4/4/25
+Description: The base html template for the voter analytics website. 
+-->
+
+{% load static %}
+
+<html>
+    <head>
+        <title>Voter Analytics</title>
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
+    </head>
+    <body>
+        <header>
+            <h1>Voter Analytics</h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'voters' %}">Home</a></li>
+                </ul>
+
+            </nav>
+        </header>
+    
+    {% block content %}
+    {% endblock %}    
+  
+    </body>
+</html>

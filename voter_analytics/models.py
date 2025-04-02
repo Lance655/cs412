@@ -34,6 +34,9 @@ class Voter(models.Model):
 
 def load_data():
     '''Method to load and store the csv file into the database'''
+    # very dangerous!
+    # Voter.objects.all().delete()
+
     filename = '/Users/lancesinson/Desktop/newton_voters.csv'
 
     f = open(filename, 'r')
@@ -45,15 +48,16 @@ def load_data():
             fields = line.strip().split(',')
 
             voter = Voter(
-                    first_name = fields[1],
-                    last_name = fields[2],
+                    first_name = fields[2],
+                    last_name = fields[1],
                     street_number = fields[3],
                     street_name = fields[4],
                     apartment_number = fields[5],
                     zip_code = fields[6],
                     date_of_birth = fields[7],
                     date_of_registration = fields[8],
-                    party_affiliation = fields[9],
+                    # party_affiliation = fields[9],
+                    party_affiliation = fields[9].strip(),
                     precinct_number = fields[10],
 
                     v20state = (fields[11].strip().upper() == 'TRUE'),

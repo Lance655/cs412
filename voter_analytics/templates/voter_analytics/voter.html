@@ -1,0 +1,38 @@
+<!-- 
+File: voter.html
+Author: Lance Sinson (ssinson@bu.edu), 4/4/25
+Description: The voter html file for a single voter for the voter analytics website. 
+-->
+
+{% extends 'voter_analytics/base.html' %}
+
+{% block content %}
+    <h2>{{ voter.first_name|title }} {{ voter.last_name|title }}</h2>
+
+    <!-- google link to their address -->
+    <p><strong>Address:</strong> 
+        <a href="https://www.google.com/maps/search/{{ voter.street_number }}+{{ voter.street_name }}+Newton+MA+{{ voter.zip_code }}" target="_blank">
+            {{ voter.street_number }} {{ voter.street_name|title }}
+            {% if voter.apartment_number %}
+                Apt {{ voter.apartment_number }},
+            {% endif %}
+            Newton, MA 
+            {{ voter.zip_code }}
+        </a>
+    </p>
+
+    <p><strong>Date of Birth:</strong> {{ voter.date_of_birth }}</p>
+    <p><strong>Date of Registration:</strong> {{ voter.date_of_registration }}</p>
+    <p><strong>Party Affiliation:</strong> {{ voter.party_affiliation }}</p>
+    <p><strong>Voter Score:</strong> {{ voter.voter_score }}</p>
+
+    <h3>Election Participation</h3>
+    <ul>
+        <li>Voted in 2020 State? {{ voter.v20state }}</li>
+        <li>Voted in 2021 Town? {{ voter.v21town }}</li>
+        <li>Voted in 2021 Primary? {{ voter.v21primary }}</li>
+        <li>Voted in 2022 General? {{ voter.v22general }}</li>
+        <li>Voted in 2023 Town? {{ voter.v23town }}</li>
+    </ul>
+
+{% endblock %}

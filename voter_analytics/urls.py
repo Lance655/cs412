@@ -9,4 +9,5 @@ urlpatterns = [
     # map the URL (empty string) to the view
 	path(r'', views.ShowAllVoters.as_view(), name='voters'),
     path(r'voter/<int:pk>', views.ShowVoter.as_view(), name="voter"),
+    path(r'graphs', views.ShowGraphsView.as_view(), name='graphs'),
 ]

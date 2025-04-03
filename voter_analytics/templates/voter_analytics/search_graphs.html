@@ -1,0 +1,117 @@
+<!-- 
+File: search_graphs.html
+Author: Lance Sinson (ssinson@bu.edu), 4/4/25
+Description: The search html template but for the graphs section for the voter analytics website. 
+-->
+
+<h1>Search Form</h1>
+
+<table>
+<form action="{% url 'graphs' %}">
+
+    <!-- drop down menu for party -->
+    <tr>
+        <td> <label for="party">Party:</label> </td>
+
+        <td> 
+            <select name="party" id="party">
+                <option value="" disabled selected>Choose</option>
+                <option value="U">Unaffiliated (U)</option>  <!-- because we set the party field to strip the whitespace, we can set value="D" instead of value="D "-->
+                <option value="D">Democratic (D)</option>
+                <option value="R">Republican (R)</option>
+                <option value="CC">CC</option>
+                <option value="AA">AA</option>
+                <option value="K">K</option>
+            </select>
+        </td>
+    </tr>
+
+    <!-- drop down menu for born after year -->
+    <tr>
+        <td> <label for="min_dob">Born After Year:</label> </td> 
+        
+        <td> 
+            <select name="min_dob" id="min_dob">
+                <option value="" disabled selected>Choose</option>
+                {% for year in years %}
+                <option value="{{ year }}">{{ year }}</option>
+                {% endfor %}
+            </select>
+        </td> 
+    </tr>
+
+    <!-- drop down for born before year -->
+    <tr>
+        <td> <label for="max_dob">Born Before Year:</label> </td> 
+
+        <td> 
+            <select name="max_dob" id="max_dob">
+                <option value="" disabled selected>Choose</option>
+                {% for year in years %}
+                <option value="{{ year }}">{{ year }}</option>
+                {% endfor %}
+            </select>
+        </td> 
+    </tr>
+
+    <!-- drop down for voter score -->
+    <tr> 
+        <td> <label for="voter_score">Voter score:</label> </td> 
+        <td> 
+            <select name="voter_score" id="voter_score">
+                <option value="" disabled selected>Choose</option>
+                <option value="0"> 0 </option>
+                <option value="1"> 1 </option>
+                <option value="2"> 2 </option>
+                <option value="3"> 3 </option>
+                <option value="4"> 4 </option>
+                <option value="5"> 5 </option>
+            </select>
+        </td> 
+    </tr>
+
+    <!-- Checkboxes for whether they voted in specific elections -->
+    <tr> 
+        <td> 
+            Previous Election Participation  
+        </td>
+
+        <td>
+            <label for="v20state">
+                <input type="checkbox" name="v20state" id="v20state" value="true">
+                Voted in 2020 State
+            </label>
+
+
+            <label for="v21town">
+                <input type="checkbox" name="v21town" id="v21town" value="true">
+                Voted in 2021 Town
+            </label>
+
+
+            <label for="v21primary">
+                <input type="checkbox" name="v21primary" id="v21primary" value="true">
+                Voted in 2021 Primary
+            </label>
+            
+
+            <label for="v22general">
+                <input type="checkbox" name="v22general" id="v22general" value="true">
+                Voted in 2022 General
+            </label>
+            
+
+            <label for="v23town">
+                <input type="checkbox" name="v23town" id="v23town" value="true">
+                Voted in 2023 Town
+            </label>
+        </td>
+    </tr> 
+
+
+    <tr>
+        <td><input type="submit"></td>
+    </tr>
+    
+</form>
+</table>

@@ -1,0 +1,33 @@
+<!-- 
+File: graphs.html
+Author: Lance Sinson (ssinson@bu.edu), 4/4/25
+Description: The graphs html template for the voter analytics website. 
+-->
+
+<!-- templates/voter_analytics/graphs.html -->
+
+{% extends 'voter_analytics/base.html' %}
+
+{% block content %}
+<h1>Graphs for Voters</h1>
+
+<!-- Reuse existing search form from Task 2 -->
+{% include 'voter_analytics/search_graphs.html' %}
+
+<!-- Now display the 3 charts -->
+<h2>Distribution by Year of Birth (n={{graph_voter_count}})</h2>
+<div>
+  {{ chart_birth|safe }}
+</div>
+
+<h2>Distribution by Party Affiliation (n={{graph_voter_count}})</h2>
+<div>
+  {{ chart_party|safe }}
+</div>
+
+<h2>Participation in Each Election (n={{graph_voter_count}})</h2>
+<div>
+  {{ chart_elections|safe }}
+</div>
+
+{% endblock %}

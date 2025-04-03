@@ -16,8 +16,11 @@ Description: The voters html template for all voters for the voter analytics web
     <ul class="pagination">
         {% if page_obj.has_previous %}
             <li>
-                <span><a href="?page={{ page_obj.previous_page_number }}">Previous</a></span>
-            
+                <span>
+                    <a href="?{{ request.GET.urlencode }}&page={{ page_obj.previous_page_number }}">
+                        Previous
+                    </a>
+                </span>
             </li>
         {% endif %}
             <li class="">
@@ -25,7 +28,11 @@ Description: The voters html template for all voters for the voter analytics web
             </li>
         {% if page_obj.has_next %}
             <li>
-                <span><a href="?page={{ page_obj.next_page_number }}">Next</a></span>
+                <span>
+                    <a href="?{{ request.GET.urlencode }}&page={{ page_obj.next_page_number }}">
+                        Next
+                    </a>
+                </span>
             </li>
         {% endif %}
     </ul>

@@ -4,6 +4,8 @@ from django.utils import timezone
 # Create your models here.
 
 class Campaign(models.Model):
+    '''Encapsulate the data for each campaign'''
+
     STATUS_CHOICES = [
         ('ongoing', 'Ongoing'),
         ('hiatus', 'On Hiatus'),
@@ -20,6 +22,8 @@ class Campaign(models.Model):
 
 
 class Session(models.Model):
+
+    '''Encapsulate the data for each session within a campaign'''
     name = models.CharField(max_length=200)
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='sessions')
     session_date = models.DateTimeField(default=timezone.now)
@@ -31,6 +35,9 @@ class Session(models.Model):
 
 
 class Character(models.Model):
+    '''Encapsulate the data for each character'''
+
+    # general information
     name = models.CharField(max_length=100)
     player_name = models.CharField(max_length=100)
     class_type = models.CharField(max_length=100)
@@ -61,6 +68,8 @@ class Character(models.Model):
 
 
 class NPC(models.Model):
+    '''Encapsulate the data for each non-player character (NPC)'''
+
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     location = models.CharField(max_length=100, blank=True)
@@ -72,6 +81,8 @@ class NPC(models.Model):
 
 
 class Item(models.Model):
+    '''Encapsulate the data for each item'''
+
     RARITY_CHOICES = [
         ('Common', 'Common'),
         ('Uncommon', 'Uncommon'),
@@ -97,6 +108,8 @@ class Item(models.Model):
 
 
 class Quest(models.Model):
+    '''Encapsulate the data for each quest'''
+
     STATUS_CHOICES = [
         ('Not Started', 'Not Started'),
         ('In Progress', 'In Progress'),
@@ -115,6 +128,8 @@ class Quest(models.Model):
 
 
 class AdventureLog(models.Model):
+    '''Encapsulate the data to keep track of each character's adventure log per session'''
+
     session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='adventure_logs')
     character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='adventure_logs')
     details = models.TextField(blank=True)
@@ -125,6 +140,8 @@ class AdventureLog(models.Model):
 
 
 class CalendarEvent(models.Model):
+    '''Encapsulate the data to schedule future meetings'''
+
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='events')
     event_name = models.CharField(max_length=200)
     event_date = models.DateTimeField(default=timezone.now)

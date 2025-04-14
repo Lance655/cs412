@@ -1,0 +1,57 @@
+
+{% extends 'dnd_manager/base.html' %}
+
+{% block subnav %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <span class="navbar-text">
+      {{ campaign.name }}
+    </span>
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'campaign_list' %}">All Campaigns</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="">
+          Sessions
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="">
+          Characters
+        </a>
+      </li>
+      <!-- etc. -->
+    </ul>
+  </div>
+</nav>
+{% endblock subnav %}
+
+{% block content %}
+<h2>{{ campaign.name }}</h2>
+<p>{{ campaign.description }}</p>
+
+<!-- List of Sessions for This Campaign -->
+<h3>Sessions</h3>
+<!-- Link to create a new session for this campaign -->
+<p>
+  <a class="btn btn-primary" href="{% url 'session_create' campaign_id=campaign.pk %}">
+    Create New Session
+  </a>
+</p>
+
+<ul>
+  {% for session in campaign.sessions.all %}
+    <li>
+      <!-- Link to this session's detail view -->
+      <a href="{% url 'session_detail' campaign_id=campaign.pk pk=session.pk %}">
+        {{ session.name }}
+      </a>
+      <small>on {{ session.session_date|date:"Y-m-d H:i" }}</small>
+    </li>
+  {% empty %}
+    <li>No sessions yet for this campaign.</li>
+  {% endfor %}
+</ul>
+
+{% endblock content %}

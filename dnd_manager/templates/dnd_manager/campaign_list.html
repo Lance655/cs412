@@ -1,0 +1,14 @@
+
+{% extends 'dnd_manager/base.html' %}
+{% block content %}
+<h1>All Campaigns</h1>
+<ul>
+  {% for campaign in campaigns %}
+    <li>
+      <a href="{% url 'campaign_detail' campaign.pk %}">
+        {{ campaign.name }} ({{ campaign.status }})
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

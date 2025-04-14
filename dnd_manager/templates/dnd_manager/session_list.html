@@ -1,0 +1,37 @@
+<!-- templates/dnd_manager/session_list.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+  <!-- Title referencing the specific campaign -->
+  <h1>Sessions for {{ campaign.name }}</h1>
+
+  <!-- Link back to campaign detail page -->
+  <p>
+    <a href="{% url 'campaign_detail' campaign.pk %}">&larr; Back to {{ campaign.name }} Detail</a>
+  </p>
+
+  <!-- Link to create a new session for this campaign -->
+  <p>
+    <a href="{% url 'session_create' campaign_id=campaign.pk %}" class="btn btn-primary">
+      Create New Session
+    </a>
+  </p>
+
+  <!-- List out all sessions -->
+  <ul>
+    {% for session in sessions %}
+      <li>
+        <a href="{% url 'session_detail' campaign_id=campaign.pk pk=session.pk %}">
+          {{ session.name }} 
+        </a>
+        <small>(Date: {{ session.session_date|date:"Y-m-d H:i" }}, 
+                Location: {{ session.location }})</small>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <!-- If there are no sessions yet, let the user know -->
+  {% if sessions.count == 0 %}
+    <p>No sessions found for this campaign.</p>
+  {% endif %}
+{% endblock content %}

@@ -1,0 +1,37 @@
+<!-- templates/campaign/session_detail.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Session Detail: {{ session.name }}</h1>
+
+  <!-- Link back to session list -->
+  <p>
+    <a href="{% url 'session_list' campaign_id=session.campaign.pk %}">
+      &larr; Back to Session List
+    </a>
+  </p>
+
+  <!-- Or a link back to the campaign detail -->
+  <p>
+    <a href="{% url 'campaign_detail' session.campaign.pk %}">
+      &larr; Back to {{ session.campaign.name }} Detail
+    </a>
+  </p>
+
+  <hr>
+
+  <!-- Show session info -->
+  <p><strong>Date:</strong> {{ session.session_date|date:"Y-m-d H:i" }}</p>
+  <p><strong>Location:</strong> {{ session.location }}</p>
+  <p><strong>Summary:</strong> {{ session.summary }}</p>
+
+  <!-- Provide update/delete links -->
+  <p>
+    <a href="{% url 'session_update' campaign_id=session.campaign.pk pk=session.pk %}" class="btn btn-warning">
+      Update Session
+    </a>
+    <a href="{% url 'session_delete' campaign_id=session.campaign.pk pk=session.pk %}" class="btn btn-danger">
+      Delete Session
+    </a>
+  </p>
+{% endblock content %}

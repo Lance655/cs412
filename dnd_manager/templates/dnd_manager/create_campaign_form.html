@@ -1,0 +1,19 @@
+{% extends 'dnd_manager/base.html' %}
+
+{% block content %}
+{% if object.pk %}
+  <h2>Update Campaign: {{ object.name }}</h2>
+{% else %}
+  <h2>Create a New Campaign</h2>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-primary">
+    {% if object.pk %}Update{% else %}Create{% endif %}
+  </button>
+</form>
+
+<p><a href="{% url 'campaign_list' %}">Cancel</a></p>
+{% endblock content %}

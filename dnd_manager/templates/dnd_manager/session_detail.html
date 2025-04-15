@@ -1,17 +1,11 @@
-<!-- templates/campaign/session_detail.html -->
-{% extends 'base.html' %}
+<!-- templates/dnd_manager/session_detail.html -->
+{% extends 'dnd_manager/base.html' %}
 
 {% block content %}
   <h1>Session Detail: {{ session.name }}</h1>
 
-  <!-- Link back to session list -->
-  <p>
-    <a href="{% url 'session_list' campaign_id=session.campaign.pk %}">
-      &larr; Back to Session List
-    </a>
-  </p>
 
-  <!-- Or a link back to the campaign detail -->
+  <!-- link back to the campaign detail -->
   <p>
     <a href="{% url 'campaign_detail' session.campaign.pk %}">
       &larr; Back to {{ session.campaign.name }} Detail

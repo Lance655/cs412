@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView
 )
@@ -18,6 +18,7 @@ from .forms import (
 # -----------------
 # Campaign Views
 # -----------------
+
 class CampaignListView(ListView):
     model = Campaign
     template_name = 'dnd_manager/campaign_list.html'
@@ -66,6 +67,7 @@ class CampaignDeleteView(DeleteView):
 # -----------------
 # Session Views
 # -----------------
+
 class SessionListView(ListView):
     model = Session
     template_name = 'dnd_manager/session_list.html'
@@ -92,68 +94,138 @@ class SessionCreateView(CreateView):
 
     def get_success_url(self):
         """Redirect back to the session list (or campaign detail)."""
-        return reverse('campaign_detail', kwargs={'campaign_id': self.kwargs['campaign_id']})
-
+        return reverse('campaign_detail', kwargs={'pk': self.kwargs['campaign_id']})
+        
     def get_context_data(self, **kwargs):
+        """Make sure we include the campaign in the context for the template."""
         context = super().get_context_data(**kwargs)
-        context['campaign_id'] = self.kwargs['campaign_id']
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+        context['campaign'] = campaign
         return context
 
 
 class SessionUpdateView(UpdateView):
     model = Session
     form_class = SessionForm
-    template_name = 'campaign/session_form.html'
+    template_name = 'dnd_manager/create_session_form.html'
+
+    def get_context_data(self, **kwargs):
+        """Make sure we include the campaign in the context for the template."""
+        context = super().get_context_data(**kwargs)
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+        context['campaign'] = campaign
+        return context
 
     def get_success_url(self):
         """Redirect back to the session list (or campaign detail)."""
-        return reverse('campaign_detail', kwargs={'campaign_id': self.kwargs['campaign_id']})
+        return reverse('campaign_detail', kwargs={'pk': self.kwargs['campaign_id']})
 
 
 class SessionDeleteView(DeleteView):
     model = Session
-    template_name = 'campaign/session_confirm_delete.html'
+    template_name = 'dnd_manager/delete_session_confirm.html'
 
     def get_success_url(self):
         """Redirect back to the session list (or campaign detail)."""
-        return reverse('campaign_detail', kwargs={'campaign_id': self.kwargs['campaign_id']})
+        return reverse('campaign_detail', kwargs={'pk': self.kwargs['campaign_id']})
 
 
+# -----------------
+# Character Views
+# -----------------
 
-# # -----------------
-# # Character Views
-# # -----------------
-# class CharacterListView(ListView):
-#     model = Character
-#     template_name = 'campaign/character_list.html'
-#     context_object_name = 'characters'
+class CharacterListView(ListView):
+    model = Character
+    template_name = 'dnd_manager/character_list.html'
+    context_object_name = 'characters'
 
+    def get_queryset(self):
+        """Return only Characters belonging to the given campaign_id."""
+        campaign_id = self.kwargs['campaign_id']
+        return Character.objects.filter(campaign__id=campaign_id)
 
-# class CharacterDetailView(DetailView):
-#     model = Character
-#     template_name = 'campaign/character_detail.html'
-#     context_object_name = 'character'
-
-
-# class CharacterCreateView(CreateView):
-#     model = Character
-#     form_class = CharacterForm
-#     template_name = 'campaign/character_form.html'
-#     success_url = reverse_lazy('character_list')
-
-
-# class CharacterUpdateView(UpdateView):
-#     model = Character
-#     form_class = CharacterForm
-#     template_name = 'campaign/character_form.html'
-#     success_url = reverse_lazy('character_list')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+        context['campaign'] = campaign
+        return context
 
 
-# class CharacterDeleteView(DeleteView):
-#     model = Character
-#     template_name = 'campaign/character_confirm_delete.html'
-#     success_url = reverse_lazy('character_list')
+class CharacterDetailView(DetailView):
+    model = Character
+    template_name = 'dnd_manager/character_detail.html'
+    context_object_name = 'character'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Pass the Campaign to the template
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+        context['campaign'] = campaign
+        return context
+
+
+class CharacterCreateView(CreateView):
+    model = Character
+    form_class = CharacterForm
+    template_name = 'dnd_manager/create_character_form.html'
+
+    def form_valid(self, form):
+        """Assign the correct Campaign via the URL param before saving."""
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+        form.instance.campaign = campaign
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        """After creating a Character, go back to the Campaign detail page."""
+        return reverse('campaign_detail', kwargs={'pk': self.kwargs['campaign_id']})
+
+    def get_context_data(self, **kwargs):
+        """Pass the Campaign into the template context."""
+        context = super().get_context_data(**kwargs)
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+        context['campaign'] = campaign
+        return context
+
+
+class CharacterUpdateView(UpdateView):
+    model = Character
+    form_class = CharacterForm
+    template_name = 'dnd_manager/create_character_form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+        context['campaign'] = campaign
+        return context
+
+    def get_success_url(self):
+        return reverse('campaign_detail', kwargs={'pk': self.kwargs['campaign_id']})
+
+
+class CharacterDeleteView(DeleteView):
+    model = Character
+    template_name = 'dnd_manager/delete_character_confirm.html'
+
+    def get_context_data(self, **kwargs):
+        """We also want the campaign in the context for a link 
+        back to the campaign detail if needed. """
+        context = super().get_context_data(**kwargs)
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+        context['campaign'] = campaign
+        return context
+
+    def get_success_url(self):
+        """Redirect to the Campaign detail page after deletion."""
+        return reverse('campaign_detail', kwargs={'pk': self.kwargs['campaign_id']})
+        
 
 # # -----------------
 # # NPC Views

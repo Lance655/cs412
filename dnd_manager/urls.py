@@ -13,13 +13,20 @@ urlpatterns = [
     path('campaigns/<int:pk>/delete/', CampaignDeleteView.as_view(), name='campaign_delete'),
 
     # Session
-    # path('campaigns/<int:campaign_id>/sessions/', SessionListView.as_view(), name='session_list'),
     path('campaigns/<int:campaign_id>/sessions/create/', SessionCreateView.as_view(), name='session_create'),
     path('campaigns/<int:campaign_id>/sessions/<int:pk>/', SessionDetailView.as_view(), name='session_detail'),
-    # path('campaigns/<int:campaign_id>/sessions/<int:pk>/update/', SessionUpdateView.as_view(), name='session_update'),
-    # path('campaigns/<int:campaign_id>/sessions/<int:pk>/delete/', SessionDeleteView.as_view(), name='session_delete'),
+    path('campaigns/<int:campaign_id>/sessions/<int:pk>/update/', SessionUpdateView.as_view(), name='session_update'),
+    path('campaigns/<int:campaign_id>/sessions/<int:pk>/delete/', SessionDeleteView.as_view(), name='session_delete'),
+    # path('campaigns/<int:campaign_id>/sessions/', SessionListView.as_view(), name='session_list'),
 
-#     # Character
+    # Character
+    path('campaigns/<int:campaign_id>/characters/', CharacterListView.as_view(), name='character_list'),
+    path('campaigns/<int:campaign_id>/characters/create/', CharacterCreateView.as_view(), name='character_create'),
+    path('campaigns/<int:campaign_id>/characters/<int:pk>/', CharacterDetailView.as_view(), name='character_detail'),
+    path('campaigns/<int:campaign_id>/characters/<int:pk>/update/', CharacterUpdateView.as_view(), name='character_update'),
+    path('campaigns/<int:campaign_id>/characters/<int:pk>/delete/', CharacterDeleteView.as_view(), name='character_delete'),
+
+    # Character
 #     path('characters/', CharacterListView.as_view(), name='character_list'),
 #     path('characters/create/', CharacterCreateView.as_view(), name='character_create'),
 #     path('characters/<int:pk>/', CharacterDetailView.as_view(), name='character_detail'),

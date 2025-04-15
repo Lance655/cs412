@@ -1,16 +1,23 @@
 {% extends 'dnd_manager/base.html' %}
 
 {% block content %}
-<h2>Create a New Session</h2>
+{% if object.pk %}
+  <h2>Update Session: {{ object.name }}</h2>
+{% else %}
+  <h2>Create a New Session</h2>
+{% endif %}
 
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit" class="btn btn-primary">Create Session</button>
+  <button type="submit" class="btn btn-primary">
+    {% if object.pk %}Update{% else %}Create{% endif %}
+  </button>
 </form>
 
 <!-- Cancel link goes back to session list or campaign detail -->
 <p>
-  <a href="{% url 'campaign_detail' pk=campaign_id %}">Cancel</a>
+  <a href="{% url 'campaign_detail' campaign.pk %}">Cancel</a>
 </p>
 {% endblock content %}
+

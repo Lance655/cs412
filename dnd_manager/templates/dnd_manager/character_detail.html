@@ -1,0 +1,81 @@
+{% extends 'dnd_manager/base.html' %}
+
+{% block subnav %}
+<div class="bg-light border-bottom py-2">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'campaign_list' %}">All Campaigns</a></li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'campaign_detail' pk=campaign.id %}">{{ campaign.name }}</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'character_list' campaign_id=campaign.id %}">Characters</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          {{ character.name }}
+        </li>
+      </ol>
+    </nav>
+  </div>
+</div>
+{% endblock subnav %}
+
+{% block content %}
+  <h1 class="mb-4">{{ character.name }}</h1>
+  <div class="row">
+    <!-- Left column: image & basic info -->
+    <div class="col-md-4">
+      {% if character.character_image %}
+        <img src="{{ character.character_image.url }}" alt="Character Image" class="img-fluid img-thumbnail mb-3" />
+      {% else %}
+        <div class="text-muted">No image provided.</div>
+      {% endif %}
+      <p>
+        <strong>Player:</strong> {{ character.player_name }}<br>
+        <strong>Class:</strong> {{ character.class_type }}<br>
+        <strong>Level:</strong> {{ character.level }}<br>
+        <strong>Race:</strong> {{ character.race }}
+      </p>
+    </div>
+
+    <!-- Right column: backstory, stats -->
+    <div class="col-md-8">
+      <div class="mb-3">
+        <strong>Backstory:</strong>
+        <p class="ms-3">{{ character.backstory|linebreaks }}</p>
+      </div>
+
+      <!-- Ability scores in two columns -->
+      <div class="row">
+        <div class="col-sm-6">
+          <p><strong>STR:</strong> {{ character.strength }}</p>
+          <p><strong>DEX:</strong> {{ character.dexterity }}</p>
+          <p><strong>CON:</strong> {{ character.constitution }}</p>
+        </div>
+        <div class="col-sm-6">
+          <p><strong>INT:</strong> {{ character.intelligence }}</p>
+          <p><strong>WIS:</strong> {{ character.wisdom }}</p>
+          <p><strong>CHA:</strong> {{ character.charisma }}</p>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <p><strong>Max HP:</strong> {{ character.max_hit_points }}</p>
+        <p><strong>Current HP:</strong> {{ character.current_hit_points }}</p>
+        <p><strong>Armor Class:</strong> {{ character.armor_class }}</p>
+      </div>
+      <p><strong>Gold:</strong> {{ character.gold }} GP</p>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <a class="btn btn-primary" href="{% url 'character_update' campaign_id=campaign.id pk=character.id %}">Edit</a>
+    <a class="btn btn-danger" href="{% url 'character_delete' campaign_id=campaign.id pk=character.id %}">
+      Delete
+    </a>
+    <a class="btn btn-secondary" href="{% url 'character_list' campaign_id=campaign.id %}">
+      Back
+    </a>
+  </div>
+{% endblock content %}

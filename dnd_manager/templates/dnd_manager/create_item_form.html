@@ -1,0 +1,65 @@
+{% extends 'dnd_manager/base.html' %}
+
+{% block subnav %}
+<div class="bg-light border-bottom py-2">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'campaign_list' %}">All Campaigns</a></li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'campaign_detail' pk=campaign.id %}">{{ campaign.name }}</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'character_list' campaign_id=campaign.id %}">Characters</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'character_detail' campaign_id=campaign.id pk=character.id %}">
+            {{ character.name }}
+          </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          {% if object %}Edit{% else %}Create{% endif %} Item
+        </li>
+      </ol>
+    </nav>
+  </div>
+</div>
+{% endblock subnav %}
+
+{% block content %}
+  <h1 class="mb-4">
+    {% if object %}Update Item{% else %}Create Item{% endif %}
+  </h1>
+
+  <form method="POST" enctype="multipart/form-data" class="row g-3">
+    {% csrf_token %}
+    
+    {# Loop through fields #}
+    {% for field in form %}
+      <div class="mb-3">
+        <label class="form-label" for="{{ field.id_for_label }}">
+          {{ field.label }}
+          {% if field.field.required %}
+            <span class="text-danger">*</span>
+          {% endif %}
+        </label>
+        {{ field }}
+        {% if field.help_text %}
+          <small class="form-text text-muted">{{ field.help_text }}</small>
+        {% endif %}
+        {% if field.errors %}
+          <div class="text-danger">{{ field.errors }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">Save</button>
+      {# Link back to the character detail page #}
+      <a class="btn btn-secondary" 
+         href="{% url 'character_detail' campaign_id=campaign.id pk=character.id %}">
+        Cancel
+      </a>
+    </div>
+  </form>
+{% endblock content %}

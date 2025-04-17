@@ -1,0 +1,24 @@
+<!-- templates/dnd_manager/delete_item_confirm.html -->
+{% extends "dnd_manager/base.html" %}
+
+{% block subnav %}
+<div class="bg-light p-3">
+  <h2>Delete {{ object.name }}?</h2>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="alert alert-danger" role="alert">
+  <p>Are you sure you want to delete "{{ object.name }}"?</p>
+  <p>This action cannot be undone.</p>
+</div>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">Yes, delete</button>
+  <a href="{% url 'character_detail' campaign_id=campaign.id pk=character.id %}" 
+     class="btn btn-secondary">
+    Cancel
+  </a>
+</form>
+{% endblock %}

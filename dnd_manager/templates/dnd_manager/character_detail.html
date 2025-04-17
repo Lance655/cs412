@@ -69,7 +69,7 @@
     </div>
   </div>
 
-  <div class="mt-4">
+  <div class="mb-5">
     <a class="btn btn-primary" href="{% url 'character_update' campaign_id=campaign.id pk=character.id %}">Edit</a>
     <a class="btn btn-danger" href="{% url 'character_delete' campaign_id=campaign.id pk=character.id %}">
       Delete
@@ -78,4 +78,78 @@
       Back
     </a>
   </div>
+
+  <div class="col-md-6">
+    <!-- Inventory (Items) -->
+    <h3>Items / Inventory</h3>
+    {% if items_owned %}
+      <ul class="list-group mb-3">
+        {% for item in items_owned %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{{ item.name }}</strong>
+            {% if item.item_type %}
+              <small class="text-muted"> - {{ item.item_type }}</small>
+            {% endif %}
+            <br>
+            <small>{{ item.description|truncatechars:80 }}</small>
+            <br>
+            <small class="text-muted">Price: {{ item.price }} gp</small>
+          </div>
+
+          <a href="{% url 'item_update' campaign_id=campaign.id character_id=character.id pk=item.pk %}">Edit</a>
+
+          <div class="d-flex align-items-center">
+            <!-- Show item rarity as a color-coded badge -->
+            <span 
+              class="badge me-2
+                {% if item.rarity == 'Legendary' %}bg-danger
+                {% elif item.rarity == 'Rare' %}bg-primary
+                {% elif item.rarity == 'Uncommon' %}bg-success
+                {% else %}bg-secondary
+                {% endif %}
+              "
+            >
+              {{ item.rarity }}
+            </span>
+      
+            <!-- Action Buttons -->
+            <div class="btn-group">
+              <!-- Delete Item -->
+              <a 
+                href="{% url 'item_delete' campaign_id=campaign.id character_id=character.id pk=item.pk %}" 
+                class="btn btn-sm btn-danger"
+              >
+                Delete
+              </a>
+              <!-- Sell Item -->
+              <a 
+                href="" 
+                class="btn btn-sm btn-warning"
+              >
+                Sell
+              </a>
+              <!-- Transfer Item -->
+              <a 
+                href="" 
+                class="btn btn-sm btn-secondary"
+              >
+                Transfer
+              </a>
+            </div>
+          </div>
+        </li>
+      {% endfor %}
+      </ul>
+    {% else %}
+      <div class="text-muted">No items owned.</div>
+    {% endif %}
+
+    <!-- Link to create a new item for this character -->
+    <a href="{% url 'item_create' campaign_id=campaign.id character_id=character.id %}" 
+       class="btn btn-primary">
+      Add Item
+    </a>
+  </div>
+
 {% endblock content %}

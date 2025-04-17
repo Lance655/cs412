@@ -1,0 +1,52 @@
+{% extends 'dnd_manager/base.html' %}
+
+{% block subnav %}
+<div class="bg-light border-bottom py-2">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'campaign_list' %}">All Campaigns</a></li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'campaign_detail' pk=campaign.id %}">{{ campaign.name }}</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'npc_list' campaign_id=campaign.id %}">NPCs</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          {{ npc.name }}
+        </li>
+      </ol>
+    </nav>
+  </div>
+</div>
+{% endblock subnav %}
+
+{% block content %}
+  <h1 class="mb-4">{{ npc.name }}</h1>
+  
+  <div class="row">
+    <div class="col-md-4">
+      {% if npc.npc_image %}
+        <img src="{{ npc.npc_image.url }}" alt="NPC Image" class="img-fluid img-thumbnail mb-3" />
+      {% else %}
+        <div class="text-muted">No image provided.</div>
+      {% endif %}
+    </div>
+    
+    <div class="col-md-8">
+      <p><strong>Location:</strong> {{ npc.location }}</p>
+      <p><strong>Description:</strong></p>
+      <p class="ms-3">{{ npc.description|linebreaks }}</p>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <a class="btn btn-primary" href="{% url 'npc_update' campaign_id=campaign.id pk=npc.id %}">Edit</a>
+    <a class="btn btn-danger" href="{% url 'npc_delete' campaign_id=campaign.id pk=npc.id %}">
+      Delete
+    </a>
+    <a class="btn btn-secondary" href="{% url 'npc_list' campaign_id=campaign.id %}">
+      Back
+    </a>
+  </div>
+{% endblock content %}

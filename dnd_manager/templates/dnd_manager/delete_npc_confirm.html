@@ -1,0 +1,41 @@
+{% extends 'dnd_manager/base.html' %}
+
+{% block subnav %}
+<div class="bg-light border-bottom py-2">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'campaign_list' %}">All Campaigns</a></li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'campaign_detail' pk=campaign.id %}">{{ campaign.name }}</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'npc_list' campaign_id=campaign.id %}">NPCs</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          Delete {{ object.name }}
+        </li>
+      </ol>
+    </nav>
+  </div>
+</div>
+{% endblock subnav %}
+
+{% block content %}
+  <div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">Confirm Deletion</h4>
+    <p class="mb-0">
+      Are you sure you want to delete 
+      <strong>{{ object.name }}</strong>?
+    </p>
+    <hr>
+    <form method="POST">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Yes, delete</button>
+      <a class="btn btn-secondary"
+         href="{% url 'npc_detail' campaign_id=campaign.id pk=object.id %}">
+        No, go back
+      </a>
+    </form>
+  </div>
+{% endblock content %}

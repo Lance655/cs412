@@ -22,6 +22,10 @@
 {% endblock subnav %}
 
 {% block content %}
+
+<!--  --------------------------------  GENERAL INFO -------------------------------- -->
+
+
   <h1 class="mb-4">{{ character.name }}</h1>
   <div class="row">
     <!-- Left column: image & basic info -->
@@ -79,77 +83,110 @@
     </a>
   </div>
 
-  <div class="col-md-6">
-    <!-- Inventory (Items) -->
-    <h3>Items / Inventory</h3>
+<!--  --------------------------------  INVENTORY (Items) -------------------------------- -->
+    <h3 class="mt-5">Items&nbsp;/&nbsp;Inventory</h3>
+
     {% if items_owned %}
-      <ul class="list-group mb-3">
         {% for item in items_owned %}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-          <div>
-            <strong>{{ item.name }}</strong>
-            {% if item.item_type %}
-              <small class="text-muted"> - {{ item.item_type }}</small>
-            {% endif %}
-            <br>
-            <small>{{ item.description|truncatechars:80 }}</small>
-            <br>
-            <small class="text-muted">Price: {{ item.price }} gp</small>
-          </div>
+            <div class="col">
+                {# Add flex-sm-row so it’s horizontal on big screens, vertical on small #}
+                <div class="card h-100 flex-sm-row align-items-stretch shadow-sm">
 
-          <a href="{% url 'item_update' campaign_id=campaign.id character_id=character.id pk=item.pk %}">Edit</a>
+                    {# —— left side: thumbnail —— #}
+                    {% if item.item_image %}
+                        <img src="{{ item.item_image.url }}"
+                            alt="{{ item.name }}"
+                            class="object-fit-cover"          
+                            style="width: 180px; height: 180px;">
+                    {% else %}
+                        <div class="d-flex align-items-center justify-content-center bg-light"
+                            style="width: 180px; height: 180px;">
+                        <span class="text-muted">No image</span>
+                        </div>
+                    {% endif %}
 
-          <div class="d-flex align-items-center">
-            <!-- Show item rarity as a color-coded badge -->
-            <span 
-              class="badge me-2
-                {% if item.rarity == 'Legendary' %}bg-danger
-                {% elif item.rarity == 'Rare' %}bg-primary
-                {% elif item.rarity == 'Uncommon' %}bg-success
-                {% else %}bg-secondary
-                {% endif %}
-              "
-            >
-              {{ item.rarity }}
-            </span>
-      
-            <!-- Action Buttons -->
-            <div class="btn-group">
-              <!-- Delete Item -->
-              <a 
-                href="{% url 'item_delete' campaign_id=campaign.id character_id=character.id pk=item.pk %}" 
-                class="btn btn-sm btn-danger"
-              >
-                Delete
-              </a>
-              <!-- Sell Item -->
-              <a 
-                href="" 
-                class="btn btn-sm btn-warning"
-              >
-                Sell
-              </a>
-              <!-- Transfer Item -->
-              <a 
-                href="" 
-                class="btn btn-sm btn-secondary"
-              >
-                Transfer
-              </a>
-            </div>
-          </div>
-        </li>
-      {% endfor %}
-      </ul>
+                    {# —— right side: everything else —— #}
+                    <div class="card-body d-flex flex-column">
+
+                        <div class="d-flex justify-content-between align-items-start">
+                        <h5 class="card-title mb-0">{{ item.name }}</h5>
+                        <span class="badge
+                            {% if item.rarity == 'Legendary' %} bg-danger
+                            {% elif item.rarity == 'Rare' %} bg-primary
+                            {% elif item.rarity == 'Uncommon' %} bg-success
+                            {% else %} bg-secondary
+                            {% endif %}
+                        ">
+                            {{ item.rarity }}
+                        </span>
+                        </div>
+
+                        {% if item.item_type %}
+                        <small class="text-muted">{{ item.item_type }}</small>
+                        {% endif %}
+
+                        {% if item.description %}
+                        <p class="card-text small mt-2 mb-3">{{ item.description|truncatechars:100 }}</p>
+                        {% endif %}
+
+                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">{{ item.price }} gp</span>
+                        <div class="btn-group btn-group-sm">
+                            <a href="{% url 'item_update' campaign_id=campaign.id character_id=character.id pk=item.pk %}"
+                            class="btn btn-outline-secondary">Edit</a>
+                            <a href="{% url 'item_sell' campaign_id=campaign.id character_id=character.id pk=item.pk %}" 
+                            class="btn btn-outline-warning">Sell</a>
+                            <a href="{% url 'item_delete' campaign_id=campaign.id character_id=character.id pk=item.pk %}"
+                            class="btn btn-outline-danger">Discard</a>
+                        </div>
+                        </div>
+                    </div><!-- /.card-body -->
+
+                </div><!-- /.card -->
+            </div><!-- /.col -->
+        {% endfor %}
     {% else %}
-      <div class="text-muted">No items owned.</div>
+    <p class="text-muted">No items owned.</p>
     {% endif %}
 
-    <!-- Link to create a new item for this character -->
-    <a href="{% url 'item_create' campaign_id=campaign.id character_id=character.id %}" 
-       class="btn btn-primary">
-      Add Item
+    <!-- Add‑item button -->
+    <a href="{% url 'item_create' campaign_id=campaign.id character_id=character.id %}"
+    class="btn btn-primary mt-3">
+    Add Item
     </a>
-  </div>
+
+    <!-- ---------------------------------- ADVENTURE LOGS --------------------------------- -->
+    <hr>
+    <h3>Adventure Logs</h3>
+
+    {% if adventure_logs %}
+    <ul>
+      {% for log in adventure_logs %}
+        <li>
+          <strong>Session:</strong> {{ log.session.name }} 
+          <strong>XP Earned:</strong> {{ log.xp_earned }}
+          <p>{{ log.details|linebreaks }}</p>
+  
+          <!-- Edit/Delete Buttons -->
+          <a href=""
+             class="btn btn-sm btn-secondary">
+            Edit Log
+          </a>
+          <a href=""
+             class="btn btn-sm btn-danger">
+            Delete Log
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-muted">No logs for {{ character.name }} yet.</p>
+  {% endif %}
+  
+  <!-- Link to create a new log -->
+  <a href="{% url 'adventure_log_create' campaign_id=campaign.id character_id=character.id %}"
+     class="btn btn-primary mt-3">
+    Add New Adventure Log
+  </a>
 
 {% endblock content %}

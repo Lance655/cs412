@@ -94,7 +94,7 @@ class Item(models.Model):
     description = models.TextField(blank=True)
     item_type = models.CharField(max_length=100)
     rarity = models.CharField(max_length=20, choices=RARITY_CHOICES, default='Common')
-    # allow EITHER Character or NPC to own it:
+    # allow either Character or NPC to own it
     owner_character = models.ForeignKey(Character, on_delete=models.SET_NULL, null=True, blank=True, related_name='items_owned')
     owner_npc = models.ForeignKey(NPC, on_delete=models.SET_NULL, null=True, blank=True, related_name='items_held_by')
     

@@ -2,7 +2,7 @@
 {% extends 'dnd_manager/base.html' %}
 
 {% block content %}
-  <h1>Session Detail: {{ session.name }}</h1>
+  <h1>{{ session.name }}</h1>
 
 
   <!-- link back to the campaign detail -->
@@ -19,10 +19,26 @@
   <p><strong>Location:</strong> {{ session.location }}</p>
   <p><strong>Summary:</strong> {{ session.summary }}</p>
 
+  <!-- adventure logs info -->
+  <hr>
+  <h2>Adventure Logs for This Session</h2>
+  {% if adventure_logs %}
+    <ul>
+      {% for log in adventure_logs %}
+        <li>
+          <strong>{{ log.character.name }}</strong> earned {{ log.xp_earned }} XP
+          <p>{{ log.details|linebreaks }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-muted">No Adventure Logs yet for this session.</p>
+  {% endif %}
+
   <!-- Provide update/delete links -->
   <p>
-    <a href="{% url 'session_update' campaign_id=session.campaign.pk pk=session.pk %}" class="btn btn-warning">
-      Update Session
+    <a href="{% url 'session_update' campaign_id=session.campaign.pk pk=session.pk %}" class="btn btn-primary">
+      Edit Session
     </a>
     <a href="{% url 'session_delete' campaign_id=session.campaign.pk pk=session.pk %}" class="btn btn-danger">
       Delete Session

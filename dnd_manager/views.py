@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from django.urls import reverse_lazy, reverse
 from django.views.generic import (
@@ -9,7 +9,7 @@ from .models import (
 )
 from .forms import (
     CampaignForm, SessionForm, CharacterForm, NPCForm, 
-    ItemForm, QuestForm, AdventureLogForm, CalendarEventForm
+    CreateItemForm, UpdateItemForm, QuestForm, AdventureLogForm, CalendarEventForm
 )
 
 
@@ -79,6 +79,13 @@ class SessionDetailView(DetailView):
     template_name = 'dnd_manager/session_detail.html'
     context_object_name = 'session'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        session = self.get_object()
+        # Pull all logs for this Session, as well as the related Character for each log
+        context['adventure_logs'] = session.adventure_logs.select_related('character')
+        return context
+
 
 class SessionCreateView(CreateView):
     model = Session
@@ -120,7 +127,8 @@ class SessionUpdateView(UpdateView):
 
     def get_success_url(self):
         """Redirect back to the session list (or campaign detail)."""
-        return reverse('campaign_detail', kwargs={'pk': self.kwargs['campaign_id']})
+        return reverse('session_detail', kwargs={'campaign_id': self.kwargs['campaign_id'], 
+                                                'pk': self.kwargs['pk']})
 
 
 class SessionDeleteView(DeleteView):
@@ -169,6 +177,9 @@ class CharacterDetailView(DetailView):
         # Add the character's items
         character = self.get_object()
         context['items_owned'] = character.items_owned.all()
+
+        # Pull all logs for this Character, as well as the related Session of each log
+        context['adventure_logs'] = character.adventure_logs.select_related('session')
         return context
 
 
@@ -328,7 +339,7 @@ class NPCDeleteView(DeleteView):
 
 class ItemCreateView(CreateView):
     model = Item
-    form_class = ItemForm
+    form_class = CreateItemForm
     template_name = 'dnd_manager/create_item_form.html' 
 
     def form_valid(self, form):
@@ -369,7 +380,7 @@ class ItemCreateView(CreateView):
 
 class ItemUpdateView(UpdateView):
     model = Item
-    form_class = ItemForm
+    form_class = UpdateItemForm
     template_name = 'dnd_manager/create_item_form.html'
 
     def get_context_data(self, **kwargs):
@@ -414,6 +425,69 @@ class ItemDeleteView(DeleteView):
         context['character'] = character
 
         return context
+
+def item_sell_view(request, campaign_id, character_id, pk):
+    item = Item.objects.get(pk=pk)
+    character = Character.objects.get(pk=character_id)
+    campaign = Campaign.objects.get(pk=campaign_id)
+    # verify the item.owner_character == this character?
+
+    if request.method == 'POST':
+        # user confirmed selling
+        character.gold += item.price
+        character.save()
+
+        item.owner_character = None
+        item.save()
+        # item.delete()?
+
+        return redirect('character_detail', campaign_id=campaign_id, pk=character_id)
+    else:
+        # Show confirmation page
+        return render(request, 'dnd_manager/item_sell_confirm.html', {
+            'campaign': campaign,
+            'character': character,
+            'item': item
+        })
+
+
+
+# -----------------
+# Adventure Log Views
+# -----------------
+
+
+
+class AdventureLogCreateView(CreateView):
+    model = AdventureLog
+    form_class = AdventureLogForm
+    template_name = 'dnd_manager/adventure_log_form.html'
+
+    def form_valid(self, form):
+        """Assign the correct character to this log."""
+
+        character_id = self.kwargs['character_id']
+        character = Character.objects.get(pk=character_id)
+
+        # Set the character on the form instance
+        form.instance.character = character
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        """Redirect back to the Character Detail page."""
+        return reverse('character_detail', kwargs={
+            'campaign_id': self.kwargs['campaign_id'],
+            'pk': self.kwargs['character_id']
+        })
+
+    def get_context_data(self, **kwargs):
+        """Provide the campaign & character for the template."""
+        context = super().get_context_data(**kwargs)
+        context['campaign_id'] = self.kwargs['campaign_id']
+        context['character_id'] = self.kwargs['character_id']
+        return context
+
 
 
 

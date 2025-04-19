@@ -16,8 +16,11 @@
 </form>
 
 <!-- Cancel link goes back to session list or campaign detail -->
-<p>
-  <a href="{% url 'campaign_detail' campaign.pk %}">Cancel</a>
-</p>
+{% if object.pk %}
+    <p> <a href="{% url 'session_detail' campaign.pk  object.pk %}">Cancel</a> </p>
+{% else %}
+    <p> <a href="{% url 'campaign_detail' campaign.pk %}">Cancel</a> </p>
+{% endif %}
+
 {% endblock content %}
 

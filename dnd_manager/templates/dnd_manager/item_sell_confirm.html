@@ -1,0 +1,25 @@
+{% extends 'dnd_manager/base.html' %}
+
+{% block subnav %}
+<div class="bg-light border-bottom py-2">
+  <div class="container">
+    <h2>Sell Item Confirmation</h2>
+  </div>
+</div>
+{% endblock subnav %}
+
+{% block content %}
+<div class="alert alert-warning">
+  <h5>Are you sure you want to sell the item "{{ item.name }}"?</h5>
+  <p>You will gain {{ item.price }} GP, and the item will be removed from your inventory.</p>
+</div>
+
+<form method="POST">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-warning">Yes, Sell</button>
+  <a href="{% url 'character_detail' campaign_id=campaign.id pk=character.id %}" 
+     class="btn btn-secondary">
+    Cancel
+  </a>
+</form>
+{% endblock content %}

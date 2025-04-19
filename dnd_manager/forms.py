@@ -12,17 +12,18 @@ class CampaignForm(forms.ModelForm):
 class SessionForm(forms.ModelForm):
     class Meta:
         model = Session
-        fields = ['name', 'campaign', 'session_date', 'summary', 'location']
+        # fields = ['name', 'campaign', 'session_date', 'summary', 'location']
+        fields = ['name', 'session_date', 'summary', 'location']
+
 
 
 class CharacterForm(forms.ModelForm):
     class Meta:
         model = Character
         fields = [
-            'name', 'player_name', 'class_type', 'level', 'race', 'backstory', 
-            'campaign', 'strength', 'dexterity', 'constitution', 'intelligence',
-            'wisdom', 'charisma', 'max_hit_points', 'current_hit_points', 'armor_class',
-            'character_image', 'gold'
+            'name', 'player_name', 'class_type', 'level', 'race', 'backstory', 'strength', 
+            'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma', 'max_hit_points', 
+            'current_hit_points', 'armor_class', 'character_image', 'gold'
         ]
 
 
@@ -32,13 +33,23 @@ class NPCForm(forms.ModelForm):
         fields = ['name', 'description', 'location', 'campaign', 'npc_image']
 
 
-class ItemForm(forms.ModelForm):
+class CreateItemForm(forms.ModelForm):
+    class Meta:
+        model = Item
+        # fields = [
+        #     'name', 'description', 'item_type', 'rarity', 'owner_character', 'owner_npc', 
+        #     'campaign', 'item_image', 'price'
+        # ]
+        fields = ['name', 'description', 'item_type', 'rarity', 'item_image', 'price']
+
+        
+class UpdateItemForm(forms.ModelForm):
     class Meta:
         model = Item
         fields = [
-            'name', 'description', 'item_type', 'rarity', 'owner_character', 'owner_npc', 
-            'campaign', 'item_image'
+            'name', 'description', 'item_type', 'rarity', 'owner_character', 'item_image', 'price'
         ]
+        # fields = ['name', 'description', 'item_type', 'rarity', 'item_image', 'price']
 
 
 class QuestForm(forms.ModelForm):

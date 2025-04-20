@@ -1,0 +1,68 @@
+<!-- templates/dnd_manager/quest_list.html -->
+{% extends 'dnd_manager/base.html' %}
+{% load static %}
+
+{% block subnav %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <span class="navbar-text">
+      Quests for {{ campaign.name }}
+    </span>
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'campaign_detail' campaign.pk %}">Back to Campaign</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+{% endblock subnav %}
+
+{% block content %}
+
+<!-- SEARCH/FILTER FORM-->
+{% include 'dnd_manager/search_quest.html' %}
+
+<!-- MAIN QUESTS -->
+
+<h2>Main Quests</h2>
+
+{% if main_quests %}
+  <ul>
+    {% for quest in main_quests %}
+      <li>
+        <a href="{% url 'quest_detail' campaign.pk quest.pk %}">{{ quest.title }}</a>
+        <!-- – {{ quest.quest_date|date:"Y‑m‑d" }} -->
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No main quests.</p>
+{% endif %}
+
+<hr>
+
+<!-- PERSONAL QUESTS, grouped under each character header -->
+<h2>Personal Quests</h2>
+
+{% if personal_by_character %}
+  {% for character, quests in personal_by_character %}
+    <h4>{{ character.name }}</h4>
+    <ul>
+      {% for quest in quests %}
+        <li>
+          <a href="{% url 'quest_detail' campaign.pk quest.pk %}">{{ quest.title }}</a>
+          <!-- – {{ quest.quest_date|date:"Y‑m‑d" }} -->
+        </li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+{% else %}
+  <p>No personal quests in this campaign.</p>
+{% endif %}
+
+
+<p>
+    <a class="btn btn-primary" href="{% url 'quest_create' campaign.pk %}">Create New Quest</a>
+</p>
+
+{% endblock content %}

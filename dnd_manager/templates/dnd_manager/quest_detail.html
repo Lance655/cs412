@@ -1,0 +1,54 @@
+<!-- templates/dnd_manager/quest_detail.html -->
+
+{% extends 'dnd_manager/base.html' %}
+
+{% block subnav %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <span class="navbar-text">
+      {{ campaign.name }} - {{ quest.title }}
+    </span>
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'quest_list' campaign.pk %}">All Quests</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'quest_update' campaign.pk quest.pk %}">Edit Quest</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-danger" href="{% url 'quest_delete' campaign.pk quest.pk %}">Delete Quest</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+{% endblock subnav %}
+
+{% block content %}
+<h2>{{ quest.title }}</h2>
+<p>Status: {{ quest.status }}</p>
+<p>Type: {{ quest.quest_type }}</p>
+<h4>Description</h4>
+<p>{{ quest.description|linebreaksbr }}</p>
+<h4>Rewards</h4>
+<p>{{ quest.rewards|linebreaksbr }}</p>
+
+{% if quest.related_npc %}
+  <h4>Given by NPC</h4>
+  <p> <a href="{% url 'npc_detail' campaign.pk quest.related_npc.pk %}"> {{ quest.related_npc.name }} </a> </p>
+{% endif %}
+
+{% if quest.assigned_to.all %}
+  <h4>Assigned to Characters:</h4>
+  <ul>
+    {% for character in quest.assigned_to.all %}
+      <li>
+        <a href="{% url 'character_detail' campaign.pk character.pk %}">
+          {{ character.name }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No characters assigned yet.</p>
+{% endif %}
+{% endblock content %}

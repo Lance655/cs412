@@ -1,0 +1,53 @@
+<form class="row g-2 mb-4" action="{% url 'quest_list' campaign.pk %}" method="get">
+    <div class="col-auto">
+        <select name="status" class="form-select">
+          
+            <option value="">
+                All statuses
+            </option>
+            <option value="Not Started">
+                Not Started
+            </option>
+            <option value="In Progress">
+                In Progress
+            </option>
+            <option value="Completed">
+                Completed
+            </option>
+ 
+        </select>
+    </div>
+  
+    <div class="col-auto">
+      <select name="npc" class="form-select">
+        <option value="">Any NPC</option>
+        {% for npc in campaign.npcs.all %}
+          <option value="{{ npc.id }}">
+            {{ npc.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+  
+    <div class="col-auto">
+      <select name="quest_type" class="form-select">
+        <option value="">
+            Any type
+        </option>
+        <option value="Main Quest">
+          Main
+        </option>
+        <option value="Personal Quest">
+          Personal
+        </option>
+      </select>
+    </div>
+  
+    <div class="col-auto">
+      <button class="btn btn-primary" type="submit">Filter</button>
+      <a href="{% url 'quest_list' campaign.pk %}" class="btn btn-outline-secondary">
+        Reset
+      </a>
+    </div>
+</form>
+  

@@ -30,7 +30,9 @@ class CharacterForm(forms.ModelForm):
 class NPCForm(forms.ModelForm):
     class Meta:
         model = NPC
-        fields = ['name', 'description', 'location', 'campaign', 'npc_image']
+        # fields = ['name', 'description', 'location', 'campaign', 'npc_image']
+        fields = ['name', 'description', 'location', 'npc_image']
+
 
 
 class CreateItemForm(forms.ModelForm):
@@ -55,13 +57,17 @@ class UpdateItemForm(forms.ModelForm):
 class QuestForm(forms.ModelForm):
     class Meta:
         model = Quest
-        fields = ['title', 'description', 'assigned_to', 'status', 'related_npc', 'campaign']
+        # fields = ['title', 'quest_type', 'description', 'assigned_to', 'rewards', 'status', 'related_npc', 'campaign']
+        fields = ['title', 'quest_type', 'description', 'assigned_to', 'rewards', 'status', 'related_npc', 'quest_date']
+
 
 
 class AdventureLogForm(forms.ModelForm):
     class Meta:
         model = AdventureLog
-        fields = ['session', 'character', 'details', 'xp_earned']
+        # fields = ['session', 'character', 'details', 'xp_earned']
+        fields = ['session', 'details', 'xp_earned']
+
 
 
 class CalendarEventForm(forms.ModelForm):

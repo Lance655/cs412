@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 
+from collections import defaultdict
+
 from django.urls import reverse_lazy, reverse
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -48,20 +50,30 @@ class CampaignCreateView(CreateView):
     model = Campaign
     form_class = CampaignForm
     template_name = 'dnd_manager/create_campaign_form.html'
-    success_url = reverse_lazy('campaign_list')
+
+    def get_success_url(self):
+        """Redirect back to the campaign list."""
+        return reverse('campaign_list')
+        
 
 
 class CampaignUpdateView(UpdateView):
     model = Campaign
     form_class = CampaignForm
     template_name = 'dnd_manager/create_campaign_form.html'
-    success_url = reverse_lazy('campaign_list')
+
+    def get_success_url(self):
+        """Redirect back to the campaign list."""
+        return reverse('campaign_list')
 
 
 class CampaignDeleteView(DeleteView):
     model = Campaign
     template_name = 'dnd_manager/delete_campaign_confirm.html'
-    success_url = reverse_lazy('campaign_list')
+
+    def get_success_url(self):
+        """Redirect back to the campaign list."""
+        return reverse('campaign_list')
 
 
 # -----------------
@@ -383,6 +395,22 @@ class ItemUpdateView(UpdateView):
     form_class = UpdateItemForm
     template_name = 'dnd_manager/create_item_form.html'
 
+    def get_form(self, form_class=None):
+        """
+        Override get_form() to filter the Item field's queryset
+        so that it only shows Characters for the correct campaign.
+        """
+        form = super().get_form(form_class)
+        
+        # Fetch the relevant Campaign from the URL
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+
+        # Restrict the Character dropdown to only characters from this campaign
+        form.fields['owner_character'].queryset = Character.objects.filter(campaign=campaign)
+
+        return form
+
     def get_context_data(self, **kwargs):
         """Pass the Campaign into the template context."""
         context = super().get_context_data(**kwargs)
@@ -451,17 +479,31 @@ def item_sell_view(request, campaign_id, character_id, pk):
         })
 
 
-
 # -----------------
 # Adventure Log Views
 # -----------------
 
 
-
 class AdventureLogCreateView(CreateView):
     model = AdventureLog
     form_class = AdventureLogForm
-    template_name = 'dnd_manager/adventure_log_form.html'
+    template_name = 'dnd_manager/create_adventure_log_form.html'
+
+    def get_form(self, form_class=None):
+        """
+        Override get_form() to filter the Session field's queryset
+        so that it only shows Sessions for the correct campaign.
+        """
+        form = super().get_form(form_class)
+        
+        # Fetch the relevant Campaign from the URL
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+
+        # Restrict the Session dropdown to only sessions from this campaign
+        form.fields['session'].queryset = Session.objects.filter(campaign=campaign)
+
+        return form
 
     def form_valid(self, form):
         """Assign the correct character to this log."""
@@ -488,6 +530,262 @@ class AdventureLogCreateView(CreateView):
         context['character_id'] = self.kwargs['character_id']
         return context
 
+class AdventureLogUpdateView(UpdateView):
+    model = AdventureLog
+    form_class = AdventureLogForm
+    template_name = 'dnd_manager/create_adventure_log_form.html'
+
+    def get_form(self, form_class=None):
+        """
+        Override get_form() to filter the Session field's queryset
+        so that it only shows Sessions for the correct campaign.
+        """
+        form = super().get_form(form_class)
+        
+        # Fetch the relevant Campaign from the URL
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+
+        # Restrict the Session dropdown to only sessions from this campaign
+        form.fields['session'].queryset = Session.objects.filter(campaign=campaign)
+
+        return form
+
+    def get_queryset(self):
+        """Ensure we only get logs that match the campaign & character in the URL."""
+        campaign_id = self.kwargs['campaign_id']
+        character_id = self.kwargs['character_id']
+        return AdventureLog.objects.filter(character__id=character_id, character__campaign__id=campaign_id)
+
+    def get_success_url(self):
+        """Redirect back to the Character Detail page."""
+        return reverse('character_detail', kwargs={
+            'campaign_id': self.kwargs['campaign_id'],
+            'pk': self.kwargs['character_id']
+        })
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['campaign_id'] = self.kwargs['campaign_id']
+        context['character_id'] = self.kwargs['character_id']
+        return context
+
+class AdventureLogDeleteView(DeleteView):
+    model = AdventureLog
+    template_name = 'dnd_manager/delete_adventure_log_confirm.html'
+
+    def get_queryset(self):
+        """Ensure we only fetch logs that belong to the correct character."""
+        campaign_id = self.kwargs['campaign_id']
+        character_id = self.kwargs['character_id']
+        return AdventureLog.objects.filter(character__id=character_id, character__campaign__id=campaign_id)
+
+    def get_success_url(self):
+        """After deleting, go back to the character detail."""
+        return reverse('character_detail', kwargs={
+            'campaign_id': self.kwargs['campaign_id'],
+            'pk': self.kwargs['character_id']
+        })
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['campaign_id'] = self.kwargs['campaign_id']
+        context['character_id'] = self.kwargs['character_id']
+        return context
+
+
+# -----------------
+# Quest Views
+# -----------------
+
+class QuestListView(ListView):
+    model = Quest
+    template_name = 'dnd_manager/quest_list.html'
+    context_object_name = 'quests'
+
+    def get_queryset(self):
+        """Return quests only belonging to this campaign, with the proper filters"""
+        qs = Quest.objects.filter(campaign_id=self.kwargs['campaign_id'])
+
+        # ----- apply filters ----------
+        status = self.request.GET.get('status')
+        if status:
+            qs = qs.filter(status=status)
+
+        quest_type = self.request.GET.get('quest_type')
+        if quest_type:
+            qs = qs.filter(quest_type=quest_type)
+
+        npc_id = self.request.GET.get('npc')
+        if npc_id:
+            qs = qs.filter(related_npc_id=npc_id)
+
+        # ---- default ordering ----------
+        qs = qs.order_by('quest_date')  
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+        context['campaign'] = campaign
+
+        qs = self.object_list 
+
+        # Separate queries: main quests vs. personal quests
+        main_quests = qs.filter(
+            campaign=campaign,
+            quest_type='Main Quest'
+        ).order_by('quest_date')  # Oldest to earliest
+
+        context['main_quests'] = main_quests
+
+        # ───── PERSONAL quests grouped per character ─────
+        #
+        # 1) Fetch all personal quests in one query.
+        personal_qs = (qs.filter(
+            campaign=campaign, 
+            quest_type='Personal Quest')
+        .order_by('quest_date'))
+
+        # 2) Build a dict  {character --> [quest, quest, ...]}
+        personal_by_character = defaultdict(list)
+        for quest in personal_qs:
+            for char in quest.assigned_to.all():
+                personal_by_character[char].append(quest)
+
+        # 3) Add that to the template
+        context['personal_by_character'] = list(personal_by_character.items())
+
+
+        return context
+
+
+class QuestDetailView(DetailView):
+    model = Quest
+    template_name = 'dnd_manager/quest_detail.html'
+    context_object_name = 'quest'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # pass the Campaign to the template
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+        context['campaign'] = campaign
+        return context
+
+class QuestCreateView(CreateView):
+    model = Quest
+    form_class = QuestForm
+    template_name = 'dnd_manager/create_quest_form.html'
+
+    def get_form(self, form_class=None):
+        """
+        Override get_form() to filter the assigned to field's queryset
+        so that it only shows characters for the correct campaign.
+        """
+        form = super().get_form(form_class)
+        
+        # Fetch the relevant Campaign from the URL
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+
+        # Restrict the Session dropdown to only sessions from this campaign
+        form.fields['assigned_to'].queryset = Character.objects.filter(campaign=campaign)
+        form.fields['related_npc'].queryset = NPC.objects.filter(campaign=campaign)
+
+
+        return form
+
+    def form_valid(self, form):
+        """
+        Attach the correct Campaign from the URL before saving.
+        """
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+        form.instance.campaign = campaign
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        """
+        Redirect to the quest list after creation.
+        """
+        return reverse('quest_list', kwargs={'campaign_id': self.kwargs['campaign_id']})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+        context['campaign'] = campaign
+        return context
+
+class QuestUpdateView(UpdateView):
+    model = Quest
+    form_class = QuestForm
+    template_name = 'dnd_manager/create_quest_form.html'
+
+    def get_form(self, form_class=None):
+        """
+        Override get_form() to filter the assigned to field's queryset
+        so that it only shows characters for the correct campaign.
+        """
+        form = super().get_form(form_class)
+        
+        # Fetch the relevant Campaign from the URL
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+
+        # Restrict the Session dropdown to only sessions from this campaign
+        form.fields['assigned_to'].queryset = Character.objects.filter(campaign=campaign)
+        form.fields['related_npc'].queryset = NPC.objects.filter(campaign=campaign)
+
+
+        return form
+
+    def get_queryset(self):
+        """
+        Ensure we only fetch Quests that belong to the correct campaign.
+        """
+        campaign_id = self.kwargs['campaign_id']
+        return Quest.objects.filter(campaign__id=campaign_id)
+
+    def get_success_url(self):
+        return reverse('quest_detail', kwargs={
+            'campaign_id': self.kwargs['campaign_id'],
+            'pk': self.kwargs['pk']
+        })
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+        context['campaign'] = campaign
+        return context
+
+class QuestDeleteView(DeleteView):
+    model = Quest
+    template_name = 'dnd_manager/delete_quest_confirm.html'
+
+    def get_queryset(self):
+        """
+        Ensure we only delete Quests that belong to the correct campaign.
+        """
+        campaign_id = self.kwargs['campaign_id']
+        return Quest.objects.filter(campaign__id=campaign_id)
+
+    def get_success_url(self):
+        """
+        After deleting, redirect to the quest list.
+        """
+        return reverse('quest_list', kwargs={'campaign_id': self.kwargs['campaign_id']})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+        context['campaign'] = campaign
+        return context
 
 
 

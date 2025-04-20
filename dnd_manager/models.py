@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+import datetime
 
 # Create your models here.
 
@@ -31,7 +32,7 @@ class Session(models.Model):
     location = models.CharField(max_length=200, blank=True)
 
     def __str__(self):
-        return f"Session {self.id} for {self.campaign.name} on {self.session_date}"
+        return f"{self.campaign.name} | {self.name }on {self.session_date}"
 
 
 class Character(models.Model):
@@ -116,12 +117,20 @@ class Quest(models.Model):
         ('Completed', 'Completed'),
     ]
 
+    QUEST_TYPE_CHOICES = [
+        ('Main Quest', 'Main Quest'),
+        ('Personal Quest', 'Personal Quest'),
+    ]
+
     title = models.CharField(max_length=200)
+    quest_type = models.CharField(max_length=20, choices=QUEST_TYPE_CHOICES, default='Main')
     description = models.TextField()
     assigned_to = models.ManyToManyField(Character, blank=True, related_name='quests')
+    rewards = models.TextField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Not Started')
     related_npc = models.ForeignKey(NPC, on_delete=models.SET_NULL, null=True, blank=True, related_name='quests_given')
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='quests')
+    quest_date = models.DateField(default=datetime.date.today)
 
     def __str__(self):
         return f"{self.title} ({self.status})"

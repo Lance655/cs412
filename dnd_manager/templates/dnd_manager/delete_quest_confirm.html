@@ -1,0 +1,25 @@
+<!-- templates/dnd_manager/delete_quest_confirm.html -->
+{% extends 'dnd_manager/base.html' %}
+
+{% block subnav %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <span class="navbar-text">
+      Confirm Delete Quest
+    </span>
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'quest_list' campaign.pk %}">Cancel</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+{% endblock subnav %}
+
+{% block content %}
+<h2>Are you sure you want to delete "{{ object.title }}"?</h2>
+<form method="POST">
+  {% csrf_token %}
+  <button class="btn btn-danger" type="submit">Yes, delete this quest</button>
+</form>
+{% endblock content %}

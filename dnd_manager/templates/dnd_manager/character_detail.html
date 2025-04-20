@@ -126,7 +126,7 @@
                         {% endif %}
 
                         {% if item.description %}
-                        <p class="card-text small mt-2 mb-3">{{ item.description|truncatechars:100 }}</p>
+                        <p class="card-text small mt-2 mb-3">{{ item.description }}</p>
                         {% endif %}
 
                         <div class="mt-auto d-flex justify-content-between align-items-center">
@@ -168,11 +168,11 @@
           <p>{{ log.details|linebreaks }}</p>
   
           <!-- Edit/Delete Buttons -->
-          <a href=""
+          <a href="{% url 'adventure_log_update' campaign_id=campaign.id character_id=character.id pk=log.pk %}"
              class="btn btn-sm btn-secondary">
             Edit Log
           </a>
-          <a href=""
+          <a href="{% url 'adventure_log_delete' campaign_id=campaign.id character_id=character.id pk=log.pk %}"
              class="btn btn-sm btn-danger">
             Delete Log
           </a>

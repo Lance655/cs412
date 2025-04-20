@@ -26,6 +26,11 @@
             NPCs
         </a>
       </li>
+      <li>
+        <a class="nav-link" href="{% url 'quest_list' campaign.pk %}">
+            Quests
+        </a>
+      </li>
       <!-- etc. -->
     </ul>
   </div>
@@ -38,12 +43,6 @@
 
 <!-- List of Sessions for This Campaign -->
 <h3>Sessions</h3>
-<!-- Link to create a new session for this campaign -->
-<p>
-  <a class="btn btn-primary" href="{% url 'session_create' campaign_id=campaign.pk %}">
-    Create New Session
-  </a>
-</p>
 
 <ul>
   {% for session in campaign.sessions.all %}
@@ -57,6 +56,15 @@
   {% empty %}
     <li>No sessions yet for this campaign.</li>
   {% endfor %}
+
+  <!-- Link to create a new session for this campaign -->
+  <p>
+      <a class="btn btn-primary mt-3" href="{% url 'session_create' campaign_id=campaign.pk %}">
+          Create New Session
+      </a>
+  </p>
 </ul>
+
+
 
 {% endblock content %}

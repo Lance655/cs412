@@ -1,14 +1,43 @@
-
 {% extends 'dnd_manager/base.html' %}
+
+
 {% block content %}
-<h1>All Campaigns</h1>
-<ul>
-  {% for campaign in campaigns %}
-    <li>
-      <a href="{% url 'campaign_detail' campaign.pk %}">
-        {{ campaign.name }} ({{ campaign.status }})
-      </a>
-    </li>
-  {% endfor %}
-</ul>
-{% endblock %}
+  <h1 class="mb-4">Campaigns</h1>
+
+  {% if campaigns %}
+    <div class="col mx-auto">
+      {% for campaign in campaigns %}
+        <div class="col">
+          <div class="card shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title mb-1">
+                <a href="{% url 'campaign_detail' campaign.pk %}" class="text-decoration-none">
+                  {{ campaign.name }}
+                </a>
+              </h5>
+              <p class="card-subtitle text-muted mb-2">{{ campaign.get_status_display }}</p>
+
+              <p class="card-text small">{{ campaign.description|truncatewords:25 }}</p>
+
+              <div class="d-flex gap-2">
+                <a href="{% url 'campaign_update' campaign.pk %}" class="btn btn-sm btn-outline-primary">
+                  <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a href="{% url 'campaign_delete' campaign.pk %}" class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-trash"></i> Delete
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No campaigns yet. Why not <a href="{% url 'campaign_create' %}">create one</a>?</p>
+  {% endif %}
+  <div class="d-flex justify-content-left mt-3">
+    <a href="{% url 'campaign_create' %}" class="btn btn-success">
+      <i class="bi bi-plus-lg"></i> New Campaign
+    </a>
+  </div>
+{% endblock content %}

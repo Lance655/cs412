@@ -1,0 +1,34 @@
+<!-- templates/dnd_manager/adventure_log_form.html -->
+{% extends 'dnd_manager/base.html' %}
+
+{% block content %}
+  <div class="container">
+    <h1>
+      {% if object.pk %}
+        Edit Adventure Log
+      {% else %}
+        Create Adventure Log
+      {% endif %}
+    </h1>
+
+    <form method="post">
+      {% csrf_token %}
+
+      {{ form.as_p }}
+
+      <button type="submit" class="btn btn-primary">
+        {% if object.pk %}
+          Save Changes
+        {% else %}
+          Create Log
+        {% endif %}
+      </button>
+      <a 
+        href="{% url 'character_detail' campaign_id=campaign_id pk=character_id %}"
+        class="btn btn-secondary"
+      >
+        Cancel
+      </a>
+    </form>
+  </div>
+{% endblock content %}

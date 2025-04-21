@@ -1,0 +1,40 @@
+<form class="row g-2 mb-4" action="{% url 'item_list' campaign.pk %}" method="get">
+    <div class="col-auto">
+      <select class="form-select" name="type">
+        <option value="">All types</option>
+        {% for t, t_display in item_type_choices %}
+          <option value="{{ t }}">
+            {{ t_display }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+  
+    <div class="col-auto">
+      <select class="form-select" name="rarity">
+        <option value="">All rarities</option>
+        {% for r, r_display in rarity_choices %}
+          <option value="{{ r }}">
+            {{ r_display }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+  
+    <div class="col-auto">
+      <select class="form-select" name="owner">
+        <option value="">Any owner</option>
+        {% for value, label in owner_choices %}
+          <option value="{{ value|slice:'1:' }}">
+            {{ label }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+  
+    <div class="col-auto">
+      <button class="btn btn-primary" type="submit">Filter</button>
+      <a href="{% url 'item_list' campaign.pk %}" class="btn btn-outline-secondary">Reset</a>
+    </div>
+  </form>
+  

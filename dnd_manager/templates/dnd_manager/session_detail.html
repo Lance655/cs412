@@ -1,16 +1,61 @@
 <!-- templates/dnd_manager/session_detail.html -->
 {% extends 'dnd_manager/base.html' %}
 
+{% block subnav %}
+<div class="bg-light border-bottom py-2">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    
+    {# ------------- LEFT: breadcrumb ------------- #}
+    <nav aria-label="breadcrumb" class="mb-0">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{% url 'campaign_list' %}">All Campaigns</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'campaign_detail' campaign.pk %}">{{ campaign.name }}</a>
+        </li>
+        {% comment %}Adjust the final crumb per page{% endcomment %}
+        <li class="breadcrumb-item active" aria-current="page">{{ session.name }}</li>
+      </ol>
+    </nav>
+
+    {# ------------- RIGHT: quick links ------------- #}
+    <ul class="nav ms-3">
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'campaign_detail' campaign.pk %}">
+          Sessions
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'character_list' campaign.pk %}">
+          Characters
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'npc_list' campaign.pk %}">
+          NPCs
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'quest_list' campaign.pk %}">
+          Quests
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'item_list' campaign.pk %}">
+          Items
+        </a>
+      </li>
+    </ul>
+
+  </div>
+</div>
+{% endblock subnav %}
+
+
+
 {% block content %}
   <h1>{{ session.name }}</h1>
-
-
-  <!-- link back to the campaign detail -->
-  <p>
-    <a href="{% url 'campaign_detail' session.campaign.pk %}">
-      &larr; Back to {{ session.campaign.name }} Detail
-    </a>
-  </p>
 
   <hr>
 
@@ -18,6 +63,16 @@
   <p><strong>Date:</strong> {{ session.session_date|date:"Y-m-d H:i" }}</p>
   <p><strong>Location:</strong> {{ session.location }}</p>
   <p><strong>Summary:</strong> {{ session.summary }}</p>
+
+    <!-- Provide update/delete links -->
+    <p>
+        <a href="{% url 'session_update' campaign_id=session.campaign.pk pk=session.pk %}" class="btn btn-primary">
+          Edit Session
+        </a>
+        <a href="{% url 'session_delete' campaign_id=session.campaign.pk pk=session.pk %}" class="btn btn-danger">
+          Delete Session
+        </a>
+    </p>
 
   <!-- adventure logs info -->
   <hr>
@@ -35,13 +90,11 @@
     <p class="text-muted">No Adventure Logs yet for this session.</p>
   {% endif %}
 
-  <!-- Provide update/delete links -->
-  <p>
-    <a href="{% url 'session_update' campaign_id=session.campaign.pk pk=session.pk %}" class="btn btn-primary">
-      Edit Session
-    </a>
-    <a href="{% url 'session_delete' campaign_id=session.campaign.pk pk=session.pk %}" class="btn btn-danger">
-      Delete Session
-    </a>
-  </p>
+    <!-- Create new adventure log -->
+    <p>
+        <a href="" class="btn btn-primary">
+            Create Log
+        </a>
+    </p>
+
 {% endblock content %}

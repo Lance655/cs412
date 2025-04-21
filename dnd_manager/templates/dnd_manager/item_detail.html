@@ -1,0 +1,102 @@
+{% extends "dnd_manager/base.html" %}
+{% load static %}
+
+{% block subnav %}
+<div class="bg-light border-bottom py-2">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    
+    {# ------------- LEFT: breadcrumb ------------- #}
+    <nav aria-label="breadcrumb" class="mb-0">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{% url 'campaign_list' %}">All Campaigns</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'campaign_detail' pk=campaign.pk %}">{{ campaign.name }}</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'item_list' campaign_id=campaign.pk %}">Items</a>
+          </li>
+        {% comment %}Adjust the final crumb per page{% endcomment %}
+        <li class="breadcrumb-item active" aria-current="page">{{ item.name }}</li>
+      </ol>
+    </nav>
+
+    {# ------------- RIGHT: quick links ------------- #}
+    <ul class="nav ms-3">
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'campaign_detail' campaign.pk %}">
+          Sessions
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'character_list' campaign.pk %}">
+          Characters
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'npc_list' campaign.pk %}">
+          NPCs
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'quest_list' campaign.pk %}">
+          Quests
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'item_list' campaign.pk %}">
+          Items
+        </a>
+      </li>
+    </ul>
+
+  </div>
+</div>
+{% endblock subnav %}
+
+
+
+
+{% block content %}
+  <div class="card mt-3">
+    <div class="card-body">
+      {% if item.item_image %}
+        <img src="{{ item.item_image.url }}" class="float-end ms-3 mb-3 rounded" style="max-width:180px;">
+      {% endif %}
+
+      <h3>{{ item.name }}</h3>
+      <p class="text-muted">{{ item.item_type }} &middot; {{ item.rarity }}</p>
+
+      <p>{{ item.description|linebreaks }}</p>
+
+      <hr>
+      <p><strong>Price:</strong> {{ item.price }} gp</p>
+
+      <p>
+        <strong>Owner:</strong>
+        {% if item.owner_character %}
+          Character – <a href="{% url 'character_detail' campaign.pk item.owner_character.pk %}">
+          {{ item.owner_character.name }}</a>
+        {% elif item.owner_npc %}
+          NPC – <a href="{% url 'npc_detail' campaign.pk item.owner_npc.pk %}">
+          {{ item.owner_npc.name }}</a>
+        {% else %}
+          <em>Unowned</em>
+        {% endif %}
+      </p>
+
+
+      <a href="{% url 'item_update_general' campaign_id=campaign.id pk=item.pk %}"
+      class="btn btn-primary mt-3">
+      Edit 
+      </a>
+      <a href="{% url 'item_delete_general' campaign_id=campaign.id pk=item.pk %}"
+      class="btn btn-primary mt-3">
+      Delete Item 
+      </a>
+
+    </div>
+
+  </div>
+{% endblock %}

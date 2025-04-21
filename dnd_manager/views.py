@@ -11,7 +11,8 @@ from .models import (
 )
 from .forms import (
     CampaignForm, SessionForm, CharacterForm, NPCForm, 
-    CreateItemForm, UpdateItemForm, QuestForm, AdventureLogForm, CalendarEventForm
+    CreateItemForm, UpdateItemForm, QuestForm, AdventureLogForm, CalendarEventForm,
+    CreateGeneralItemForm
 )
 
 
@@ -96,6 +97,11 @@ class SessionDetailView(DetailView):
         session = self.get_object()
         # Pull all logs for this Session, as well as the related Character for each log
         context['adventure_logs'] = session.adventure_logs.select_related('character')
+
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+        context['campaign'] = campaign
+        
         return context
 
 
@@ -252,7 +258,7 @@ class CharacterDeleteView(DeleteView):
 
     def get_success_url(self):
         """Redirect to the Campaign detail page after deletion."""
-        return reverse('campaign_detail', kwargs={'pk': self.kwargs['campaign_id']})
+        return reverse('character_list', kwargs={'campaign_id': self.kwargs['campaign_id']})
 
 
 # -----------------
@@ -348,6 +354,91 @@ class NPCDeleteView(DeleteView):
 # -----------------
 # Item Views
 # -----------------
+
+
+class ItemListView(ListView):
+    model = Item
+    template_name = 'dnd_manager/item_list.html'
+    context_object_name = 'items'
+
+    # ---------- filtering ----------
+    def get_queryset(self):
+        qs = (Item.objects
+                    .filter(campaign_id=self.kwargs['campaign_id'])
+                    .select_related('owner_character', 'owner_npc'))
+
+        # type
+        item_type = self.request.GET.get('type')
+        if item_type:
+            qs = qs.filter(item_type=item_type)
+
+        # rarity
+        rarity = self.request.GET.get('rarity')
+        if rarity:
+            qs = qs.filter(rarity=rarity)
+
+        # owner
+        owner_id = self.request.GET.get('owner')
+        if owner_id:
+            qs = qs.filter(owner_character_id=owner_id) | qs.filter(owner_npc_id=owner_id)
+            
+
+        # default ordering
+        return qs.order_by('item_type', 'name')
+
+    def get_available_owners(self):
+        """Helper function to get only item owners from this campaign"""
+        campaign_id = self.kwargs['campaign_id']
+        chars = Character.objects.filter(campaign_id=campaign_id).values('id', 'name')
+        npcs  = NPC.objects.filter(campaign_id=campaign_id).values('id', 'name')
+        # tag them to know which is which 
+        return [('C'+str(c['id']), c['name']) for c in chars] + \
+            [('N'+str(n['id']), n['name']) for n in npcs]
+
+    # ---------- grouping ----------
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        campaign = Campaign.objects.get(pk=self.kwargs['campaign_id'])
+        context['campaign'] = campaign
+
+        char_groups = defaultdict(list)
+        npc_groups  = defaultdict(list)
+        unowned     = []
+
+        for item in self.object_list:
+            if item.owner_character:
+                char_groups[item.owner_character].append(item)
+            elif item.owner_npc:
+                npc_groups[item.owner_npc].append(item)
+            else:
+                unowned.append(item)
+
+        # convert to something template‑friendly
+        context['char_items'] = list(char_groups.items())   # [(Character, [items])]
+        context['npc_items']  = list(npc_groups.items())    # [(NPC, [items])]
+        context['unowned']    = unowned
+
+        context['owner_choices'] = self.get_available_owners()
+
+        # make choices available to the template
+        context["item_type_choices"] = Item.ITEM_TYPE_CHOICES
+        context["rarity_choices"]     = Item.RARITY_CHOICES
+
+
+        return context
+
+
+class ItemDetailView(DetailView):
+    model = Item
+    template_name = "dnd_manager/item_detail.html"
+    context_object_name = "item"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        campaign = Campaign.objects.get(pk=self.kwargs["campaign_id"])
+        context["campaign"] = campaign
+        return context
+
 
 class ItemCreateView(CreateView):
     model = Item
@@ -477,6 +568,105 @@ def item_sell_view(request, campaign_id, character_id, pk):
             'character': character,
             'item': item
         })
+
+# -----------------
+# General Item Views
+# -----------------
+
+
+
+class ItemCreateGeneralView(CreateView):
+    model = Item
+    form_class = CreateGeneralItemForm
+    template_name = 'dnd_manager/create_item_general_form.html' 
+
+    def form_valid(self, form):
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+
+        # Attach the campaign to this item
+        form.instance.campaign = campaign 
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # After creation, go back to the Item's detail page -->
+        # NOT THE CHARACTER's PAGE: 
+        return reverse('item_list', kwargs={
+            'campaign_id': self.kwargs['campaign_id'],
+        })
+
+    def get_context_data(self, **kwargs):
+        """Pass the Campaign into the template context."""
+        context = super().get_context_data(**kwargs)
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+        context['campaign'] = campaign
+
+        # DOESN'T HAVE CHARACTER ID: 
+        # character_id = self.kwargs['character_id']
+        # character = Character.objects.get(pk=character_id)
+        # context['character'] = character
+
+        return context
+
+
+class ItemUpdateGeneralView(UpdateView):
+    model = Item
+    form_class = CreateGeneralItemForm
+    template_name = 'dnd_manager/create_item_general_form.html' 
+
+    def get_form(self, form_class=None):
+        """
+        Override get_form() to filter the Item field's queryset
+        so that it only shows Characters for the correct campaign.
+        """
+        form = super().get_form(form_class)
+        
+        # Fetch the relevant Campaign from the URL
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+
+        # Restrict the Character dropdown to only characters from this campaign
+        form.fields['owner_character'].queryset = Character.objects.filter(campaign=campaign)
+        form.fields['owner_npc'].queryset = NPC.objects.filter(campaign=campaign)
+
+        return form
+
+    def get_context_data(self, **kwargs):
+        """Pass the Campaign into the template context."""
+        context = super().get_context_data(**kwargs)
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+        context['campaign'] = campaign
+
+        return context
+
+    def get_success_url(self):
+        return reverse('item_detail', kwargs={
+            'campaign_id': self.kwargs['campaign_id'],
+            'pk': self.kwargs['pk']
+        })
+
+
+class ItemDeleteGeneralView(DeleteView):
+    model = Item
+    template_name = 'dnd_manager/delete_item_general_confirm.html'
+
+    def get_success_url(self):
+        return reverse('item_list', kwargs={
+            'campaign_id': self.kwargs['campaign_id'],
+        })
+    
+    def get_context_data(self, **kwargs):
+        """Pass the Campaign into the template context."""
+        context = super().get_context_data(**kwargs)
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+        context['campaign'] = campaign
+
+        return context
+
 
 
 # -----------------

@@ -2,40 +2,53 @@
 {% extends 'dnd_manager/base.html' %}
 
 {% block subnav %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <span class="navbar-text">
-      {{ campaign.name }}
-    </span>
-    <ul class="navbar-nav ms-auto">
+<div class="bg-light border-bottom py-2">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    
+    {# ------------- LEFT: breadcrumb ------------- #}
+    <nav aria-label="breadcrumb" class="mb-0">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{% url 'campaign_list' %}">All Campaigns</a>
+        </li>
+        {% comment %}Adjust the final crumb per page{% endcomment %}
+        <li class="breadcrumb-item active" aria-current="page">{{ campaign.name }}</li>
+      </ol>
+    </nav>
+
+    {# ------------- RIGHT: quick links ------------- #}
+    <ul class="nav ms-3">
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'campaign_list' %}">All Campaigns</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="">
+        <a class="nav-link px-2" href="{% url 'campaign_detail' campaign.pk %}">
           Sessions
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'character_list' campaign.pk %}">
+        <a class="nav-link px-2" href="{% url 'character_list' campaign.pk %}">
           Characters
         </a>
       </li>
-      <li>
-        <a class="nav-link" href="{% url 'npc_list' campaign.pk %}">
-            NPCs
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'npc_list' campaign.pk %}">
+          NPCs
         </a>
       </li>
-      <li>
-        <a class="nav-link" href="{% url 'quest_list' campaign.pk %}">
-            Quests
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'quest_list' campaign.pk %}">
+          Quests
         </a>
       </li>
-      <!-- etc. -->
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'item_list' campaign.pk %}">
+          Items
+        </a>
+      </li>
     </ul>
+
   </div>
-</nav>
+</div>
 {% endblock subnav %}
+
 
 {% block content %}
 <h2>{{ campaign.name }}</h2>

@@ -34,10 +34,19 @@ urlpatterns = [
     path('campaigns/<int:campaign_id>/npcs/<int:pk>/delete/', NPCDeleteView.as_view(), name='npc_delete'),
 
     # Items
+    path('campaigns/<int:campaign_id>/items/', ItemListView.as_view(), name='item_list'),
     path('campaigns/<int:campaign_id>/characters/<int:character_id>/items/create/', ItemCreateView.as_view(), name='item_create'),
+    path('campaigns/<int:campaign_id>/items/<int:pk>/', ItemDetailView.as_view(), name='item_detail'),
     path('campaigns/<int:campaign_id>/characters/<int:character_id>/items/<int:pk>/update/', ItemUpdateView.as_view(), name='item_update'),
     path('campaigns/<int:campaign_id>/characters/<int:character_id>/items/<int:pk>/delete/', ItemDeleteView.as_view(), name='item_delete'),
     path('campaigns/<int:campaign_id>/characters/<int:character_id>/items/<int:pk>/sell/', item_sell_view, name='item_sell'),
+
+    # General Item CRUD
+    path('campaigns/<int:campaign_id>/items/create/', ItemCreateGeneralView.as_view(), name="item_create_general"),
+    path('campaigns/<int:campaign_id>/items/<int:pk>/update/', ItemUpdateGeneralView.as_view(), name="item_update_general"),
+    path('campaigns/<int:campaign_id>/items/<int:pk>/delete/', ItemDeleteGeneralView.as_view(), name="item_delete_general"),
+
+
 
     # Adventure Logs
     path('campaigns/<int:campaign_id>/characters/<int:character_id>/logs/create/', AdventureLogCreateView.as_view(), name='adventure_log_create'),

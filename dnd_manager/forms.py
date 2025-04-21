@@ -44,6 +44,7 @@ class CreateItemForm(forms.ModelForm):
         # ]
         fields = ['name', 'description', 'item_type', 'rarity', 'item_image', 'price']
 
+
         
 class UpdateItemForm(forms.ModelForm):
     class Meta:
@@ -52,6 +53,17 @@ class UpdateItemForm(forms.ModelForm):
             'name', 'description', 'item_type', 'rarity', 'owner_character', 'item_image', 'price'
         ]
         # fields = ['name', 'description', 'item_type', 'rarity', 'item_image', 'price']
+
+
+
+class CreateGeneralItemForm(forms.ModelForm):
+    class Meta:
+        model = Item
+        fields = [
+            'name', 'description', 'item_type', 'rarity', 'owner_character', 'owner_npc', 'item_image', 'price'
+        ]
+        # fields = ['name', 'description', 'item_type', 'rarity', 'item_image', 'price']
+
 
 
 class QuestForm(forms.ModelForm):

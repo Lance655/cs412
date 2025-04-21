@@ -84,6 +84,24 @@ class NPC(models.Model):
 class Item(models.Model):
     '''Encapsulate the data for each item'''
 
+    ITEM_TYPE_CHOICES = [
+        ('Weapon', 'Weapon'),
+        ('Armor', 'Armor'),
+        ('Potion', 'Potion'),
+        ('Ring', 'Ring'),
+        ('Rod', 'Rod'),
+        ('Scroll', 'Scroll'),
+        ('Staff', 'Staff'),
+        ('Wand', 'Wand'),
+        ('Wondrous Item', 'Wondrous Item'),
+        ('Artifact', 'Artifact'),
+        ('Adventuring Gear', 'Adventuring Gear'),
+        ('Tool', 'Tool'),
+        ('Material', 'Material'),
+        ('Food/Drink', 'Food/Drink'),
+        ('Miscellaneous', 'Miscellaneous'),
+    ]
+
     RARITY_CHOICES = [
         ('Common', 'Common'),
         ('Uncommon', 'Uncommon'),
@@ -93,7 +111,7 @@ class Item(models.Model):
 
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    item_type = models.CharField(max_length=100)
+    item_type = models.CharField(max_length=30, choices=ITEM_TYPE_CHOICES, default='Weapon')
     rarity = models.CharField(max_length=20, choices=RARITY_CHOICES, default='Common')
     # allow either Character or NPC to own it
     owner_character = models.ForeignKey(Character, on_delete=models.SET_NULL, null=True, blank=True, related_name='items_owned')

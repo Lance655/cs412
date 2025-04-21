@@ -2,18 +2,51 @@
 
 {% block subnav %}
 <div class="bg-light border-bottom py-2">
-  <div class="container">
-    <nav aria-label="breadcrumb">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    
+    {# ------------- LEFT: breadcrumb ------------- #}
+    <nav aria-label="breadcrumb" class="mb-0">
       <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item"><a href="{% url 'campaign_list' %}">All Campaigns</a></li>
         <li class="breadcrumb-item">
-          <a href="{% url 'campaign_detail' pk=campaign.id %}">{{ campaign.name }}</a>
+          <a href="{% url 'campaign_list' %}">All Campaigns</a>
         </li>
-        <li class="breadcrumb-item active" aria-current="page">
-          Characters
-        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'campaign_detail' campaign.pk %}">{{ campaign.name }}</a>
+          </li>
+        {% comment %}Adjust the final crumb per page{% endcomment %}
+        <li class="breadcrumb-item active" aria-current="page">Characters</li>
       </ol>
     </nav>
+
+    {# ------------- RIGHT: quick links ------------- #}
+    <ul class="nav ms-3">
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'campaign_detail' campaign.pk %}">
+          Sessions
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'character_list' campaign.pk %}">
+          Characters
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'npc_list' campaign.pk %}">
+          NPCs
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'quest_list' campaign.pk %}">
+          Quests
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'item_list' campaign.pk %}">
+          Items
+        </a>
+      </li>
+    </ul>
+
   </div>
 </div>
 {% endblock subnav %}
@@ -55,9 +88,9 @@
     <p>No characters found for this campaign.</p>
   {% endif %}
 
-  <p>
+  <!-- <p>
     <a class="btn btn-secondary" href="{% url 'campaign_detail' pk=campaign.id %}">
       Back to Campaign
     </a>
-  </p>
+  </p> -->
 {% endblock content %}

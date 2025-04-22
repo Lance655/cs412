@@ -16,8 +16,13 @@
         <li class="breadcrumb-item">
             <a href="{% url 'item_list' campaign.pk %}">Items</a>
         </li>
+        {% if object %}
+            <li class="breadcrumb-item">
+                <a href="{% url 'item_detail' campaign.pk item.pk %}">{{ item.name }}</a>
+            </li> 
+        {% endif %}
         {% comment %}Adjust the final crumb per page{% endcomment %}
-        <li class="breadcrumb-item active" aria-current="page">{% if object %}Edit Item{% else %}Add Item{% endif %}</li>
+        <li class="breadcrumb-item active" aria-current="page">{% if object %}Edit{% else %}Add Item{% endif %}</li>
       </ol>
     </nav>
 
@@ -56,7 +61,7 @@
 
 {% block content %}
   <h1 class="mb-4">
-    {% if object %}Edit Item{% else %}Add Item{% endif %}
+    {% if object %}Edit {{ item.name }}{% else %}Add Item{% endif %}
   </h1>
 
   <form method="POST" enctype="multipart/form-data" class="row g-3">
@@ -67,10 +72,18 @@
     <div class="col-12">
       <button type="submit" class="btn btn-primary">{% if object %}Save{% else %}Add Item{% endif %}</button>
       
-      <a class="btn btn-secondary" 
-         href="{% url 'item_list' campaign_id=campaign.id %}">
-        Cancel
-      </a>
+      {% if object %}
+          <a class="btn btn-secondary" 
+            href="{% url 'item_detail' campaign_id=campaign.id pk=item.pk %}">
+            Cancel
+          </a>
+      {% else %}
+         <a class="btn btn-secondary" 
+            href="{% url 'item_list' campaign_id=campaign.id %}">
+            Cancel
+        </a>
+      {% endif %}
+ 
     </div>
   </form>
 {% endblock content %}

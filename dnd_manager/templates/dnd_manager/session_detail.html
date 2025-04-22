@@ -81,8 +81,8 @@
     <ul>
       {% for log in adventure_logs %}
         <li>
-          <strong>{{ log.character.name }}</strong> earned {{ log.xp_earned }} XP
-          <p>{{ log.details|linebreaks }}</p>
+          <strong>{{ log.character.name }}</strong> XP earned: {{ log.xp_earned }} | Enemies Killed: {{ log.enemies_killed }} | Downs: {{ log.number_of_downs}}
+          <div class="ms-3"> <i> <p>{{ log.details|linebreaks }}</p> </i> </div>
         </li>
       {% endfor %}
     </ul>
@@ -91,10 +91,10 @@
   {% endif %}
 
     <!-- Create new adventure log -->
-    <p>
+    <!-- <p>
         <a href="" class="btn btn-primary">
             Create Log
         </a>
-    </p>
+    </p> -->
 
 {% endblock content %}

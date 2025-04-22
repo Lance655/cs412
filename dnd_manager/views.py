@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect
 
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
+
 from collections import defaultdict
 
 from django.urls import reverse_lazy, reverse
@@ -38,12 +41,30 @@ class CampaignDetailView(DetailView):
         # Add related data to the context
         context = super().get_context_data(**kwargs)
         campaign = self.get_object()
+
+        # base queryset with totals
+        # use coalesce so that if a character does not have any logs, it will default the fields to 0
+        # use annotate to add calculated fields to each object in the queryset.
+        chars = (Character.objects
+                .filter(campaign=campaign)
+                .annotate(
+                    total_kills = Coalesce(Sum('adventure_logs__enemies_killed'), 0),
+                    total_downs = Coalesce(Sum('adventure_logs__number_of_downs'), 0)
+                ))
+
+        # three leaderboards, each already sorted desc
+        context["lb_gold"]   = chars.order_by("-gold",          "name")
+        context["lb_kills"]  = chars.order_by("-total_kills",   "name")
+        context["lb_downs"]  = chars.order_by("-total_downs",   "name")
+
+
         context['sessions'] = campaign.sessions.all()
         context['characters'] = campaign.characters.all()
         context['items'] = campaign.items.all()
         context['npcs'] = campaign.npcs.all()
         context['quests'] = campaign.quests.all()
         context['events'] = campaign.events.all()
+
         return context
 
 
@@ -101,7 +122,7 @@ class SessionDetailView(DetailView):
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
         context['campaign'] = campaign
-        
+
         return context
 
 
@@ -223,6 +244,7 @@ class CharacterCreateView(CreateView):
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
         context['campaign'] = campaign
+
         return context
 
 
@@ -236,6 +258,10 @@ class CharacterUpdateView(UpdateView):
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
         context['campaign'] = campaign
+
+        character_id = self.kwargs['pk']
+        character = Character.objects.get(pk=character_id)
+        context['character'] = character
         return context
 
     def get_success_url(self):
@@ -512,6 +538,10 @@ class ItemUpdateView(UpdateView):
         character_id = self.kwargs['character_id']
         character = Character.objects.get(pk=character_id)
         context['character'] = character
+        
+        item_id = self.kwargs['pk']
+        item = Item.objects.get(pk=item_id)
+        context['item'] = item
 
         return context
 
@@ -639,6 +669,10 @@ class ItemUpdateGeneralView(UpdateView):
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
         context['campaign'] = campaign
+
+        item_id = self.kwargs['pk']
+        item = Item.objects.get(pk=item_id)
+        context['item'] = item
 
         return context
 
@@ -951,6 +985,11 @@ class QuestUpdateView(UpdateView):
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
         context['campaign'] = campaign
+
+        quest_id = self.kwargs['pk']
+        quest = Quest.objects.get(pk=quest_id)
+        context['quest'] = quest
+        
         return context
 
 class QuestDeleteView(DeleteView):

@@ -84,4 +84,17 @@
 {% else %}
   <p>No characters assigned yet.</p>
 {% endif %}
+
+
+<!-- Provide update/delete links -->
+<p>
+    <a href="{% url 'quest_update' campaign_id=campaign.pk pk=quest.pk %}" class="btn btn-primary">
+        Edit 
+    </a>
+    <a href="{% url 'quest_delete' campaign_id=campaign.pk pk=quest.pk %}" class="btn btn-danger">
+        Delete Quest
+    </a>
+</p>
+
+
 {% endblock content %}

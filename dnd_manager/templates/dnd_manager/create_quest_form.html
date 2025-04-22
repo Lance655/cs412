@@ -2,18 +2,62 @@
 {% extends 'dnd_manager/base.html' %}
 
 {% block subnav %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <span class="navbar-text">
-      {{ campaign.name }} - New / Edit Quest
-    </span>
-    <ul class="navbar-nav ms-auto">
+<div class="bg-light border-bottom py-2">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    
+    {# ------------- LEFT: breadcrumb ------------- #}
+    <nav aria-label="breadcrumb" class="mb-0">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{% url 'campaign_list' %}">All Campaigns</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'campaign_detail' campaign.pk %}">{{ campaign.name }}</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'quest_list' campaign.pk %}">Quests</a>
+        </li>
+        {% if object %}
+            <li class="breadcrumb-item">
+                <a href="{% url 'quest_list' campaign.pk %}">{{ quest.title }}</a>
+            </li>
+        {% endif %}
+        {% comment %}Adjust the final crumb per page{% endcomment %}
+        <li class="breadcrumb-item active" aria-current="page">{% if object %}Edit{% else %}Create Quest{% endif %}</li>
+      </ol>
+    </nav>
+
+    {# ------------- RIGHT: quick links ------------- #}
+    <ul class="nav ms-3">
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'quest_detail' campaign.pk object.pk%}">Cancel</a>
+        <a class="nav-link px-2" href="{% url 'campaign_detail' campaign.pk %}">
+          Sessions
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'character_list' campaign.pk %}">
+          Characters
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'npc_list' campaign.pk %}">
+          NPCs
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'quest_list' campaign.pk %}">
+          Quests
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'item_list' campaign.pk %}">
+          Items
+        </a>
       </li>
     </ul>
+
   </div>
-</nav>
+</div>
 {% endblock subnav %}
 
 {% block content %}
@@ -22,5 +66,18 @@
   {% csrf_token %}
   {{ form.as_p }}
   <button class="btn btn-primary" type="submit">{% if object %}Save{% else %}Create Quest{% endif %}</button>
+
+  {% if object %}
+    <a class="btn btn-secondary" 
+        href="{% url 'quest_detail' campaign_id=campaign.id pk=quest.pk %}">
+        Cancel
+    </a>
+  {% else %}
+    <a class="btn btn-secondary" 
+        href="{% url 'quest_list' campaign_id=campaign.id %}">
+        Cancel
+    </a>
+  {% endif %}
+
 </form>
 {% endblock content %}

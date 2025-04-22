@@ -161,6 +161,9 @@ class AdventureLog(models.Model):
     character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='adventure_logs')
     details = models.TextField(blank=True)
     xp_earned = models.PositiveIntegerField(default=0)
+    enemies_killed = models.PositiveIntegerField(default=0)
+    number_of_downs = models.PositiveIntegerField(default=0)
+    
 
     def __str__(self):
         return f"AdventureLog for {self.character.name} in session {self.session.id}"

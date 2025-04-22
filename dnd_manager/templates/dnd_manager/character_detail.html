@@ -195,10 +195,17 @@
     {% if adventure_logs %}
     <ul>
       {% for log in adventure_logs %}
-        <li>
+        <li class="my-3">
           <strong>Session:</strong> {{ log.session.name }} 
-          <strong>XP Earned:</strong> {{ log.xp_earned }}
-          <p>{{ log.details|linebreaks }}</p>
+
+            <div>
+                <strong>XP Earned:</strong> {{ log.xp_earned }} | 
+                <strong>Enemies Killed:</strong> {{ log.enemies_killed }} | 
+                <strong>Downs:</strong> {{ log.number_of_downs }} 
+            </div>
+
+            <div class="ms-3"> <i> <p>{{ log.details|linebreaks }}</p> </i> </div>
+          
   
           <!-- Edit/Delete Buttons -->
           <a href="{% url 'adventure_log_update' campaign_id=campaign.id character_id=character.id pk=log.pk %}"

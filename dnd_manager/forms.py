@@ -78,7 +78,7 @@ class AdventureLogForm(forms.ModelForm):
     class Meta:
         model = AdventureLog
         # fields = ['session', 'character', 'details', 'xp_earned']
-        fields = ['session', 'details', 'xp_earned']
+        fields = ['session', 'details', 'xp_earned', 'enemies_killed', 'number_of_downs']
 
 
 

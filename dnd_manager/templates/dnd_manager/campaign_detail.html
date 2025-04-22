@@ -51,33 +51,119 @@
 
 
 {% block content %}
-<h2>{{ campaign.name }}</h2>
-<p>{{ campaign.description }}</p>
+<div class="container my-4">
 
-<!-- List of Sessions for This Campaign -->
-<h3>Sessions</h3>
+  <!-- ===================================================== -->
+  <!--  Leaderboards                                         -->
+  <!-- ===================================================== -->
+  <section class="mb-5">
 
-<ul>
-  {% for session in campaign.sessions.all %}
-    <li>
-      <!-- Link to this session's detail view -->
-      <a href="{% url 'session_detail' campaign_id=campaign.pk pk=session.pk %}">
-        {{ session.name }}
+    <div class="alert alert-info" role="alert">
+    <h2 class="h4 text-uppercase text-center fw-bold mb-3">Leaderboards</h2>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+
+      {# ---------- GOLD ---------- #}
+      <div class="col">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-header bg-warning bg-gradient text-dark text-center fw-bold">
+            💰 Gold Hoarders
+          </div>
+          <ol class="list-group list-group-flush list-group-numbered">
+            {% for c in lb_gold %}
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>{{ c.name }}</span>
+                <span class="badge bg-warning text-dark fw-semibold">{{ c.gold }} gp</span>
+              </li>
+            {% empty %}
+              <li class="list-group-item text-muted">No characters yet.</li>
+            {% endfor %}
+          </ol>
+        </div>
+      </div>
+
+      {# ---------- KILLS ---------- #}
+      <div class="col">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-header bg-danger bg-gradient text-white text-center fw-bold">
+            ⚔️ Enemies Slain
+          </div>
+          <ol class="list-group list-group-flush list-group-numbered">
+            {% for c in lb_kills %}
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>{{ c.name }}</span>
+                <span class="badge bg-danger">{{ c.total_kills }}</span>
+              </li>
+            {% empty %}
+              <li class="list-group-item text-muted">No data yet.</li>
+            {% endfor %}
+          </ol>
+        </div>
+      </div>
+
+      {# ---------- DOWNS ---------- #}
+      <div class="col">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-header bg-secondary bg-gradient text-white text-center fw-bold">
+            💀 Times Downed
+          </div>
+          <ol class="list-group list-group-flush list-group-numbered">
+            {% for c in lb_downs %}
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>{{ c.name }}</span>
+                <span class="badge bg-secondary">{{ c.total_downs }}</span>
+              </li>
+            {% empty %}
+              <li class="list-group-item text-muted">No data yet.</li>
+            {% endfor %}
+          </ol>
+        </div>
+      </div>
+
+    </div>
+    </div>
+  </section>
+
+
+  <!-- ===================================================== -->
+  <!--  Campaign Header                                      -->
+  <!-- ===================================================== -->
+  <header class="">
+    <h1 class="">{{ campaign.name }}</h1>
+    {% if campaign.description %}
+      <p class="">{{ campaign.description }}</p>
+    {% endif %}
+  </header>
+  
+
+  <!-- ===================================================== -->
+  <!--  Sessions List                                        -->
+  <!-- ===================================================== -->
+  <section>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="h4 mb-0">Sessions</h2>
+      <a href="{% url 'session_create' campaign_id=campaign.pk %}" class="btn btn-sm btn-primary">
+        + Create Session
       </a>
-      <small>on {{ session.session_date|date:"Y-m-d H:i" }}</small>
-    </li>
-  {% empty %}
-    <li>No sessions yet for this campaign.</li>
-  {% endfor %}
+    </div>
 
-  <!-- Link to create a new session for this campaign -->
-  <p>
-      <a class="btn btn-primary mt-3" href="{% url 'session_create' campaign_id=campaign.pk %}">
-          Create New Session
-      </a>
-  </p>
-</ul>
+    {% if campaign.sessions.exists %}
+      <div class="list-group shadow-sm">
+        {% for session in campaign.sessions.all %}
+          <a
+            href="{% url 'session_detail' campaign_id=campaign.pk pk=session.pk %}"
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+          >
+            <span>{{ session.name }}</span>
+            <small class="text-muted">{{ session.session_date|date:"Y‑m‑d H:i" }}</small>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-muted">No sessions yet for this campaign.</p>
+    {% endif %}
+  </section>
 
-
-
+</div>
 {% endblock content %}
+

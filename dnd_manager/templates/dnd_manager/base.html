@@ -19,7 +19,36 @@
           <a class="navbar-brand" href="{% url 'campaign_list' %}">
             D&D Manager
           </a>
+
+            <!-- Display who is logged in -->
+            <div class="text-end">
+                {% if request.user.is_authenticated %}
+                <h3 class="navbar-brand"> Logged in as: {{request.user}} </h3>
+                {% else %}
+                <h3 class="navbar-brand"> Not logged in </h3>
+                {% endif %} 
+
+                <!-- if logged in, show the logout button -->
+                {% if request.user.is_authenticated %}
+
+                    <form action="{% url 'logout' %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit">Logout</button>
+                    </form>
+
+                <!-- if not logged in, show the login button -->
+                {% else %}
+                    <a href="{% url 'login' %}">Login</a>
+                    <a href="{% url 'register' %}">Register</a>
+                {% endif %}
+
+            </div>
+
+
+
         </div>
+  
+
       </nav>
     
       <!-- Sub-navigation block -->

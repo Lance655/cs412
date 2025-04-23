@@ -1,0 +1,26 @@
+<!-- 
+File: login.html
+Author: Lance Sinson (ssinson@bu.edu), 5/1/25
+Description: The login html template for the dnd campaign manager website. 
+-->
+
+{% extends 'dnd_manager/base.html' %}
+
+{% block content %}
+
+<h1>Login</h1>
+<form action="{% url 'login' %}" method="POST">
+    {% csrf_token %}
+    {{form}}
+    <input type="submit" value="Login">
+
+    {% if request.GET.next %}
+    <input type="hidden" name="next" value="{{request.GET.next}}">
+    {% else %}
+    <input type="hidden" name="next" value="{% url 'campaign_list' %}">
+    {% endif %}
+</form>
+
+<hr>
+
+{% endblock %}

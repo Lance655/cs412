@@ -1,5 +1,7 @@
 from django.urls import path
 from .views import *
+from django.contrib.auth import views as auth_views # NEW
+
 
 urlpatterns = [
 
@@ -59,6 +61,14 @@ urlpatterns = [
     path('campaigns/<int:campaign_id>/quests/<int:pk>/', QuestDetailView.as_view(), name='quest_detail'),
     path('campaigns/<int:campaign_id>/quests/<int:pk>/update/', QuestUpdateView.as_view(), name='quest_update'),
     path('campaigns/<int:campaign_id>/quests/<int:pk>/delete/', QuestDeleteView.as_view(), name='quest_delete'),
+
+
+    # Login / Logout / Registration
+    path('login/', auth_views.LoginView.as_view(template_name='dnd_manager/login.html'), name="login"),
+    path('logout/', auth_views.LogoutView.as_view(template_name='dnd_manager/logged_out.html'), name="logout"),
+    path('register/', UserRegistrationView.as_view(), name='register'),
+
+    
 ]
 
 

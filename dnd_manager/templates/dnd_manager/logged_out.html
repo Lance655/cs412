@@ -1,0 +1,15 @@
+<!-- 
+File: logged_out.html
+Author: Lance Sinson (ssinson@bu.edu), 5/1/25
+Description: The logout html template for the dnd campaign manager website. 
+-->
+
+{% extends 'dnd_manager/base.html' %}
+
+{% block content %}
+
+<h2> You have been logged out </h2>
+
+Return to the Login Page: <a href="{% url 'login' %}">Login</a>
+
+{% endblock %}

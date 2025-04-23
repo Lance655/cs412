@@ -18,6 +18,12 @@ from .forms import (
     CreateGeneralItemForm
 )
 
+from django.contrib.auth.mixins import LoginRequiredMixin ## NEW
+from django.contrib.auth.models import User ## NEW
+from django.contrib.auth.forms import UserCreationForm ## NEW
+from django.contrib.auth import login
+
+
 
 # Create your views here.
 
@@ -228,10 +234,17 @@ class CharacterCreateView(CreateView):
     template_name = 'dnd_manager/create_character_form.html'
 
     def form_valid(self, form):
-        """Assign the correct Campaign via the URL param before saving."""
+        """Assign the correct Campaign via the URL param before saving. 
+        Also add corresponding user
+        """
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
         form.instance.campaign = campaign
+
+        # find the logged in user
+        user = self.request.user
+        form.instance.user = user
+
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -1015,6 +1028,28 @@ class QuestDeleteView(DeleteView):
         campaign = Campaign.objects.get(pk=campaign_id)
         context['campaign'] = campaign
         return context
+
+
+# -----------------
+# Registration
+# -----------------
+
+class UserRegistrationView(CreateView):
+    '''A view to show/process the registration form to create a new User.'''
+
+    template_name = 'dnd_manager/register.html'
+    form_class = UserCreationForm
+    model = User
+
+    def form_valid(self, form):
+        user = form.save()
+        # Automatically log the user in
+        login(self.request, user)
+        return redirect('campaign_list')
+
+    # def get_success_url(self):
+    #     '''The url to redirect to after creating a new User'''
+    #     return reverse('campaign_list')
 
 
 

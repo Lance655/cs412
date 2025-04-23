@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 import datetime
+from django.contrib.auth.models import User  # new
+
 
 # Create your models here.
 
@@ -63,6 +65,9 @@ class Character(models.Model):
 
     character_image = models.ImageField(blank=True)
     gold = models.PositiveIntegerField(default=0)
+
+    # User FK
+    user = models.ForeignKey(User, on_delete=models.CASCADE) 
 
     def __str__(self):
         return f"{self.name} (Lvl {self.level} {self.class_type})"
@@ -163,7 +168,7 @@ class AdventureLog(models.Model):
     xp_earned = models.PositiveIntegerField(default=0)
     enemies_killed = models.PositiveIntegerField(default=0)
     number_of_downs = models.PositiveIntegerField(default=0)
-    
+
 
     def __str__(self):
         return f"AdventureLog for {self.character.name} in session {self.session.id}"

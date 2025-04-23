@@ -6,6 +6,7 @@ from django.db.models.functions import Coalesce
 from collections import defaultdict
 
 from django.urls import reverse_lazy, reverse
+
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView
 )
@@ -23,6 +24,49 @@ from django.contrib.auth.models import User ## NEW
 from django.contrib.auth.forms import UserCreationForm ## NEW
 from django.contrib.auth import login
 
+
+class MyLoginRequiredMixin(LoginRequiredMixin):
+    '''Class to create a custom mixin for logins'''
+    def get_login_url(self):
+        '''Redirect to the login page'''
+        return reverse('login')
+
+class DMOnlyMixin:
+    """
+    Restrict access to DM only.
+    Requires the object has a campaign field with a .dm user.
+    """
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if request.user.is_staff or request.user == obj.campaign.dm:
+            return super().dispatch(request, *args, **kwargs)
+
+        return redirect('campaign_list')
+
+class DMCreateOnlyMixin:
+    """
+    Mixin for create views that only staff or DM can create a new object.
+    """
+    def dispatch(self, request, *args, **kwargs):
+        """Method to check if the user has permissions to create certain views"""
+        # Attempt to fetch campaign_id from URL kwargs
+        campaign_id = kwargs.get('campaign_id')
+        if campaign_id is None:
+            # If there's no campaign, fall back to staff check or deny
+            if not request.user.is_staff:
+                return redirect('campaign_list')
+            return super().dispatch(request, *args, **kwargs)
+
+        # Retrieve the Campaign using the ID
+        campaign = Campaign.objects.get(pk=campaign_id)
+
+        # Check if user is staff or campaign DM
+        if request.user.is_staff or request.user == campaign.dm:
+            # Allowed
+            return super().dispatch(request, *args, **kwargs)
+
+        # Otherwise, deny
+        return redirect('campaign_list')
 
 
 # Create your views here.
@@ -74,10 +118,18 @@ class CampaignDetailView(DetailView):
         return context
 
 
-class CampaignCreateView(CreateView):
+class CampaignCreateView(MyLoginRequiredMixin, CreateView):
     model = Campaign
     form_class = CampaignForm
     template_name = 'dnd_manager/create_campaign_form.html'
+
+    def form_valid(self, form):
+        """Make the user creating a new campaign the DM for that campaign"""
+        # find the logged in user
+        user = self.request.user
+        form.instance.dm = user
+
+        return super().form_valid(form)
 
     def get_success_url(self):
         """Redirect back to the campaign list."""
@@ -85,19 +137,43 @@ class CampaignCreateView(CreateView):
         
 
 
-class CampaignUpdateView(UpdateView):
+class CampaignUpdateView(MyLoginRequiredMixin, UpdateView):
     model = Campaign
     form_class = CampaignForm
     template_name = 'dnd_manager/create_campaign_form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        """Method to check whether user is the DM or a player"""
+        campaign = self.get_object()
+
+        # Only the DM or staff can update the campaign:
+        if request.user.is_staff or request.user == campaign.dm:
+            return super().dispatch(request, *args, **kwargs)
+
+        # Block the user otherwise
+        return redirect('campaign_list')
+
 
     def get_success_url(self):
         """Redirect back to the campaign list."""
         return reverse('campaign_list')
 
 
-class CampaignDeleteView(DeleteView):
+class CampaignDeleteView(MyLoginRequiredMixin, DeleteView):
     model = Campaign
     template_name = 'dnd_manager/delete_campaign_confirm.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        """Method to check whether user is the DM or a player"""
+        campaign = self.get_object()
+
+        # Only the DM or staff can delete a campaign:
+        if request.user.is_staff or request.user == campaign.dm:
+            return super().dispatch(request, *args, **kwargs)
+
+        # Block the user otherwise
+        return redirect('campaign_list')
+
 
     def get_success_url(self):
         """Redirect back to the campaign list."""
@@ -132,7 +208,7 @@ class SessionDetailView(DetailView):
         return context
 
 
-class SessionCreateView(CreateView):
+class SessionCreateView(MyLoginRequiredMixin, DMCreateOnlyMixin, CreateView):
     model = Session
     form_class = SessionForm
     template_name = 'dnd_manager/create_session_form.html'
@@ -157,7 +233,7 @@ class SessionCreateView(CreateView):
         return context
 
 
-class SessionUpdateView(UpdateView):
+class SessionUpdateView(MyLoginRequiredMixin, DMOnlyMixin, UpdateView):
     model = Session
     form_class = SessionForm
     template_name = 'dnd_manager/create_session_form.html'
@@ -176,7 +252,7 @@ class SessionUpdateView(UpdateView):
                                                 'pk': self.kwargs['pk']})
 
 
-class SessionDeleteView(DeleteView):
+class SessionDeleteView(MyLoginRequiredMixin, DMOnlyMixin, DeleteView):
     model = Session
     template_name = 'dnd_manager/delete_session_confirm.html'
 
@@ -228,7 +304,7 @@ class CharacterDetailView(DetailView):
         return context
 
 
-class CharacterCreateView(CreateView):
+class CharacterCreateView(MyLoginRequiredMixin, CreateView):
     model = Character
     form_class = CharacterForm
     template_name = 'dnd_manager/create_character_form.html'
@@ -261,10 +337,24 @@ class CharacterCreateView(CreateView):
         return context
 
 
-class CharacterUpdateView(UpdateView):
+class CharacterUpdateView(MyLoginRequiredMixin, UpdateView):
     model = Character
     form_class = CharacterForm
     template_name = 'dnd_manager/create_character_form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        """Method to check whether user is the DM or a player"""
+        character = self.get_object()
+
+        # Only the DM or staff can update the character:
+        if request.user.is_staff or request.user == character.campaign.dm:
+            return super().dispatch(request, *args, **kwargs)
+        if character.user == request.user:
+            return super().dispatch(request, *args, **kwargs)
+        
+        # Block the user otherwise
+        return redirect('campaign_list')
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -282,9 +372,23 @@ class CharacterUpdateView(UpdateView):
                                                             'pk': self.kwargs['pk'] })
 
 
-class CharacterDeleteView(DeleteView):
+class CharacterDeleteView(MyLoginRequiredMixin, DeleteView):
     model = Character
     template_name = 'dnd_manager/delete_character_confirm.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        """Method to check whether user is the DM or a player"""
+        character = self.get_object()
+
+        # Only the DM or staff can delete a character:
+        if request.user.is_staff or request.user == character.campaign.dm:
+            return super().dispatch(request, *args, **kwargs)
+        if character.user == request.user:
+            return super().dispatch(request, *args, **kwargs)
+        
+        # Block the user otherwise
+        return redirect('campaign_list')
+    
 
     def get_context_data(self, **kwargs):
         """We also want the campaign in the context for a link 
@@ -335,7 +439,7 @@ class NPCDetailView(DetailView):
         return context
 
 
-class NPCCreateView(CreateView):
+class NPCCreateView(MyLoginRequiredMixin, DMCreateOnlyMixin, CreateView):
     model = NPC
     form_class = NPCForm
     template_name = 'dnd_manager/create_npc_form.html'
@@ -359,7 +463,7 @@ class NPCCreateView(CreateView):
         return context
 
 
-class NPCUpdateView(UpdateView):
+class NPCUpdateView(MyLoginRequiredMixin, DMOnlyMixin, UpdateView):
     model = NPC
     form_class = NPCForm
     template_name = 'dnd_manager/create_npc_form.html'
@@ -375,7 +479,7 @@ class NPCUpdateView(UpdateView):
         return reverse('npc_list', kwargs={'campaign_id': self.kwargs['campaign_id']})
 
 
-class NPCDeleteView(DeleteView):
+class NPCDeleteView(MyLoginRequiredMixin, DMOnlyMixin, DeleteView):
     model = NPC
     template_name = 'dnd_manager/delete_npc_confirm.html'
 
@@ -479,10 +583,30 @@ class ItemDetailView(DetailView):
         return context
 
 
-class ItemCreateView(CreateView):
+class ItemCreateView(MyLoginRequiredMixin, CreateView):
     model = Item
     form_class = CreateItemForm
     template_name = 'dnd_manager/create_item_form.html' 
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Only allow the DM or the specified Character’s user to create an item
+        for their character.
+        """
+        # Fetch the campaign & character from URL params
+        campaign_id = self.kwargs['campaign_id']
+        character_id = self.kwargs['character_id']
+
+        campaign = Campaign.objects.get(pk=campaign_id)
+        character = Character.objects.get(pk=character_id, campaign=campaign)
+
+        # Check if user is the DM or the character's owner
+        if request.user == campaign.dm or request.user == character.user:
+            return super().dispatch(request, *args, **kwargs)
+
+        # If neither, block access
+        return redirect("campaign_list")
+
 
     def form_valid(self, form):
         campaign_id = self.kwargs['campaign_id']
@@ -520,10 +644,23 @@ class ItemCreateView(CreateView):
         return context
 
 
-class ItemUpdateView(UpdateView):
+class ItemUpdateView(MyLoginRequiredMixin, UpdateView):
     model = Item
     form_class = UpdateItemForm
     template_name = 'dnd_manager/create_item_form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        """Method to find whether user is DM or player"""
+        item = self.get_object()  
+        
+        # DM can edit any item in the campaign, or the item’s owner (if owned by a character).
+        if request.user == item.campaign.dm:
+            return super().dispatch(request, *args, **kwargs)
+        if item.owner_character and request.user == item.owner_character.user:
+            return super().dispatch(request, *args, **kwargs)
+        
+        # If neither condition is true, block them
+        return redirect('campaign_list')
 
     def get_form(self, form_class=None):
         """
@@ -565,9 +702,22 @@ class ItemUpdateView(UpdateView):
         })
 
 
-class ItemDeleteView(DeleteView):
+class ItemDeleteView(MyLoginRequiredMixin, DeleteView):
     model = Item
     template_name = 'dnd_manager/delete_item_confirm.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        """Method to find whether user is DM or player"""
+        item = self.get_object()  
+        
+        # DM can edit any item in the campaign, or the item’s owner (if owned by a character).
+        if request.user == item.campaign.dm:
+            return super().dispatch(request, *args, **kwargs)
+        if item.owner_character and request.user == item.owner_character.user:
+            return super().dispatch(request, *args, **kwargs)
+        
+        # If neither condition is true, block them
+        return redirect('campaign_list')
 
     def get_success_url(self):
         return reverse('character_detail', kwargs={
@@ -592,7 +742,16 @@ def item_sell_view(request, campaign_id, character_id, pk):
     item = Item.objects.get(pk=pk)
     character = Character.objects.get(pk=character_id)
     campaign = Campaign.objects.get(pk=campaign_id)
-    # verify the item.owner_character == this character?
+
+    # Check if item is actually owned by this character
+    if item.owner_character != character:
+        # block otherwise
+        return redirect ("campaign_list")
+
+    # Check if the current user is either DM or the character owner
+    if request.user != campaign.dm and request.user != character.user:
+        return redirect ("campaign_list")
+
 
     if request.method == 'POST':
         # user confirmed selling
@@ -612,13 +771,15 @@ def item_sell_view(request, campaign_id, character_id, pk):
             'item': item
         })
 
+
+
 # -----------------
 # General Item Views
 # -----------------
 
 
 
-class ItemCreateGeneralView(CreateView):
+class ItemCreateGeneralView(MyLoginRequiredMixin, DMCreateOnlyMixin, CreateView):
     model = Item
     form_class = CreateGeneralItemForm
     template_name = 'dnd_manager/create_item_general_form.html' 
@@ -654,7 +815,7 @@ class ItemCreateGeneralView(CreateView):
         return context
 
 
-class ItemUpdateGeneralView(UpdateView):
+class ItemUpdateGeneralView(MyLoginRequiredMixin, DMOnlyMixin, UpdateView):
     model = Item
     form_class = CreateGeneralItemForm
     template_name = 'dnd_manager/create_item_general_form.html' 
@@ -696,7 +857,7 @@ class ItemUpdateGeneralView(UpdateView):
         })
 
 
-class ItemDeleteGeneralView(DeleteView):
+class ItemDeleteGeneralView(MyLoginRequiredMixin, DMOnlyMixin, DeleteView):
     model = Item
     template_name = 'dnd_manager/delete_item_general_confirm.html'
 
@@ -721,16 +882,35 @@ class ItemDeleteGeneralView(DeleteView):
 # -----------------
 
 
-class AdventureLogCreateView(CreateView):
+class AdventureLogCreateView(MyLoginRequiredMixin, CreateView):
     model = AdventureLog
     form_class = AdventureLogForm
     template_name = 'dnd_manager/create_adventure_log_form.html'
+
+
+    def dispatch(self, request, *args, **kwargs):
+        """Method to check whether user id DM or a player"""
+
+        # Fetch campaign & character from the URL
+        campaign_id = self.kwargs['campaign_id']
+        character_id = self.kwargs['character_id']
+
+        campaign = Campaign.objects.get(pk=campaign_id)
+        character = Character.objects.get(pk=character_id, campaign=campaign)
+
+        # Check if user is DM or the character’s owner
+        if request.user != campaign.dm and request.user != character.user:
+            return redirect("campaign_list")
+
+        return super().dispatch(request, *args, **kwargs)
+
 
     def get_form(self, form_class=None):
         """
         Override get_form() to filter the Session field's queryset
         so that it only shows Sessions for the correct campaign.
         """
+
         form = super().get_form(form_class)
         
         # Fetch the relevant Campaign from the URL
@@ -767,16 +947,30 @@ class AdventureLogCreateView(CreateView):
         context['character_id'] = self.kwargs['character_id']
         return context
 
-class AdventureLogUpdateView(UpdateView):
+class AdventureLogUpdateView(MyLoginRequiredMixin, UpdateView):
     model = AdventureLog
     form_class = AdventureLogForm
     template_name = 'dnd_manager/create_adventure_log_form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        """Method to find whether user is DM or player"""
+
+        log = self.get_object()  
+        character = log.character
+        campaign = character.campaign
+
+        # Check if user is DM or the character owner
+        if request.user != campaign.dm and request.user != character.user:
+            return redirect("campaign_list")
+
+        return super().dispatch(request, *args, **kwargs)
 
     def get_form(self, form_class=None):
         """
         Override get_form() to filter the Session field's queryset
         so that it only shows Sessions for the correct campaign.
         """
+
         form = super().get_form(form_class)
         
         # Fetch the relevant Campaign from the URL
@@ -807,9 +1001,22 @@ class AdventureLogUpdateView(UpdateView):
         context['character_id'] = self.kwargs['character_id']
         return context
 
-class AdventureLogDeleteView(DeleteView):
+class AdventureLogDeleteView(MyLoginRequiredMixin, DeleteView):
     model = AdventureLog
     template_name = 'dnd_manager/delete_adventure_log_confirm.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        """Method to find whether user is DM or player"""
+        
+        log = self.get_object()  
+        character = log.character
+        campaign = character.campaign
+
+        # Check if user is DM or the character owner
+        if request.user != campaign.dm and request.user != character.user:
+            return redirect("campaign_list")
+
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         """Ensure we only fetch logs that belong to the correct character."""
@@ -912,7 +1119,7 @@ class QuestDetailView(DetailView):
         context['campaign'] = campaign
         return context
 
-class QuestCreateView(CreateView):
+class QuestCreateView(MyLoginRequiredMixin, DMCreateOnlyMixin, CreateView):
     model = Quest
     form_class = QuestForm
     template_name = 'dnd_manager/create_quest_form.html'
@@ -957,7 +1164,7 @@ class QuestCreateView(CreateView):
         context['campaign'] = campaign
         return context
 
-class QuestUpdateView(UpdateView):
+class QuestUpdateView(MyLoginRequiredMixin, DMOnlyMixin, UpdateView):
     model = Quest
     form_class = QuestForm
     template_name = 'dnd_manager/create_quest_form.html'
@@ -1005,7 +1212,7 @@ class QuestUpdateView(UpdateView):
         
         return context
 
-class QuestDeleteView(DeleteView):
+class QuestDeleteView(MyLoginRequiredMixin, DMOnlyMixin, DeleteView):
     model = Quest
     template_name = 'dnd_manager/delete_quest_confirm.html'
 

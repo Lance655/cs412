@@ -142,9 +142,11 @@
   <section>
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h2 class="h4 mb-0">Sessions</h2>
-      <a href="{% url 'session_create' campaign_id=campaign.pk %}" class="btn btn-sm btn-primary">
-        + Create Session
-      </a>
+        {% if request.user == campaign.dm %}
+            <a href="{% url 'session_create' campaign_id=campaign.pk %}" class="btn btn-sm btn-primary">
+                + Create Session
+            </a>
+        {% endif %}
     </div>
 
     {% if campaign.sessions.exists %}

@@ -106,15 +106,15 @@
     </div>
   </div>
 
+ {% if request.user == campaign.dm or request.user == character.user %}
   <div class="mb-5">
     <a class="btn btn-primary" href="{% url 'character_update' campaign_id=campaign.id pk=character.id %}">Edit</a>
     <a class="btn btn-danger" href="{% url 'character_delete' campaign_id=campaign.id pk=character.id %}">
       Delete
     </a>
-    <!-- <a class="btn btn-secondary" href="{% url 'character_list' campaign_id=campaign.id %}">
-      Back
-    </a> -->
   </div>
+{% endif %}
+
 
 <!--  --------------------------------  INVENTORY (Items) -------------------------------- -->
     <h3 class="mt-5">Items&nbsp;/&nbsp;Inventory</h3>
@@ -164,14 +164,16 @@
 
                         <div class="mt-auto d-flex justify-content-between align-items-center">
                         <span class="fw-semibold">{{ item.price }} gp</span>
-                        <div class="btn-group btn-group-sm">
+                        {% if request.user == campaign.dm or request.user == character.user %}
+                            <div class="btn-group btn-group-sm">
                             <a href="{% url 'item_update' campaign_id=campaign.id character_id=character.id pk=item.pk %}"
-                            class="btn btn-outline-secondary">Edit</a>
-                            <a href="{% url 'item_sell' campaign_id=campaign.id character_id=character.id pk=item.pk %}" 
-                            class="btn btn-outline-warning">Sell</a>
+                                class="btn btn-outline-secondary">Edit</a>
+                            <a href="{% url 'item_sell' campaign_id=campaign.id character_id=character.id pk=item.pk %}"
+                                class="btn btn-outline-warning">Sell</a>
                             <a href="{% url 'item_delete' campaign_id=campaign.id character_id=character.id pk=item.pk %}"
-                            class="btn btn-outline-danger">Discard</a>
-                        </div>
+                                class="btn btn-outline-danger">Discard</a>
+                            </div>
+                        {% endif %}
                         </div>
                     </div><!-- /.card-body -->
 
@@ -183,10 +185,12 @@
     {% endif %}
 
     <!-- Add‑item button -->
+    {% if request.user == campaign.dm or request.user == character.user %}
     <a href="{% url 'item_create' campaign_id=campaign.id character_id=character.id %}"
-    class="btn btn-primary mt-3">
-    Add Item
+       class="btn btn-primary mt-3">
+      Add Item
     </a>
+    {% endif %}
 
     <!-- ---------------------------------- ADVENTURE LOGS --------------------------------- -->
     <hr>
@@ -196,6 +200,7 @@
     <ul>
       {% for log in adventure_logs %}
         <li class="my-3">
+
           <strong>Session:</strong> {{ log.session.name }} 
 
             <div>
@@ -207,15 +212,18 @@
             <div class="ms-3"> <i> <p>{{ log.details|linebreaks }}</p> </i> </div>
           
   
-          <!-- Edit/Delete Buttons -->
-          <a href="{% url 'adventure_log_update' campaign_id=campaign.id character_id=character.id pk=log.pk %}"
-             class="btn btn-sm btn-secondary">
-            Edit Log
-          </a>
-          <a href="{% url 'adventure_log_delete' campaign_id=campaign.id character_id=character.id pk=log.pk %}"
-             class="btn btn-sm btn-danger">
-            Delete Log
-          </a>
+            <!-- Edit/Delete Buttons -->
+            {% if request.user == campaign.dm or request.user == character.user %}
+            <a href="{% url 'adventure_log_update' campaign_id=campaign.id character_id=character.id pk=log.pk %}"
+                class="btn btn-sm btn-secondary">
+                Edit Log
+            </a>
+            <a href="{% url 'adventure_log_delete' campaign_id=campaign.id character_id=character.id pk=log.pk %}"
+                class="btn btn-sm btn-danger">
+                Delete Log
+            </a>
+            {% endif %}
+
         </li>
       {% endfor %}
     </ul>
@@ -224,9 +232,11 @@
   {% endif %}
   
   <!-- Link to create a new log -->
-  <a href="{% url 'adventure_log_create' campaign_id=campaign.id character_id=character.id %}"
-     class="btn btn-primary mt-3">
-    Add New Adventure Log
-  </a>
+  {% if request.user == campaign.dm or request.user == character.user %}
+    <a href="{% url 'adventure_log_create' campaign_id=campaign.id character_id=character.id %}"
+        class="btn btn-primary mt-3">
+        Add New Adventure Log
+    </a>
+  {% endif %}
 
 {% endblock content %}

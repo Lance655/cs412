@@ -19,7 +19,10 @@ class Campaign(models.Model):
     description = models.TextField()
     start_date = models.DateField(default=timezone.now)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='ongoing')
+    dm = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, 
+                           related_name='campaigns_as_dm')
 
+                           
     def __str__(self):
         return self.name
 

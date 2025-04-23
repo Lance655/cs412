@@ -6,7 +6,9 @@ from .models import (
 class CampaignForm(forms.ModelForm):
     class Meta:
         model = Campaign
+        # fields = ['name', 'description', 'start_date', 'status', 'dm']
         fields = ['name', 'description', 'start_date', 'status']
+
 
 
 class SessionForm(forms.ModelForm):

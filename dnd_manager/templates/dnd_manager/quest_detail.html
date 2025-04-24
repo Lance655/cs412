@@ -50,6 +50,16 @@
           Items
         </a>
       </li>
+      
+        <!-- If the user is not DM, show a link to "my character" -->
+        {% if request.user.is_authenticated and request.user != campaign.dm %}
+            <li class="nav-item">
+            <a class="nav-link px-2" href="{% url 'my_characters' campaign_id=campaign.pk %}">
+                My Characters
+            </a>
+            </li>
+        {% endif %}
+
     </ul>
 
   </div>
@@ -87,14 +97,17 @@
 
 
 <!-- Provide update/delete links -->
-<p>
-    <a href="{% url 'quest_update' campaign_id=campaign.pk pk=quest.pk %}" class="btn btn-primary">
-        Edit 
-    </a>
-    <a href="{% url 'quest_delete' campaign_id=campaign.pk pk=quest.pk %}" class="btn btn-danger">
-        Delete Quest
-    </a>
-</p>
+
+{% if request.user == campaign.dm %}
+    <p>
+        <a href="{% url 'quest_update' campaign_id=campaign.pk pk=quest.pk %}" class="btn btn-primary">
+            Edit 
+        </a>
+        <a href="{% url 'quest_delete' campaign_id=campaign.pk pk=quest.pk %}" class="btn btn-danger">
+            Delete Quest
+        </a>
+    </p>
+{% endif %}
 
 
 {% endblock content %}

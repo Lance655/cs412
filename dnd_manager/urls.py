@@ -24,7 +24,8 @@ urlpatterns = [
     # Character
     path('campaigns/<int:campaign_id>/characters/', CharacterListView.as_view(), name='character_list'),
     path('campaigns/<int:campaign_id>/characters/<int:pk>/', CharacterDetailView.as_view(), name='character_detail'),
-    path('campaigns/<int:campaign_id>/characters/create/', CharacterCreateView.as_view(), name='character_create'),
+    path('campaigns/<int:campaign_id>/characters/create/', CharacterGeneralCreateView.as_view(), name='character_create_general'),
+    path('campaigns/<int:campaign_id>/my_characters/create/', CharacterCreateView.as_view(), name='character_create'),
     path('campaigns/<int:campaign_id>/characters/<int:pk>/update/', CharacterUpdateView.as_view(), name='character_update'),
     path('campaigns/<int:campaign_id>/characters/<int:pk>/delete/', CharacterDeleteView.as_view(), name='character_delete'),
 
@@ -68,7 +69,11 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='dnd_manager/logged_out.html'), name="logout"),
     path('register/', UserRegistrationView.as_view(), name='register'),
 
+    # multiple characters
+    path('campaigns/<int:campaign_id>/my_characters/', MyCharactersListView.as_view(), name='my_characters'),
     
+
+
 ]
 
 

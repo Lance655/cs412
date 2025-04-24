@@ -45,6 +45,16 @@
           Items
         </a>
       </li>
+
+        <!-- If the user is not DM, show a link to "my character" -->
+        {% if request.user.is_authenticated and request.user != campaign.dm %}
+            <li class="nav-item">
+            <a class="nav-link px-2" href="{% url 'my_characters' campaign_id=campaign.pk %}">
+                My Characters
+            </a>
+            </li>
+        {% endif %}
+        
     </ul>
 
   </div>
@@ -53,11 +63,14 @@
 
 {% block content %}
   <h1 class="mb-4">Characters for “{{ campaign.name }}”</h1>
-  <p>
-    <a class="btn btn-primary" href="{% url 'character_create' campaign_id=campaign.id %}">
-      Create New Character
-    </a>
-  </p>
+
+  {% if request.user == campaign.dm %}
+    <p>
+        <a class="btn btn-primary" href="{% url 'character_create_general' campaign_id=campaign.id %}">
+        Create New Character
+        </a>
+    </p>
+  {% endif %}
 
   {% if characters %}
     <table class="table table-striped table-hover">

@@ -1,0 +1,72 @@
+{% extends 'dnd_manager/base.html' %}
+
+{% block subnav %}
+<div class="bg-light border-bottom py-2">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    
+    {# ------------- LEFT: breadcrumb ------------- #}
+    <nav aria-label="breadcrumb" class="mb-0">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{% url 'campaign_list' %}">All Campaigns</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'campaign_detail' campaign.pk %}">{{ campaign.name }}</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'character_list' campaign.pk %}">Characters</a>
+        </li>
+
+        {% comment %}Adjust the final crumb per page{% endcomment %}
+        <li class="breadcrumb-item active" aria-current="page">Create Character</li>
+      </ol>
+    </nav>
+
+    {# ------------- RIGHT: quick links ------------- #}
+    <ul class="nav ms-3">
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'campaign_detail' campaign.pk %}">
+          Sessions
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'character_list' campaign.pk %}">
+          Characters
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'npc_list' campaign.pk %}">
+          NPCs
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'quest_list' campaign.pk %}">
+          Quests
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'item_list' campaign.pk %}">
+          Items
+        </a>
+      </li>
+    </ul>
+
+  </div>
+</div>
+{% endblock subnav %}
+
+{% block content %}
+  <h1 class="mb-4">Create Character</h1>
+
+  <form method="POST" enctype="multipart/form-data" class="row g-3">
+    {% csrf_token %}
+    <!-- This renders each field in the form as <p> blocks. -->
+    {{ form.as_p }}
+
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">Create Character</button>
+
+        <a class="btn btn-secondary" href="{% url 'my_characters' campaign_id=campaign.id %}">Cancel</a>
+    </div>
+  </form>
+{% endblock content %}

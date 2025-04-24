@@ -28,6 +28,15 @@ class CharacterForm(forms.ModelForm):
             'current_hit_points', 'armor_class', 'character_image', 'gold'
         ]
 
+class GeneralCharacterForm(forms.ModelForm):
+    class Meta:
+        model = Character
+        fields = [
+            'name', 'player_name', 'class_type', 'level', 'race', 'backstory', 'strength', 
+            'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma', 'max_hit_points', 
+            'current_hit_points', 'armor_class', 'character_image', 'gold', 'user'
+        ]
+
 
 class NPCForm(forms.ModelForm):
     class Meta:

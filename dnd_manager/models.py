@@ -22,7 +22,7 @@ class Campaign(models.Model):
     dm = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, 
                            related_name='campaigns_as_dm')
 
-                           
+
     def __str__(self):
         return self.name
 
@@ -43,6 +43,12 @@ class Session(models.Model):
 class Character(models.Model):
     '''Encapsulate the data for each character'''
 
+    STATUS_CHOICES = [
+        ('Alive', 'Alive'),
+        ('Dead', 'Dead'),
+        ('Retired', 'Retired'),
+    ]
+
     # general information
     name = models.CharField(max_length=100)
     player_name = models.CharField(max_length=100)
@@ -51,6 +57,13 @@ class Character(models.Model):
     race = models.CharField(max_length=100)
     backstory = models.TextField(blank=True)
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='characters')
+
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='alive'
+    )
 
     # D&D core ability scores
     strength = models.PositiveSmallIntegerField(default=10)

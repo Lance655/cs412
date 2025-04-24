@@ -46,6 +46,15 @@
           Items
         </a>
       </li>
+
+        <!-- If the user is not DM, show a link to "my character" -->
+        {% if request.user.is_authenticated and request.user != campaign.dm %}
+            <li class="nav-item">
+            <a class="nav-link px-2" href="{% url 'my_characters' campaign_id=campaign.pk %}">
+                My Characters
+            </a>
+            </li>
+        {% endif %}
     </ul>
 
   </div>
@@ -65,6 +74,7 @@
   <p><strong>Summary:</strong> {{ session.summary }}</p>
 
     <!-- Provide update/delete links -->
+    {% if request.user == campaign.dm %}
     <p>
         <a href="{% url 'session_update' campaign_id=session.campaign.pk pk=session.pk %}" class="btn btn-primary">
           Edit Session
@@ -73,6 +83,7 @@
           Delete Session
         </a>
     </p>
+    {% endif %}
 
   <!-- adventure logs info -->
   <hr>

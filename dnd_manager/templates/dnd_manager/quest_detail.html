@@ -72,47 +72,91 @@
 {% endblock subnav %}
 
 {% block content %}
-<h2>{{ quest.title }}</h2>
-<p>Status: {{ quest.status }}</p>
-<p>Type: {{ quest.quest_type }}</p>
-<h4>Description</h4>
-<p>{{ quest.description|linebreaksbr }}</p>
-<h4>Rewards</h4>
-<p>{{ quest.rewards|linebreaksbr }}</p>
+<div class="row">
+  <div class="col-12 col-md-10 col-lg-8 mx-auto">
+    
+    <!-- Main Card for Quest Details -->
+    <div class="card mb-4">
+      
+      <!-- Card Header -->
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h2 class="h4 mb-0">{{ quest.title }}</h2>
+        
+        <!-- Show quest status as a badge for quick visual identification -->
+        <span class="badge 
+          {% if quest.status == 'In Progress' %}bg-warning text-dark
+          {% elif quest.status == 'Completed' %}bg-success
+          {% else %}bg-secondary
+          {% endif %}
+        ">
+          {{ quest.status }}
+        </span>
+      </div>
 
-{% if quest.related_npc %}
-  <h4>Given by NPC</h4>
-  <p> <a href="{% url 'npc_detail' campaign.pk quest.related_npc.pk %}"> {{ quest.related_npc.name }} </a> </p>
-{% endif %}
+      <!-- Card Body -->
+      <div class="card-body">
+        
+        <!-- Quest Type -->
+        <p class="mb-1">
+          <strong>Type:</strong>
+          <span class="badge bg-info text-dark">{{ quest.quest_type }}</span>
+        </p>
+        <hr>
 
-{% if quest.assigned_to.all %}
-  <h4>Assigned to Characters:</h4>
-  <ul>
-    {% for character in quest.assigned_to.all %}
-      <li>
-        <a href="{% url 'character_detail' campaign.pk character.pk %}">
-          {{ character.name }}
-        </a>
-      </li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p>No characters assigned yet.</p>
-{% endif %}
+        <!-- Description -->
+        <h5>Description</h5>
+        <p>{{ quest.description|linebreaksbr }}</p>
 
+        <!-- Rewards -->
+        <h5 class="mt-4">Rewards</h5>
+        <p>{{ quest.rewards|linebreaksbr }}</p>
 
-<!-- Provide update/delete links -->
+        {% if quest.related_npc %}
+          <div class="mt-4">
+            <h5>Given by NPC</h5>
+            <p>
+              <a href="{% url 'npc_detail' campaign.pk quest.related_npc.pk %}">
+                {{ quest.related_npc.name }}
+              </a>
+            </p>
+          </div>
+        {% endif %}
 
-{% if request.user == campaign.dm %}
-    <p>
-        <a href="{% url 'quest_update' campaign_id=campaign.pk pk=quest.pk %}" class="btn btn-primary">
-            Edit 
-        </a>
-        <a href="{% url 'quest_delete' campaign_id=campaign.pk pk=quest.pk %}" class="btn btn-danger">
-            Delete Quest
-        </a>
-    </p>
-{% endif %}
+        {% if quest.assigned_to.all %}
+          <div class="mt-4">
+            <h5>Assigned to Characters</h5>
+            <ul class="list-group list-group-flush">
+              {% for character in quest.assigned_to.all %}
+                <li class="list-group-item">
+                  <a href="{% url 'character_detail' campaign.pk character.pk %}">
+                    {{ character.name }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% else %}
+          <div class="mt-4">
+            <p class="text-muted">No characters assigned yet.</p>
+          </div>
+        {% endif %}
+      </div> <!-- End Card Body -->
 
-
+      <!-- Footer: Edit/Delete Buttons, visible only to DM -->
+      {% if request.user == campaign.dm %}
+        <div class="card-footer d-flex justify-content-end">
+          <a href="{% url 'quest_update' campaign_id=campaign.pk pk=quest.pk %}"
+             class="btn btn-sm btn-primary me-2">
+            <i class="bi bi-pencil"></i> Edit
+          </a>
+          <a href="{% url 'quest_delete' campaign_id=campaign.pk pk=quest.pk %}"
+             class="btn btn-sm btn-danger">
+            <i class="bi bi-trash"></i> Delete
+          </a>
+        </div>
+      {% endif %}
+    </div> <!-- End Card -->
+    
+  </div><!-- End column -->
+</div><!-- End row -->
 {% endblock content %}

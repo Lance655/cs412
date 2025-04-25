@@ -75,7 +75,10 @@ urlpatterns = [
     # Map
     path('campaigns/<int:pk>/map/', CampaignMapView.as_view(), name='campaign_map'),
 
- 
+    # References (from API)
+    path('campaigns/<int:campaign_id>/references/', references_search_view, name='references_search'),
+    path('campaigns/<int:campaign_id>/references/<str:search_type>/<str:slug>/', references_detail_view, name='references_detail'),
+
 ]
 
 

@@ -1,0 +1,152 @@
+{% extends 'dnd_manager/base.html' %}
+{% load static %}
+
+{% block subnav %}
+<div class="bg-light border-bottom py-2">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-0">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{% url 'campaign_list' %}">All Campaigns</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'campaign_detail' campaign.pk %}">{{ campaign.name }}</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          References
+        </li>
+      </ol>
+    </nav>
+
+    <!-- Quick Links -->
+    <ul class="nav ms-3">
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'campaign_detail' campaign.pk %}">
+          Sessions
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'campaign_map' campaign.pk %}">
+          Map
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'character_list' campaign.pk %}">
+          Characters
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'npc_list' campaign.pk %}">
+          NPCs
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'quest_list' campaign.pk %}">
+          Quests
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'item_list' campaign.pk %}">
+          Items
+        </a>
+      </li>
+
+      {% if request.user.is_authenticated and request.user != campaign.dm %}
+        <li class="nav-item">
+          <a class="nav-link px-2" href="{% url 'my_characters' campaign_id=campaign.pk %}">
+            My Characters
+          </a>
+        </li>
+      {% endif %}
+      
+      <!-- Current page: References -->
+      <li class="nav-item">
+        <a class="nav-link active px-2" href="{% url 'references_search' campaign.pk %}">
+          References
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endblock subnav %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <div class="mb-4">
+      <h1 class="display-6 mb-0">References for <strong>{{ campaign.name }}</strong></h1>
+      <small class="text-muted">Search monsters and spells from the 5e-bits API.</small>
+    </div>
+  </div>
+</div>
+
+<!-- SEARCH FORM (wrapped in a card) -->
+<div class="card mb-4">
+  <div class="card-header">
+    <i class="bi bi-funnel me-2"></i> Search for Monsters or Spells
+  </div>
+  <div class="card-body">
+    <form method="GET">
+      <div class="row g-2 align-items-center">
+        <div class="col-md-6">
+          <input 
+            type="text" 
+            name="search" 
+            class="form-control" 
+            placeholder="Enter partial or full name..." 
+            value="{{ search_query }}"
+          >
+        </div>
+        <div class="col-md-3">
+          <select name="type" class="form-select">
+            <option value="monster" {% if search_type == 'monster' %}selected{% endif %}>
+              Monster
+            </option>
+            <option value="spell" {% if search_type == 'spell' %}selected{% endif %}>
+              Spell
+            </option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-primary w-100">
+            <i class="bi bi-search me-1"></i> Search
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ERROR MESSAGE -->
+{% if error %}
+  <div class="alert alert-danger" role="alert">
+    {{ error }}
+  </div>
+{% endif %}
+
+<!-- SEARCH RESULTS (if any) -->
+{% if list_results %}
+<div class="card mb-4">
+  <div class="card-header bg-secondary text-white">
+    <i class="bi bi-list me-2"></i> Search results for “{{ search_query }}”
+  </div>
+  <ul class="list-group list-group-flush">
+    {% for result in list_results %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <a 
+            href="{% url 'references_detail' campaign_id=campaign.id search_type=search_type slug=result.index %}" 
+            class="fw-semibold text-decoration-none"
+          >
+            {{ result.name }}
+          </a>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% endblock content %}

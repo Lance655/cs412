@@ -67,70 +67,161 @@
 </div>
 {% endblock subnav %}
 
+
 {% block content %}
-  {# ---------------- Filter form ---------------- #}
-  {% include 'dnd_manager/search_item.html' %}
 
-  <h2>Character Equipment</h2>
-  {% if char_items %}
-    {% for character, items in char_items %}
-      <h4>{{ character.name }}</h4>
-      <ul>
-        {% for item in items %}
-            <li>
-                <a href="{% url 'item_detail' campaign.pk item.pk %}">
-                {{ item.name }}
-                </a>
-                {% if item.rarity %} ({{ item.rarity }}){% endif %}
-            </li>
-        {% endfor %}
-      </ul>
-    {% endfor %}
-  {% else %}
-    <p>No items owned by characters.</p>
-  {% endif %}
+<div class="row">
+    <!-- Page Header -->
+    <div class="col-12">
+      <div class="mb-4">
+        <h1 class="display-6 mb-0">Items for <strong>{{ campaign.name }}</strong></h1>
+        <small class="text-muted">View and manage items.</small>
+      </div>
+    </div>
+  </div>
 
-  <hr>
+<!-- FILTER FORM (Put filters in a card) -->
+<div class="card mb-4">
+  <div class="card-header">
+    <i class="bi bi-funnel me-2"></i> Filter Items
+  </div>
+  <div class="card-body">
+    {% include 'dnd_manager/search_item.html' %}
+  </div>
+</div>
 
-  <h2>NPC Possessions</h2>
-  {% if npc_items %}
-    {% for npc, items in npc_items %}
-      <h4>{{ npc.name }}</h4>
-      <ul>
-        {% for item in items %}
-        <li>
-            <a href="{% url 'item_detail' campaign.pk item.pk %}">
-            {{ item.name }}
-            </a>
-            {% if item.rarity %} ({{ item.rarity }}){% endif %}
-        </li>
-        {% endfor %}
-      </ul>
-    {% endfor %}
-  {% else %}
-    <p>No items held by NPCs.</p>
-  {% endif %}
-
-  {% if unowned %}
-    <hr>
-    <h2>Unowned / In Party Loot Bag</h2>
-    <ul>
-      {% for item in unowned %}
-      <li>
-        <a href="{% url 'item_detail' campaign.pk item.pk %}">
-        {{ item.name }}
-        </a>
-        {% if item.rarity %} ({{ item.rarity }}){% endif %}
-    </li>
+<!-- CHARACTER EQUIPMENT -->
+<div class="card mb-4">
+  <div class="card-header bg-primary text-white">
+    <i class="bi bi-people-fill me-2"></i> Character Equipment
+  </div>
+  <div class="card-body">
+    {% if char_items %}
+      {% for character, items in char_items %}
+        <div class="mb-3">
+          <h5 class="mb-2">{{ character.name }}</h5>
+          <ul class="list-group list-group-flush">
+            {% for item in items %}
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  <a class="fw-semibold" href="{% url 'item_detail' campaign.pk item.pk %}">
+                    {{ item.name }}
+                  </a>
+                  {% if item.rarity %}
+                    {% if item.rarity == 'Common' %}
+                        <span class="badge bg-secondary">{{ item.rarity }}</span>
+                    {% elif item.rarity == 'Uncommon' %}
+                        <span class="badge bg-success">{{ item.rarity }}</span>
+                    {% elif item.rarity == 'Rare' %}
+                        <span class="badge bg-primary">{{ item.rarity }}</span>
+                    {% elif item.rarity == 'Very Rare' %}
+                        <span class="badge bg-purple text-white">{{ item.rarity }}</span>
+                    {% elif item.rarity == 'Legendary' %}
+                        <span class="badge bg-warning text-dark">{{ item.rarity }}</span>
+                    {% else %}
+                        <span class="badge bg-dark">{{ item.rarity }}</span>
+                    {% endif %}
+                {% endif %}
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
       {% endfor %}
-    </ul>
-  {% endif %}
+    {% else %}
+      <p class="text-muted mb-0">No items owned by characters.</p>
+    {% endif %}
+  </div>
+</div>
 
+<!-- NPC POSSESSIONS -->
+<div class="card mb-4">
+  <div class="card-header bg-success text-white">
+    <i class="bi bi-person-badge-fill me-2"></i> NPC Possessions
+  </div>
+  <div class="card-body">
+    {% if npc_items %}
+      {% for npc, items in npc_items %}
+        <div class="mb-3">
+          <h5 class="mb-2">{{ npc.name }}</h5>
+          <ul class="list-group list-group-flush">
+            {% for item in items %}
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  <a class="fw-semibold" href="{% url 'item_detail' campaign.pk item.pk %}">
+                    {{ item.name }}
+                  </a>
+                  {% if item.rarity %}
+                    {% if item.rarity == 'Common' %}
+                        <span class="badge bg-secondary">{{ item.rarity }}</span>
+                    {% elif item.rarity == 'Uncommon' %}
+                        <span class="badge bg-success">{{ item.rarity }}</span>
+                    {% elif item.rarity == 'Rare' %}
+                        <span class="badge bg-primary">{{ item.rarity }}</span>
+                    {% elif item.rarity == 'Very Rare' %}
+                        <span class="badge bg-purple text-white">{{ item.rarity }}</span>
+                    {% elif item.rarity == 'Legendary' %}
+                        <span class="badge bg-warning text-dark">{{ item.rarity }}</span>
+                    {% else %}
+                        <span class="badge bg-dark">{{ item.rarity }}</span>
+                    {% endif %}
+                {% endif %}
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-muted mb-0">No items held by NPCs.</p>
+    {% endif %}
+  </div>
+</div>
 
-  {% if request.user == campaign.dm %}
-    <p>
-        <a class="btn btn-primary" href="{% url 'item_create_general' campaign.pk %}">Create New Item</a>
-    </p>
-  {% endif %}
+<!-- UNOWNED ITEMS -->
+{% if unowned %}
+  <div class="card mb-4">
+    <div class="card-header bg-secondary text-white">
+      <i class="bi bi-box-seam me-2"></i> Unowned Items / Party Loot
+    </div>
+    <div class="card-body">
+      <ul class="list-group list-group-flush">
+        {% for item in unowned %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <a class="fw-semibold" href="{% url 'item_detail' campaign.pk item.pk %}">
+                {{ item.name }}
+              </a>
+              {% if item.rarity %}
+                {% if item.rarity == 'Common' %}
+                    <span class="badge bg-secondary">{{ item.rarity }}</span>
+                {% elif item.rarity == 'Uncommon' %}
+                    <span class="badge bg-success">{{ item.rarity }}</span>
+                {% elif item.rarity == 'Rare' %}
+                    <span class="badge bg-primary">{{ item.rarity }}</span>
+                {% elif item.rarity == 'Very Rare' %}
+                    <span class="badge bg-purple text-white">{{ item.rarity }}</span>
+                {% elif item.rarity == 'Legendary' %}
+                    <span class="badge bg-warning text-dark">{{ item.rarity }}</span>
+                {% else %}
+                    <span class="badge bg-dark">{{ item.rarity }}</span>
+                {% endif %}
+            {% endif %}
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endif %}
 
-{% endblock %}
+{% if request.user == campaign.dm %}
+  <!-- CREATE NEW ITEM BUTTON -->
+  <div class="d-grid d-sm-flex justify-content-sm-end">
+    <a class="btn btn-primary" href="{% url 'item_create_general' campaign.pk %}">
+      <i class="bi bi-plus-lg me-1"></i> Create New Item
+    </a>
+  </div>
+{% endif %}
+
+{% endblock content %}

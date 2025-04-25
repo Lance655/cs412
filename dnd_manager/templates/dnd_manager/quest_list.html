@@ -68,53 +68,96 @@
 </div>
 {% endblock subnav %}
 
-{% block content %}
 
-<!-- SEARCH/FILTER FORM-->
-{% include 'dnd_manager/search_quest.html' %}
+{% block content %}
+<div class="row">
+  <!-- Page Header -->
+  <div class="col-12">
+    <div class="mb-4">
+      <h1 class="display-6 mb-0">Quests for <strong>{{ campaign.name }}</strong></h1>
+      <small class="text-muted">View and manage storylines and side quests.</small>
+    </div>
+  </div>
+</div>
+
+<!-- SEARCH/FILTER FORM (wrapped in a card) -->
+<div class="card mb-4">
+  <div class="card-header">
+    <i class="bi bi-funnel me-2"></i> Filter Quests
+  </div>
+  <div class="card-body">
+    {% include 'dnd_manager/search_quest.html' %}
+  </div>
+</div>
 
 <!-- MAIN QUESTS -->
-
-<h2>Main Quests</h2>
-
-{% if main_quests %}
-  <ul>
-    {% for quest in main_quests %}
-      <li>
-        <a href="{% url 'quest_detail' campaign.pk quest.pk %}">{{ quest.title }}</a>
-        <!-- – {{ quest.quest_date|date:"Y‑m‑d" }} -->
-      </li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p>No main quests.</p>
-{% endif %}
-
-<hr>
-
-<!-- PERSONAL QUESTS, grouped under each character header -->
-<h2>Personal Quests</h2>
-
-{% if personal_by_character %}
-  {% for character, quests in personal_by_character %}
-    <h4>{{ character.name }}</h4>
-    <ul>
-      {% for quest in quests %}
-        <li>
-          <a href="{% url 'quest_detail' campaign.pk quest.pk %}">{{ quest.title }}</a>
-          <!-- – {{ quest.quest_date|date:"Y‑m‑d" }} -->
+<div class="card mb-4">
+  <div class="card-header bg-danger text-white">
+    <i class="bi bi-star-fill me-2"></i> Main Quests
+  </div>
+  <ul class="list-group list-group-flush">
+    {% if main_quests %}
+      {% for quest in main_quests %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <a href="{% url 'quest_detail' campaign.pk quest.pk %}" class="fw-semibold">
+              {{ quest.title }}
+            </a>
+            {% if quest.quest_date %}
+              <!-- <small class="text-muted ms-3">
+                <i class="bi bi-calendar2-check"></i> {{ quest.quest_date|date:"Y-m-d" }}
+              </small> -->
+            {% endif %}
+          </div>
         </li>
       {% endfor %}
-    </ul>
-  {% endfor %}
-{% else %}
-  <p>No personal quests in this campaign.</p>
-{% endif %}
+    {% else %}
+      <li class="list-group-item text-muted">
+        No main quests.
+      </li>
+    {% endif %}
+  </ul>
+</div>
 
+<!-- PERSONAL QUESTS -->
+<div class="card mb-4">
+  <div class="card-header bg-info text-white">
+    <i class="bi bi-person-fill me-2"></i> Personal Quests
+  </div>
+  <div class="card-body">
+    {% if personal_by_character %}
+      {% for character, quests in personal_by_character %}
+        <h5 class="mb-2">{{ character.name }}</h5>
+        <ul class="list-group mb-3">
+          {% for quest in quests %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <a href="{% url 'quest_detail' campaign.pk quest.pk %}" class="fw-semibold">
+                  {{ quest.title }}
+                </a>
+                {% if quest.quest_date %}
+                  <!-- <small class="text-muted ms-3">
+                    <i class="bi bi-calendar2-check"></i> {{ quest.quest_date|date:"Y-m-d" }}
+                  </small> -->
+                {% endif %}
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endfor %}
+    {% else %}
+      <p class="text-muted">No personal quests.</p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- CREATE NEW QUEST BUTTON (only for DM) -->
 {% if request.user == campaign.dm %}
-    <p>
-        <a class="btn btn-primary" href="{% url 'quest_create' campaign.pk %}">Create New Quest</a>
-    </p>
+  <div class="d-grid d-sm-flex justify-content-sm-end">
+    <a class="btn btn-primary" href="{% url 'quest_create' campaign.pk %}">
+      <i class="bi bi-plus-lg me-1"></i> Create New Quest
+    </a>
+  </div>
 {% endif %}
 
 {% endblock content %}

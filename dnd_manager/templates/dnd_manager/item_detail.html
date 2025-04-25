@@ -73,46 +73,91 @@
 
 
 {% block content %}
-  <div class="card mt-3">
-    <div class="card-body">
-      {% if item.item_image %}
-        <img src="{{ item.item_image.url }}" class="float-end ms-3 mb-3 rounded" style="max-width:180px;">
-      {% endif %}
+<div class="card my-4">
 
-      <h3>{{ item.name }}</h3>
-      <p class="text-muted">{{ item.item_type }} &middot; {{ item.rarity }}</p>
+  <!-- Using a row to place image in one column, item info in the other -->
+  <div class="row g-0">
 
-      <p>{{ item.description|linebreaks }}</p>
+    {% if item.item_image %}
+      <div class="col-md-4">
+        <!-- Item image, full width of the column -->
+        <img src="{{ item.item_image.url }}"
+             class="img-fluid rounded-start"
+             alt="{{ item.name }}"
+             style="object-fit: cover; width: 300px;">
+      </div>
+    {% endif %}
 
-      <hr>
-      <p><strong>Price:</strong> {{ item.price }} gp</p>
+    <!-- Item details -->
+    <div class="col-md-8">
+      <div class="card-body">
 
-      <p>
-        <strong>Owner:</strong>
-        {% if item.owner_character %}
-          Character – <a href="{% url 'character_detail' campaign.pk item.owner_character.pk %}">
-          {{ item.owner_character.name }}</a>
-        {% elif item.owner_npc %}
-          NPC – <a href="{% url 'npc_detail' campaign.pk item.owner_npc.pk %}">
-          {{ item.owner_npc.name }}</a>
-        {% else %}
-          <em>Unowned</em>
-        {% endif %}
-      </p>
+        <!-- Item name + Type/Rarity -->
+        <h3 class="card-title">{{ item.name }}</h3>
+        <h6 class="card-subtitle mb-3 text-muted">
+            {{ item.item_type }}
+            &middot; 
+            {% if item.rarity %}
+              {% if item.rarity == 'Common' %}
+                <span class="badge bg-secondary">{{ item.rarity }}</span>
+              {% elif item.rarity == 'Uncommon' %}
+                <span class="badge bg-success">{{ item.rarity }}</span>
+              {% elif item.rarity == 'Rare' %}
+                <span class="badge bg-primary">{{ item.rarity }}</span>
+              {% elif item.rarity == 'Very Rare' %}
+                <span class="badge bg-purple text-white">{{ item.rarity }}</span>
+              {% elif item.rarity == 'Legendary' %}
+                <span class="badge bg-warning text-dark">{{ item.rarity }}</span>
+              {% else %}
+                <span class="badge bg-dark">{{ item.rarity }}</span>
+              {% endif %}
+            {% endif %}
+          </h6>
 
+        <!-- Description -->
+        <p class="card-text">
+          {{ item.description|linebreaks }}
+        </p>
 
-      {% if request.user == campaign.dm %}
-        <a href="{% url 'item_update_general' campaign_id=campaign.id pk=item.pk %}"
-        class="btn btn-primary mt-3">
-        Edit 
-        </a>
-        <a href="{% url 'item_delete_general' campaign_id=campaign.id pk=item.pk %}"
-        class="btn btn-primary mt-3">
-        Delete Item 
-        </a>
-      {% endif %}
+        <hr>
 
+        <!-- Price -->
+        <p class="mb-2">
+          <strong>Price:</strong> {{ item.price }} gp
+        </p>
+
+        <!-- Owner -->
+        <p class="mb-0">
+          <strong>Owner:</strong>
+          {% if item.owner_character %}
+            Character – <a href="{% url 'character_detail' campaign.pk item.owner_character.pk %}">
+              {{ item.owner_character.name }}
+            </a>
+          {% elif item.owner_npc %}
+            NPC – <a href="{% url 'npc_detail' campaign.pk item.owner_npc.pk %}">
+              {{ item.owner_npc.name }}
+            </a>
+          {% else %}
+            <em>Unowned</em>
+          {% endif %}
+        </p>
+
+      </div>
     </div>
-
   </div>
-{% endblock %}
+
+  <!-- Edit/Delete Buttons (only visible to DM) -->
+  {% if request.user == campaign.dm %}
+    <div class="card-footer d-flex justify-content-end">
+      <a href="{% url 'item_update_general' campaign_id=campaign.id pk=item.pk %}"
+         class="btn btn-primary me-2">
+        <i class="bi bi-pencil me-1"></i> Edit
+      </a>
+      <a href="{% url 'item_delete_general' campaign_id=campaign.id pk=item.pk %}"
+         class="btn btn-danger">
+        <i class="bi bi-trash me-1"></i> Delete
+      </a>
+    </div>
+  {% endif %}
+</div>
+{% endblock content %}

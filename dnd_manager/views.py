@@ -1,3 +1,5 @@
+import requests
+
 from django.shortcuts import render, redirect
 
 from django.db.models import Sum
@@ -24,6 +26,7 @@ from django.contrib.auth.models import User ## NEW
 from django.contrib.auth.forms import UserCreationForm ## NEW
 from django.contrib.auth import login
 from django.http import JsonResponse
+
 
 
 
@@ -1392,4 +1395,85 @@ class CampaignMapView(DetailView):
         context = super().get_context_data(**kwargs)
         # 
         return context
+
+
+# -----------------
+#  References (API)
+# -----------------
+
+def references_search_view(request, campaign_id):
+    """
+    Show a search bar and a list of matching monsters/spells from the 5e-bits API.
+    """
+    search_type = request.GET.get('type', 'monster').lower()  # "monster" or "spell"
+    search_query = request.GET.get('search', '').strip()
+
+    list_results = None
+    error = None
+
+    # Base URL for the list endpoint:
+    if search_type == 'monster':
+        base_url = "https://www.dnd5eapi.co/api/2014/monsters"
+    else:
+        base_url = "https://www.dnd5eapi.co/api/2014/spells"
+
+    if search_query:
+        # call GET /monsters?name=dragon
+        try:
+            response = requests.get(base_url, params={'name': search_query}, headers={'Accept': 'application/json'})
+            if response.status_code == 200:
+                json_data = response.json()
+                list_results = json_data.get('results', [])
+                if not list_results:
+                    error = f"No {search_type}s found matching '{search_query}'."
+            else:
+                error = f"Could not retrieve {search_type} list. (Status {response.status_code})"
+        except requests.exceptions.RequestException as e:
+            error = f"Error connecting to API: {str(e)}"
+
+    campaign = Campaign.objects.get(pk=campaign_id)
+
+    context = {
+        'campaign': campaign,
+        'search_type': search_type,
+        'search_query': search_query,
+        'list_results': list_results,
+        'error': error
+    }
+    return render(request, 'dnd_manager/references_search.html', context)
+
+
+def references_detail_view(request, campaign_id, search_type, slug):
+    """
+    Show detailed information for a single monster or spell from the 5e-bits API.
+    """
+    error = None
+    data = None
+
+    # Base URL
+    if search_type == 'monster':
+        base_url = "https://www.dnd5eapi.co/api/2014/monsters"
+    else:
+        base_url = "https://www.dnd5eapi.co/api/2014/spells"
+
+    url = f"{base_url}/{slug}"
+
+    try:
+        response = requests.get(url, headers={'Accept': 'application/json'})
+        if response.status_code == 200:
+            data = response.json()
+        else:
+            error = f"Could not find {search_type} details for '{slug}'. (Status {response.status_code})"
+    except requests.exceptions.RequestException as e:
+        error = f"Error connecting to API: {str(e)}"
+
+    campaign = Campaign.objects.get(pk=campaign_id)
+
+    context = {
+        'campaign': campaign,
+        'search_type': search_type,
+        'data': data,
+        'error': error,
+    }
+    return render(request, 'dnd_manager/references_detail.html', context)
 

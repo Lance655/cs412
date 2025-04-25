@@ -71,9 +71,11 @@ urlpatterns = [
 
     # multiple characters
     path('campaigns/<int:campaign_id>/my_characters/', MyCharactersListView.as_view(), name='my_characters'),
-    
 
+    # Map
+    path('campaigns/<int:pk>/map/', CampaignMapView.as_view(), name='campaign_map'),
 
+ 
 ]
 
 

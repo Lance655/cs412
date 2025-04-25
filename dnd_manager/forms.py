@@ -7,7 +7,7 @@ class CampaignForm(forms.ModelForm):
     class Meta:
         model = Campaign
         # fields = ['name', 'description', 'start_date', 'status', 'dm']
-        fields = ['name', 'description', 'start_date', 'status']
+        fields = ['name', 'description', 'start_date', 'status', 'map_image']
 
 
 
@@ -25,7 +25,7 @@ class CharacterForm(forms.ModelForm):
         fields = [
             'name', 'player_name', 'class_type', 'level', 'race', 'backstory', 'strength', 
             'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma', 'max_hit_points', 
-            'current_hit_points', 'armor_class', 'character_image', 'gold'
+            'current_hit_points', 'armor_class', 'character_image', 'gold', 'status'
         ]
 
 class GeneralCharacterForm(forms.ModelForm):
@@ -97,3 +97,6 @@ class CalendarEventForm(forms.ModelForm):
     class Meta:
         model = CalendarEvent
         fields = ['campaign', 'event_name', 'event_date', 'notes']
+
+
+

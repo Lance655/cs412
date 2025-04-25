@@ -21,6 +21,8 @@ class Campaign(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='ongoing')
     dm = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, 
                            related_name='campaigns_as_dm')
+    map_image = models.ImageField(blank=True, null=True)
+
 
 
     def __str__(self):
@@ -62,7 +64,7 @@ class Character(models.Model):
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
-        default='alive'
+        default='Alive'
     )
 
     # D&D core ability scores

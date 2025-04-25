@@ -11,18 +11,20 @@ from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView
 )
 from .models import (
-    Campaign, Session, Character, NPC, Item, Quest, AdventureLog, CalendarEvent
+    Campaign, Session, Character, NPC, Item, Quest, AdventureLog, CalendarEvent,
 )
 from .forms import (
     CampaignForm, SessionForm, CharacterForm, NPCForm, 
     CreateItemForm, UpdateItemForm, QuestForm, AdventureLogForm, CalendarEventForm,
-    CreateGeneralItemForm, GeneralCharacterForm
+    CreateGeneralItemForm, GeneralCharacterForm,
 )
 
 from django.contrib.auth.mixins import LoginRequiredMixin ## NEW
 from django.contrib.auth.models import User ## NEW
 from django.contrib.auth.forms import UserCreationForm ## NEW
 from django.contrib.auth import login
+from django.http import JsonResponse
+
 
 
 class MyLoginRequiredMixin(LoginRequiredMixin):
@@ -116,10 +118,10 @@ class CampaignDetailView(DetailView):
         context['events'] = campaign.events.all()
 
 
-        context["user_characters_alive"] = campaign.characters.filter(
-            user=self.request.user,
-            status='alive'
-        )
+        # context["user_characters_alive"] = campaign.characters.filter(
+        #     user=self.request.user,
+        #     status='alive'
+        # )
 
         return context
 
@@ -249,7 +251,13 @@ class SessionUpdateView(MyLoginRequiredMixin, DMOnlyMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
+
+        session_id = self.kwargs['pk']
+        session = Session.objects.get(pk=session_id)
+
         context['campaign'] = campaign
+        context['session'] = session
+
         return context
 
     def get_success_url(self):
@@ -484,7 +492,14 @@ class NPCUpdateView(MyLoginRequiredMixin, DMOnlyMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
+
+        npc_id = self.kwargs['pk']
+        npc = NPC.objects.get(pk=npc_id)
+
+
         context['campaign'] = campaign
+        context['npc'] = npc
+
         return context
 
     def get_success_url(self):
@@ -1364,62 +1379,17 @@ class CharacterGeneralCreateView(MyLoginRequiredMixin, CreateView):
         return context
 
 
+# -----------------
+#  Map
+# -----------------
 
+class CampaignMapView(DetailView):
+    model = Campaign
+    template_name = 'dnd_manager/campaign_map.html'
+    context_object_name = 'campaign'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # 
+        return context
 
-
-# class CharacterDetailView(DetailView):
-#     model = Character
-#     template_name = 'dnd_manager/character_detail.html'
-#     context_object_name = 'character'
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         # Pass the Campaign to the template
-#         campaign_id = self.kwargs['campaign_id']
-#         campaign = Campaign.objects.get(pk=campaign_id)
-#         context['campaign'] = campaign
-#         return context
-
-# class CharacterListView(ListView):
-#     model = Character
-#     template_name = 'dnd_manager/character_list.html'
-#     context_object_name = 'characters'
-
-#     def get_queryset(self):
-#         """Return only Characters belonging to the given campaign_id."""
-#         campaign_id = self.kwargs['campaign_id']
-#         return Character.objects.filter(campaign__id=campaign_id)
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         campaign_id = self.kwargs['campaign_id']
-#         campaign = Campaign.objects.get(pk=campaign_id)
-#         context['campaign'] = campaign
-#         return context
-
-
-
-# class CharacterCreateView(CreateView):
-#     model = Character
-#     form_class = CharacterForm
-#     template_name = 'dnd_manager/create_character_form.html'
-
-#     def form_valid(self, form):
-#         """Assign the correct Campaign via the URL param before saving."""
-#         campaign_id = self.kwargs['campaign_id']
-#         campaign = Campaign.objects.get(pk=campaign_id)
-#         form.instance.campaign = campaign
-#         return super().form_valid(form)
-
-#     def get_success_url(self):
-#         """After creating a Character, go back to the Campaign detail page."""
-#         return reverse('campaign_detail', kwargs={'pk': self.kwargs['campaign_id']})
-
-#     def get_context_data(self, **kwargs):
-#         """Pass the Campaign into the template context."""
-#         context = super().get_context_data(**kwargs)
-#         campaign_id = self.kwargs['campaign_id']
-#         campaign = Campaign.objects.get(pk=campaign_id)
-#         context['campaign'] = campaign
-#         return context

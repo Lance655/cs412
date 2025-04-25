@@ -1,0 +1,122 @@
+{% extends "dnd_manager/base.html" %}
+
+
+{% block subnav %}
+<div class="bg-light border-bottom py-2">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    
+    {# ------------- LEFT: breadcrumb ------------- #}
+    <nav aria-label="breadcrumb" class="mb-0">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{% url 'campaign_list' %}">All Campaigns</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'campaign_detail' campaign.pk %}">{{ campaign.name }}</a>
+        </li>
+        {% comment %}Adjust the final crumb per page{% endcomment %}
+        <li class="breadcrumb-item active" aria-current="page">Map</li>
+      </ol>
+    </nav>
+
+    {# ------------- RIGHT: quick links ------------- #}
+    <ul class="nav ms-3">
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'campaign_detail' campaign.pk %}">
+          Sessions
+        </a>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'campaign_map' campaign.pk %}">
+            Map
+        </a>
+      </li>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'character_list' campaign.pk %}">
+          Characters
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'npc_list' campaign.pk %}">
+          NPCs
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'quest_list' campaign.pk %}">
+          Quests
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'item_list' campaign.pk %}">
+          Items
+        </a>
+      </li>
+
+    <!-- If the user is not DM, show a link to "my character" -->
+    {% if request.user.is_authenticated and request.user != campaign.dm %}
+        <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'my_characters' campaign_id=campaign.pk %}">
+            My Characters
+        </a>
+        </li>
+    {% endif %}
+
+
+    </ul>
+
+  </div>
+</div>
+{% endblock subnav %}
+
+
+{% block content %}
+<div class="container my-4">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin=""/>
+  
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+  crossorigin=""></script>
+
+  <h1>Main Map for {{ campaign.name }}</h1>
+  
+  {% if campaign.map_image %}
+    
+    <!-- The Leaflet map container -->
+    <div id="mapid" style="width: 100%; height: 800px;"></div>
+    
+    <script>
+      // Dimensions of the image
+      const w = 8100;
+      const h = 5400;
+    
+      // Create the map
+      const map = L.map("mapid", {
+        crs: L.CRS.Simple,
+        minZoom: -5,   
+        maxZoom: 2,    
+        center: [0, 0], 
+        zoom: 0        
+      });
+    
+      const imageBounds = [[0,0], [h, w]];
+    
+      // Add the imageOverlay
+      L.imageOverlay("{{ campaign.map_image.url }}", imageBounds).addTo(map);
+    
+      // Fit the view to the image bounds
+      map.fitBounds(imageBounds);
+    </script>
+    
+
+  {% else %}
+    <div class="alert alert-info">
+      <strong>No map image uploaded for this campaign yet.</strong>
+    </div>
+  {% endif %}
+</div>
+{% endblock content %}

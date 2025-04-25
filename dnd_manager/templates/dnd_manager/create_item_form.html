@@ -33,6 +33,11 @@
         </a>
       </li>
       <li class="nav-item">
+        <a class="nav-link px-2" href="{% url 'campaign_map' campaign.pk %}">
+            Map
+        </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link px-2" href="{% url 'character_list' campaign.pk %}">
           Characters
         </a>
@@ -61,7 +66,7 @@
               </a>
               </li>
         {% endif %}
-        
+
     </ul>
 
   </div>

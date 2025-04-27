@@ -1,64 +1,97 @@
 {% extends 'dnd_manager/base.html' %}
 
-{% block subnav %}
-<div class="bg-light border-bottom py-2">
-  <div class="container-fluid d-flex justify-content-between align-items-center">
-    
-    {# ------------- LEFT: breadcrumb ------------- #}
-    <nav aria-label="breadcrumb" class="mb-0">
-      <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item">
-          <a href="{% url 'campaign_list' %}">All Campaigns</a>
-        </li>
-        <li class="breadcrumb-item">
-            <a href="{% url 'campaign_detail' campaign.pk %}">{{ campaign.name }}</a>
-        </li>
-        {% comment %}Adjust the final crumb per page{% endcomment %}
-        <li class="breadcrumb-item active" aria-current="page">My Characters</li>
-      </ol>
-    </nav>
 
-    {# ------------- RIGHT: quick links ------------- #}
-    <ul class="nav ms-3">
+{% block subnav %}
+
+{% if campaign.main_image %}
+<div 
+  class="position-relative text-white" 
+  style="background-image: url('{{ campaign.main_image.url }}');
+         background-size: cover;
+         background-position: center;
+         background-repeat: no-repeat;
+         min-height: 300px;"
+>
+{% endif %}
+  <!-- Translucent overlay so text is readable -->
+  <div class="position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(0,0,0,0.4);"></div>
+  
+  <!-- Content container -->
+  <div class="container-fluid position-relative py-4" style="z-index: 2;">
+    
+    <div class="d-flex justify-content-between align-items-center">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+                <a href="{% url 'campaign_list' %}" class="text-white text-decoration-underline">All Campaigns</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'campaign_detail' campaign.pk %}" class="text-white text-decoration-underline">{{ campaign.name }}</a>
+            </li>
+            {% comment %}Adjust the final crumb per page{% endcomment %}
+            <li class="breadcrumb-item active text-white" aria-current="page">My Characters</li>
+            </ol>
+        </nav>
+
+        <!-- DM Indicator -->
+        {% if request.user == campaign.dm %}
+            <span class="fs-5">
+            DM <i class="bi bi-cone-striped"></i>
+            </span>
+        {% endif %}
+    </div>
+
+    <h2 class="mb-3">{{ campaign.name }}</h2>
+    <!-- {% if campaign.description %}
+      <p class="mb-3">{{ campaign.description|truncatewords:20 }}</p>
+    {% endif %} -->
+
+    <!-- Subnav links -->
+    <ul class="nav">
       <li class="nav-item">
-        <a class="nav-link px-2" href="{% url 'campaign_detail' campaign.pk %}">
-          Sessions
+        <a class="nav-link text-white" href="{% url 'campaign_detail' campaign.pk %}">
+          Home
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link px-2" href="{% url 'campaign_map' campaign.pk %}">
-            Map
+        <a class="nav-link text-white" href="{% url 'campaign_map' campaign.pk %}">
+          Map
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link px-2" href="{% url 'character_list' campaign.pk %}">
+        <a class="nav-link text-white" href="{% url 'character_list' campaign.pk %}">
           Characters
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link px-2" href="{% url 'npc_list' campaign.pk %}">
+        <a class="nav-link text-white" href="{% url 'npc_list' campaign.pk %}">
           NPCs
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link px-2" href="{% url 'quest_list' campaign.pk %}">
+        <a class="nav-link text-white" href="{% url 'quest_list' campaign.pk %}">
           Quests
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link px-2" href="{% url 'item_list' campaign.pk %}">
+        <a class="nav-link text-white" href="{% url 'item_list' campaign.pk %}">
           Items
         </a>
       </li>
-
-        <!-- If the user is not DM, show a link to "my character" -->
-        {% if request.user.is_authenticated and request.user != campaign.dm %}
-            <li class="nav-item">
-            <a class="nav-link px-2" href="{% url 'my_characters' campaign_id=campaign.pk %}">
-                My Characters
-            </a>
-            </li>
-        {% endif %}
+      <!-- If the user is not the DM, show "My Characters" link -->
+      {% if request.user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link text-white" href="{% url 'my_characters' campaign_id=campaign.pk %}">
+          My Characters
+        </a>
+      </li>
+      {% endif %}
+      <li class="nav-item">
+        <a class="nav-link text-white" href="{% url 'references_search' campaign.pk %}">
+          5e Reference
+        </a>
+      </li>
     </ul>
 
   </div>
@@ -66,32 +99,59 @@
 {% endblock subnav %}
 
 
+
 {% block content %}
+
+  <!-- Page heading -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">My Characters</h1>
+    <a class="btn btn-primary" href="{% url 'character_create' campaign_id=campaign.id %}">
+        <i class="bi bi-plus-lg"></i> Create New Character
+    </a>
+  </div>
+
 <div class="container my-4">
 
-  <h1 class="mb-3">My Characters</h1>
-
   {% if characters %}
-    <ul class="list-group">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3">
       {% for character in characters %}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-          <div>
-            <a href="{% url 'character_detail' campaign.pk character.pk %}">
-              {{ character.name }}
-            </a>
-            ({{ character.class_type }}, lvl {{ character.level }})
+        <div class="col">
+          <div class="card h-100">
+            
+            {% if character.character_image %}
+              <img 
+                src="{{ character.character_image.url }}" 
+                class="card-img-top" 
+                alt="{{ character.name }}'s image"
+                style="object-fit: cover; height: 200px;"
+              >
+            {% endif %}
+
+            <div class="card-body">
+              <h5 class="card-title mb-2">
+                <a href="{% url 'character_detail' campaign.pk character.pk %}" class="text-decoration-none">
+                  {{ character.name }}
+                </a>
+              </h5>
+              <p class="card-text text-muted mb-2">
+                {{ character.class_type }}, Level {{ character.level }}
+              </p>
+            </div>
+            <div class="card-footer d-flex justify-content-end">
+              <a 
+                href="{% url 'character_detail' campaign.pk character.pk %}" 
+                class="btn btn-sm btn-outline-primary"
+              >
+                View
+              </a>
+            </div>
           </div>
-        </li>
+        </div>
       {% endfor %}
-    </ul>
+    </div>
   {% else %}
     <p class="text-muted">You have no characters in this campaign.</p>
   {% endif %}
 
-  <p>
-    <a class="btn btn-primary" href="{% url 'character_create' campaign_id=campaign.id %}">
-        Create New Character
-    </a>
-  </p>
 </div>
 {% endblock content %}

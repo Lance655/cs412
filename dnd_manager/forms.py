@@ -7,7 +7,7 @@ class CampaignForm(forms.ModelForm):
     class Meta:
         model = Campaign
         # fields = ['name', 'description', 'start_date', 'status', 'dm']
-        fields = ['name', 'description', 'start_date', 'status', 'map_image']
+        fields = ['name', 'description', 'start_date', 'status', 'map_image', 'main_image']
 
 
 
@@ -34,7 +34,7 @@ class GeneralCharacterForm(forms.ModelForm):
         fields = [
             'name', 'player_name', 'class_type', 'level', 'race', 'backstory', 'strength', 
             'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma', 'max_hit_points', 
-            'current_hit_points', 'armor_class', 'character_image', 'gold', 'user'
+            'current_hit_points', 'armor_class', 'character_image', 'gold', 'status', 'user'
         ]
 
 

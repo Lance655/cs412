@@ -8,18 +8,31 @@ Description: The login html template for the dnd campaign manager website.
 
 {% block content %}
 
-<h1>Login</h1>
-<form action="{% url 'login' %}" method="POST">
-    {% csrf_token %}
-    {{form}}
-    <input type="submit" value="Login">
+<h1 class="mb-4">Login</h1>
 
-    {% if request.GET.next %}
-    <input type="hidden" name="next" value="{{request.GET.next}}">
-    {% else %}
-    <input type="hidden" name="next" value="{% url 'campaign_list' %}">
-    {% endif %}
-</form>
+<div class="row justify-content-center">
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form action="{% url 'login' %}" method="POST">
+                {% csrf_token %}
+
+                {{form.as_p}}
+                
+                <button type="submit" class="btn btn-primary">Login</button>
+
+                {% if request.GET.next %}
+                <input type="hidden" name="next" value="{{request.GET.next}}">
+                {% else %}
+                <input type="hidden" name="next" value="{% url 'campaign_list' %}">
+                {% endif %}
+            </form>
+
+        </div>
+    </div>
+
+</div>
 
 <hr>
 

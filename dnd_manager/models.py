@@ -22,6 +22,7 @@ class Campaign(models.Model):
     dm = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, 
                            related_name='campaigns_as_dm')
     map_image = models.ImageField(blank=True, null=True)
+    main_image = models.ImageField(blank=True, null=True)
 
 
 

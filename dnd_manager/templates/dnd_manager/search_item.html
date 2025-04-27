@@ -25,7 +25,7 @@
       <select class="form-select" name="owner">
         <option value="">Any owner</option>
         {% for value, label in owner_choices %}
-          <option value="{{ value|slice:'1:' }}">
+          <option value="{{ value }}">
             {{ label }}
           </option>
         {% endfor %}

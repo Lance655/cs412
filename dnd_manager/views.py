@@ -551,10 +551,17 @@ class ItemListView(ListView):
             qs = qs.filter(rarity=rarity)
 
         # owner
-        owner_id = self.request.GET.get('owner')
-        if owner_id:
-            qs = qs.filter(owner_character_id=owner_id) | qs.filter(owner_npc_id=owner_id)
-            
+        owner_str = self.request.GET.get("owner")  # this would look something like "C7" or "N7"
+
+        if owner_str:
+            # First char tells us whether it's a Character or NPC
+            owner_type = owner_str[0]  # 'C' or 'N'
+            owner_id = owner_str[1:]   # e.g. '7'
+
+            if owner_type == 'C':                               # filter on the character model
+                qs = qs.filter(owner_character_id=owner_id)
+            elif owner_type == 'N':                             # filter on the npc model
+                qs = qs.filter(owner_npc_id=owner_id)
 
         # default ordering
         return qs.order_by('item_type', 'name')
@@ -813,6 +820,23 @@ class ItemCreateGeneralView(MyLoginRequiredMixin, DMCreateOnlyMixin, CreateView)
     model = Item
     form_class = CreateGeneralItemForm
     template_name = 'dnd_manager/create_item_general_form.html' 
+
+
+    def get_form(self, form_class=None):
+        """
+        Override get_form() to filter the Item field's queryset
+        so that it only shows Characters for the correct campaign.
+        """
+        form = super().get_form(form_class)
+        
+        # Fetch the relevant Campaign from the URL
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(pk=campaign_id)
+
+        # Restrict the Character dropdown to only characters from this campaign
+        form.fields['owner_character'].queryset = Character.objects.filter(campaign=campaign)
+
+        return form
 
     def form_valid(self, form):
         campaign_id = self.kwargs['campaign_id']

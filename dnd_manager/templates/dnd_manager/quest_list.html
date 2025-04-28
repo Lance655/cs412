@@ -6,13 +6,18 @@
 {% block subnav %}
 
 {% if campaign.main_image %}
-<div 
-  class="position-relative text-white" 
+<div
+  class="position-relative text-white"
   style="background-image: url('{{ campaign.main_image.url }}');
          background-size: cover;
          background-position: center;
          background-repeat: no-repeat;
          min-height: 300px;"
+>
+{% else %}
+<div
+  class="position-relative text-white"
+  style="min-height: 300px;"
 >
 {% endif %}
   <!-- Translucent overlay so text is readable -->
@@ -42,7 +47,7 @@
             DM <i class="bi bi-cone-striped"></i>
             </span>
         {% endif %}
-        
+
     </div>
 
     <h2 class="mb-3">{{ campaign.name }}</h2>

@@ -69,7 +69,7 @@
 
   <!-- "Create New Campaign" button -->
   {% if request.user.is_authenticated %}
-    <div class="mt-4">
+    <div class="mt-4 mb-3">
       <a href="{% url 'campaign_create' %}" class="btn btn-success">
         <i class="bi bi-plus-lg"></i> New Campaign
       </a>

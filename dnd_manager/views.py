@@ -1,3 +1,10 @@
+# File: views.py
+# Author: Lance Sinson (ssinson@bu.edu), 5/1/25
+# Description: The views file for the dnd campaign manager website. 
+
+# dnd_manager/views.py
+# views for the dnd campaign manager application
+
 import requests
 
 from django.shortcuts import render, redirect
@@ -42,6 +49,7 @@ class DMOnlyMixin:
     Requires the object has a campaign field with a .dm user.
     """
     def dispatch(self, request, *args, **kwargs):
+        """Method to check if the user has permissions to modify objects"""
         obj = self.get_object()
         if request.user.is_staff or request.user == obj.campaign.dm:
             return super().dispatch(request, *args, **kwargs)
@@ -81,17 +89,28 @@ class DMCreateOnlyMixin:
 # -----------------
 
 class CampaignListView(ListView):
+    """
+    Define a view class to to displays a list of all Campaign objects.
+    """
     model = Campaign
     template_name = 'dnd_manager/campaign_list.html'
     context_object_name = 'campaigns'
 
 
 class CampaignDetailView(DetailView):
+    """
+    Define a view class to displays the details of a single Campaign object.
+    """
     model = Campaign
     template_name = 'dnd_manager/campaign_detail.html'
     context_object_name = 'campaign'
 
     def get_context_data(self, **kwargs):
+        """
+        Extends the default context to include:
+            - Leaderboards for gold, total kills, and total downs.
+            - Related Sessions, Characters, Items, NPCs, Quests, and Events.
+        """
         
         # Add related data to the context
         context = super().get_context_data(**kwargs)
@@ -130,12 +149,18 @@ class CampaignDetailView(DetailView):
 
 
 class CampaignCreateView(MyLoginRequiredMixin, CreateView):
+    """
+    Define a view to handle the creation of a new Campaign.
+    """
     model = Campaign
     form_class = CampaignForm
     template_name = 'dnd_manager/create_campaign_form.html'
 
     def form_valid(self, form):
-        """Make the user creating a new campaign the DM for that campaign"""
+        """
+        Automatically assign the currently logged-in user as the DM
+        for the new Campaign.
+        """
         # find the logged in user
         user = self.request.user
         form.instance.dm = user
@@ -149,6 +174,9 @@ class CampaignCreateView(MyLoginRequiredMixin, CreateView):
 
 
 class CampaignUpdateView(MyLoginRequiredMixin, UpdateView):
+    """
+    Define a view that allows updating of an existing Campaign.
+    """
     model = Campaign
     form_class = CampaignForm
     template_name = 'dnd_manager/create_campaign_form.html'
@@ -171,6 +199,9 @@ class CampaignUpdateView(MyLoginRequiredMixin, UpdateView):
 
 
 class CampaignDeleteView(MyLoginRequiredMixin, DeleteView):
+    """
+    Define a view that allows deletion of an existing Campaign.
+    """
     model = Campaign
     template_name = 'dnd_manager/delete_campaign_confirm.html'
 
@@ -196,22 +227,36 @@ class CampaignDeleteView(MyLoginRequiredMixin, DeleteView):
 # -----------------
 
 class SessionListView(ListView):
+    """
+    Define a view that displays a list of Session objects (currently unused in urls, but available if needed).
+    """
     model = Session
     template_name = 'dnd_manager/session_list.html'
     context_object_name = 'sessions'
 
 
 class SessionDetailView(DetailView):
+    """
+    Define a view that displays details of a single Session.
+    """
     model = Session
     template_name = 'dnd_manager/session_detail.html'
     context_object_name = 'session'
 
     def get_context_data(self, **kwargs):
+        """
+        Extends the default context to include the list of Adventure Logs 
+        for this session, as well as the associated Campaign.
+        """
+
+        # Get the default context from the base DetailView
         context = super().get_context_data(**kwargs)
+        # Retrieve the Session object
         session = self.get_object()
         # Pull all logs for this Session, as well as the related Character for each log
         context['adventure_logs'] = session.adventure_logs.select_related('character')
 
+        # Also include the Campaign, retrieved from the URL parameter
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
         context['campaign'] = campaign
@@ -220,12 +265,18 @@ class SessionDetailView(DetailView):
 
 
 class SessionCreateView(MyLoginRequiredMixin, DMCreateOnlyMixin, CreateView):
+    """
+    Define a view that handles creation of a new Session within a specific Campaign.
+    """
     model = Session
     form_class = SessionForm
     template_name = 'dnd_manager/create_session_form.html'
 
     def form_valid(self, form):
-        """Set the campaign based on URL campaign_id before saving."""
+        """
+        Automatically assigns the Session to the Campaign specified 
+        by the 'campaign_id' in the URL before saving.
+        """
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
         form.instance.campaign = campaign
@@ -236,7 +287,10 @@ class SessionCreateView(MyLoginRequiredMixin, DMCreateOnlyMixin, CreateView):
         return reverse('campaign_detail', kwargs={'pk': self.kwargs['campaign_id']})
         
     def get_context_data(self, **kwargs):
-        """Make sure we include the campaign in the context for the template."""
+        """
+        Provides the Campaign object in the context, so the template 
+        has access to relevant campaign details.
+        """
         context = super().get_context_data(**kwargs)
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
@@ -245,12 +299,18 @@ class SessionCreateView(MyLoginRequiredMixin, DMCreateOnlyMixin, CreateView):
 
 
 class SessionUpdateView(MyLoginRequiredMixin, DMOnlyMixin, UpdateView):
+    """
+    Define a view that allows the DM or staff to update an existing Session.
+    """
     model = Session
     form_class = SessionForm
     template_name = 'dnd_manager/create_session_form.html'
 
     def get_context_data(self, **kwargs):
-        """Make sure we include the campaign in the context for the template."""
+        """
+        Provides the Campaign and session objects in the context, so the template 
+        has access to relevant campaign details.
+        """
         context = super().get_context_data(**kwargs)
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
@@ -270,6 +330,9 @@ class SessionUpdateView(MyLoginRequiredMixin, DMOnlyMixin, UpdateView):
 
 
 class SessionDeleteView(MyLoginRequiredMixin, DMOnlyMixin, DeleteView):
+    """
+    Define a view that allows the DM or staff to delete an existing Session.
+    """
     model = Session
     template_name = 'dnd_manager/delete_session_confirm.html'
 

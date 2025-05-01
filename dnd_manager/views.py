@@ -346,6 +346,9 @@ class SessionDeleteView(MyLoginRequiredMixin, DMOnlyMixin, DeleteView):
 # -----------------
 
 class CharacterListView(ListView):
+    """
+    Define a view that displays a list of Character objects for a given Campaign.
+    """
     model = Character
     template_name = 'dnd_manager/character_list.html'
     context_object_name = 'characters'
@@ -356,6 +359,9 @@ class CharacterListView(ListView):
         return Character.objects.filter(campaign__id=campaign_id)
 
     def get_context_data(self, **kwargs):
+        """
+        Adds the Campaign object to the template context for navigation or reference.
+        """
         context = super().get_context_data(**kwargs)
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
@@ -364,11 +370,18 @@ class CharacterListView(ListView):
 
 
 class CharacterDetailView(DetailView):
+    """
+    Define a view that displays detailed information about a single Character.
+    """
     model = Character
     template_name = 'dnd_manager/character_detail.html'
     context_object_name = 'character'
 
     def get_context_data(self, **kwargs):
+        """
+        Extends context data to include the character's items, adventure logs, 
+        and the associated Campaign for display in the template.
+        """
         context = super().get_context_data(**kwargs)
         # Pass the Campaign to the template
         campaign_id = self.kwargs['campaign_id']
@@ -385,13 +398,17 @@ class CharacterDetailView(DetailView):
 
 
 class CharacterCreateView(MyLoginRequiredMixin, CreateView):
+    """
+    Define a view that handles the creation of a new Character for the current user within the specified Campaign.
+    """
     model = Character
     form_class = CharacterForm
     template_name = 'dnd_manager/create_character_form.html'
 
     def form_valid(self, form):
-        """Assign the correct Campaign via the URL param before saving. 
-        Also add corresponding user
+        """
+        Sets the campaign from the 'campaign_id' URL param and 
+        associates the new Character with the current user (as the owner).
         """
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
@@ -404,11 +421,13 @@ class CharacterCreateView(MyLoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        """After creating a Character, go back to the Campaign detail page."""
+        """After creating a Character, go back to the my characters page."""
         return reverse('my_characters', kwargs={'campaign_id': self.kwargs['campaign_id']})
 
     def get_context_data(self, **kwargs):
-        """Pass the Campaign into the template context."""
+        """
+        Adds the Campaign to the template context for reference or breadcrumb navigation.
+        """
         context = super().get_context_data(**kwargs)
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
@@ -418,6 +437,9 @@ class CharacterCreateView(MyLoginRequiredMixin, CreateView):
 
 
 class CharacterUpdateView(MyLoginRequiredMixin, UpdateView):
+    """
+    Define a view that handles updating an existing Character.
+    """
     model = Character
     form_class = CharacterForm
     template_name = 'dnd_manager/create_character_form.html'
@@ -437,6 +459,10 @@ class CharacterUpdateView(MyLoginRequiredMixin, UpdateView):
 
 
     def get_context_data(self, **kwargs):
+        """
+        Adds the Campaign and Character to the context for the template, 
+        allowing references or breadcrumbs in the update form.
+        """
         context = super().get_context_data(**kwargs)
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
@@ -448,11 +474,17 @@ class CharacterUpdateView(MyLoginRequiredMixin, UpdateView):
         return context
 
     def get_success_url(self):
+        """
+        Redirect to the updated Character's detail page.
+        """
         return reverse('character_detail', kwargs={'campaign_id': self.kwargs['campaign_id'], 
                                                             'pk': self.kwargs['pk'] })
 
 
 class CharacterDeleteView(MyLoginRequiredMixin, DeleteView):
+    """
+    Define a view that handles deleting a Character.
+    """
     model = Character
     template_name = 'dnd_manager/delete_character_confirm.html'
 
@@ -480,7 +512,11 @@ class CharacterDeleteView(MyLoginRequiredMixin, DeleteView):
         return context
 
     def get_success_url(self):
-        """Redirect to the Campaign detail page after deletion."""
+        """
+        Redirect back to the appropriate page after deletion:
+         - DM goes to the general character list,
+         - Non-DM (player) goes to their own character list.
+        """
 
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
@@ -495,6 +531,9 @@ class CharacterDeleteView(MyLoginRequiredMixin, DeleteView):
 # -----------------
 
 class NPCListView(ListView):
+    """
+    Define a model to show all NPCs that belong to the current Campaign.
+    """
     model = NPC
     template_name = 'dnd_manager/npc_list.html'
     context_object_name = 'npcs'
@@ -505,6 +544,10 @@ class NPCListView(ListView):
         return NPC.objects.filter(campaign__id=campaign_id)
 
     def get_context_data(self, **kwargs):
+        """
+        Add the Campaign into the context so the template can show
+        breadcrumbs / title / DM-only buttons, etc.
+        """
         context = super().get_context_data(**kwargs)
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
@@ -512,11 +555,18 @@ class NPCListView(ListView):
         return context
 
 class NPCDetailView(DetailView):
+    """
+    Define a view to Display a single NPC in detail.
+    """
     model = NPC
     template_name = 'dnd_manager/npc_detail.html'
     context_object_name = 'npc'
 
     def get_context_data(self, **kwargs):
+        """
+        Add the Campaign into the context so the template can show
+        breadcrumbs / title / DM-only buttons, etc.
+        """
         context = super().get_context_data(**kwargs)
         # Pass the Campaign to the template
         campaign_id = self.kwargs['campaign_id']
@@ -526,6 +576,9 @@ class NPCDetailView(DetailView):
 
 
 class NPCCreateView(MyLoginRequiredMixin, DMCreateOnlyMixin, CreateView):
+    """
+    Define a view to create a new NPC inside a Campaign.
+    """
     model = NPC
     form_class = NPCForm
     template_name = 'dnd_manager/create_npc_form.html'
@@ -538,10 +591,14 @@ class NPCCreateView(MyLoginRequiredMixin, DMCreateOnlyMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        """Redirect to the campaign detail page."""
+        """Redirect to the npc list page."""
         return reverse('npc_list', kwargs={'campaign_id': self.kwargs['campaign_id']})
 
     def get_context_data(self, **kwargs):
+        """
+        Add the Campaign into the context so the template can show
+        breadcrumbs / title / DM-only buttons, etc.
+        """
         context = super().get_context_data(**kwargs)
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
@@ -550,11 +607,15 @@ class NPCCreateView(MyLoginRequiredMixin, DMCreateOnlyMixin, CreateView):
 
 
 class NPCUpdateView(MyLoginRequiredMixin, DMOnlyMixin, UpdateView):
+    """Define a view to edit an existing NPC."""
     model = NPC
     form_class = NPCForm
     template_name = 'dnd_manager/create_npc_form.html'
 
     def get_context_data(self, **kwargs):
+        """
+        Provide both the Campaign and the NPC to the template.
+        """
         context = super().get_context_data(**kwargs)
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
@@ -569,14 +630,19 @@ class NPCUpdateView(MyLoginRequiredMixin, DMOnlyMixin, UpdateView):
         return context
 
     def get_success_url(self):
+        """Redirect back to the npc list page"""
         return reverse('npc_list', kwargs={'campaign_id': self.kwargs['campaign_id']})
 
 
 class NPCDeleteView(MyLoginRequiredMixin, DMOnlyMixin, DeleteView):
+    """Define a view to delete an NPC."""
     model = NPC
     template_name = 'dnd_manager/delete_npc_confirm.html'
 
     def get_context_data(self, **kwargs):
+        """
+        Add Campaign to context for the template. 
+        """
         context = super().get_context_data(**kwargs)
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
@@ -584,6 +650,9 @@ class NPCDeleteView(MyLoginRequiredMixin, DMOnlyMixin, DeleteView):
         return context
 
     def get_success_url(self):
+        """
+        Redirect back to the npc list page
+        """
         return reverse('npc_list', kwargs={'campaign_id': self.kwargs['campaign_id']})
 
     
@@ -593,12 +662,20 @@ class NPCDeleteView(MyLoginRequiredMixin, DMOnlyMixin, DeleteView):
 
 
 class ItemListView(ListView):
+    """
+    Define a view to show every Item in a Campaign with optional server-side filtering and
+    template-friendly grouping (by Char / NPC / unowned).
+    """
     model = Item
     template_name = 'dnd_manager/item_list.html'
     context_object_name = 'items'
 
     # ---------- filtering ----------
     def get_queryset(self):
+        """
+        Start with all items in this campaign; apply filters for
+        *type*, *rarity*, and encoded *owner* if present in GET params.
+        """
         qs = (Item.objects
                     .filter(campaign_id=self.kwargs['campaign_id'])
                     .select_related('owner_character', 'owner_npc'))
@@ -640,6 +717,10 @@ class ItemListView(ListView):
 
     # ---------- grouping ----------
     def get_context_data(self, **kwargs):
+        """
+        Adds grouped items plus filter metadata into the context so the
+        template can render an accordion-style UI.
+        """
         context = super().get_context_data(**kwargs)
         campaign = Campaign.objects.get(pk=self.kwargs['campaign_id'])
         context['campaign'] = campaign
@@ -672,11 +753,18 @@ class ItemListView(ListView):
 
 
 class ItemDetailView(DetailView):
+    """
+    Define a view to display a single Item.
+    """
+
     model = Item
     template_name = "dnd_manager/item_detail.html"
     context_object_name = "item"
 
     def get_context_data(self, **kwargs):
+        """
+        Add Campaign to context for the template. 
+        """
         context = super().get_context_data(**kwargs)
         campaign = Campaign.objects.get(pk=self.kwargs["campaign_id"])
         context["campaign"] = campaign
@@ -684,6 +772,9 @@ class ItemDetailView(DetailView):
 
 
 class ItemCreateView(MyLoginRequiredMixin, CreateView):
+    """
+    Define a view to create an Item 
+    """
     model = Item
     form_class = CreateItemForm
     template_name = 'dnd_manager/create_item_form.html' 
@@ -709,6 +800,9 @@ class ItemCreateView(MyLoginRequiredMixin, CreateView):
 
 
     def form_valid(self, form):
+        """
+        Link the new Item to the Campaign + owning Character.
+        """
         campaign_id = self.kwargs['campaign_id']
         character_id = self.kwargs['character_id']
         campaign = Campaign.objects.get(pk=campaign_id)
@@ -724,14 +818,18 @@ class ItemCreateView(MyLoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        # After creation, go back to the Character’s detail page
+        """
+        After creation, go back to the Character’s detail page
+        """
         return reverse('character_detail', kwargs={
             'campaign_id': self.kwargs['campaign_id'],
             'pk': self.kwargs['character_id']
         })
 
     def get_context_data(self, **kwargs):
-        """Pass the Campaign into the template context."""
+        """
+        Add Campaign and character to context for the template. 
+        """
         context = super().get_context_data(**kwargs)
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
@@ -745,6 +843,9 @@ class ItemCreateView(MyLoginRequiredMixin, CreateView):
 
 
 class ItemUpdateView(MyLoginRequiredMixin, UpdateView):
+    """
+    Define a view to edit an Item
+    """
     model = Item
     form_class = UpdateItemForm
     template_name = 'dnd_manager/create_item_form.html'
@@ -779,7 +880,7 @@ class ItemUpdateView(MyLoginRequiredMixin, UpdateView):
         return form
 
     def get_context_data(self, **kwargs):
-        """Pass the Campaign into the template context."""
+        """Pass the Campaign and character into the template context."""
         context = super().get_context_data(**kwargs)
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
@@ -796,6 +897,9 @@ class ItemUpdateView(MyLoginRequiredMixin, UpdateView):
         return context
 
     def get_success_url(self):
+        """
+        Redirect back to the character detail page
+        """
         return reverse('character_detail', kwargs={
             'campaign_id': self.kwargs['campaign_id'],
             'pk': self.kwargs['character_id']
@@ -803,6 +907,9 @@ class ItemUpdateView(MyLoginRequiredMixin, UpdateView):
 
 
 class ItemDeleteView(MyLoginRequiredMixin, DeleteView):
+    """
+    Define a view to delete an Item
+    """
     model = Item
     template_name = 'dnd_manager/delete_item_confirm.html'
 
@@ -820,13 +927,16 @@ class ItemDeleteView(MyLoginRequiredMixin, DeleteView):
         return redirect('campaign_list')
 
     def get_success_url(self):
+        """
+        Redirect to the character detail page after deletion
+        """
         return reverse('character_detail', kwargs={
             'campaign_id': self.kwargs['campaign_id'],
             'pk': self.kwargs['character_id']
         })
     
     def get_context_data(self, **kwargs):
-        """Pass the Campaign into the template context."""
+        """Pass the Campaign and Character into the template context."""
         context = super().get_context_data(**kwargs)
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
@@ -839,6 +949,9 @@ class ItemDeleteView(MyLoginRequiredMixin, DeleteView):
         return context
 
 def item_sell_view(request, campaign_id, character_id, pk):
+    """
+    Sell an item owned by a Character for its price and add it to their total gold
+    """
     item = Item.objects.get(pk=pk)
     character = Character.objects.get(pk=character_id)
     campaign = Campaign.objects.get(pk=campaign_id)
@@ -880,6 +993,9 @@ def item_sell_view(request, campaign_id, character_id, pk):
 
 
 class ItemCreateGeneralView(MyLoginRequiredMixin, DMCreateOnlyMixin, CreateView):
+    """
+    Define a view that provides an easy way for the DM to create a new Item inside the current Campaign  
+    """
     model = Item
     form_class = CreateGeneralItemForm
     template_name = 'dnd_manager/create_item_general_form.html' 
@@ -902,6 +1018,9 @@ class ItemCreateGeneralView(MyLoginRequiredMixin, DMCreateOnlyMixin, CreateView)
         return form
 
     def form_valid(self, form):
+        """
+        Insert the corresponding Campaign before saving
+        """
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
 
@@ -911,7 +1030,10 @@ class ItemCreateGeneralView(MyLoginRequiredMixin, DMCreateOnlyMixin, CreateView)
         return super().form_valid(form)
 
     def get_success_url(self):
-        # After creation, go back to the Item's detail page -->
+        """
+        Redirect back to the item list page. 
+        """
+        # After creation, go back to the item list page -->
         # NOT THE CHARACTER's PAGE: 
         return reverse('item_list', kwargs={
             'campaign_id': self.kwargs['campaign_id'],
@@ -933,6 +1055,9 @@ class ItemCreateGeneralView(MyLoginRequiredMixin, DMCreateOnlyMixin, CreateView)
 
 
 class ItemUpdateGeneralView(MyLoginRequiredMixin, DMOnlyMixin, UpdateView):
+    """
+    Define a view that allows a DM to easily edit any Item in the campaign. 
+    """
     model = Item
     form_class = CreateGeneralItemForm
     template_name = 'dnd_manager/create_item_general_form.html' 
@@ -968,6 +1093,9 @@ class ItemUpdateGeneralView(MyLoginRequiredMixin, DMOnlyMixin, UpdateView):
         return context
 
     def get_success_url(self):
+        """
+        Redirect to the item detail page
+        """
         return reverse('item_detail', kwargs={
             'campaign_id': self.kwargs['campaign_id'],
             'pk': self.kwargs['pk']
@@ -975,10 +1103,16 @@ class ItemUpdateGeneralView(MyLoginRequiredMixin, DMOnlyMixin, UpdateView):
 
 
 class ItemDeleteGeneralView(MyLoginRequiredMixin, DMOnlyMixin, DeleteView):
+    """
+    Define a view for the DM to be able to easily delete an Item in the campaign.
+    """
     model = Item
     template_name = 'dnd_manager/delete_item_general_confirm.html'
 
     def get_success_url(self):
+        """
+        Redirect to the item list page
+        """
         return reverse('item_list', kwargs={
             'campaign_id': self.kwargs['campaign_id'],
         })
@@ -1000,6 +1134,9 @@ class ItemDeleteGeneralView(MyLoginRequiredMixin, DMOnlyMixin, DeleteView):
 
 
 class AdventureLogCreateView(MyLoginRequiredMixin, CreateView):
+    """
+    Define a view to create an Adventure Log for a particular session in the current campaign
+    """
     model = AdventureLog
     form_class = AdventureLogForm
     template_name = 'dnd_manager/create_adventure_log_form.html'
@@ -1072,6 +1209,9 @@ class AdventureLogCreateView(MyLoginRequiredMixin, CreateView):
         return context
 
 class AdventureLogUpdateView(MyLoginRequiredMixin, UpdateView):
+    """
+    Define a view to update a Character's Adventure Log 
+    """
     model = AdventureLog
     form_class = AdventureLogForm
     template_name = 'dnd_manager/create_adventure_log_form.html'
@@ -1134,6 +1274,9 @@ class AdventureLogUpdateView(MyLoginRequiredMixin, UpdateView):
         return context
 
 class AdventureLogDeleteView(MyLoginRequiredMixin, DeleteView):
+    """
+    Define a view to Delete a Character's Adventure Log. 
+    """
     model = AdventureLog
     template_name = 'dnd_manager/delete_adventure_log_confirm.html'
 
@@ -1164,6 +1307,9 @@ class AdventureLogDeleteView(MyLoginRequiredMixin, DeleteView):
         })
 
     def get_context_data(self, **kwargs):
+        """
+        Add Campaign id and character id to context for the template. 
+        """
         context = super().get_context_data(**kwargs)
         context['campaign_id'] = self.kwargs['campaign_id']
         context['character_id'] = self.kwargs['character_id']
@@ -1175,6 +1321,9 @@ class AdventureLogDeleteView(MyLoginRequiredMixin, DeleteView):
 # -----------------
 
 class QuestListView(ListView):
+    """
+    Define a view to list all the quests for this campaign. 
+    """
     model = Quest
     template_name = 'dnd_manager/quest_list.html'
     context_object_name = 'quests'
@@ -1201,6 +1350,9 @@ class QuestListView(ListView):
         return qs
 
     def get_context_data(self, **kwargs):
+        """
+        Add Campaign to context for the template. 
+        """
         context = super().get_context_data(**kwargs)
         
         campaign_id = self.kwargs['campaign_id']
@@ -1239,11 +1391,17 @@ class QuestListView(ListView):
 
 
 class QuestDetailView(DetailView):
+    """
+    Define a view to display a single Quest.
+    """
     model = Quest
     template_name = 'dnd_manager/quest_detail.html'
     context_object_name = 'quest'
 
     def get_context_data(self, **kwargs):
+        """
+        Add Campaign to context for the template. 
+        """
         context = super().get_context_data(**kwargs)
         # pass the Campaign to the template
         campaign_id = self.kwargs['campaign_id']
@@ -1252,6 +1410,9 @@ class QuestDetailView(DetailView):
         return context
 
 class QuestCreateView(MyLoginRequiredMixin, DMCreateOnlyMixin, CreateView):
+    """
+    Define a view to create a Quest. 
+    """
     model = Quest
     form_class = QuestForm
     template_name = 'dnd_manager/create_quest_form.html'
@@ -1285,11 +1446,14 @@ class QuestCreateView(MyLoginRequiredMixin, DMCreateOnlyMixin, CreateView):
 
     def get_success_url(self):
         """
-        Redirect to the quest list after creation.
+        Redirect to the quest list page after creation.
         """
         return reverse('quest_list', kwargs={'campaign_id': self.kwargs['campaign_id']})
 
     def get_context_data(self, **kwargs):
+        """
+        Add Campaign to context for the template. 
+        """
         context = super().get_context_data(**kwargs)
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
@@ -1297,6 +1461,9 @@ class QuestCreateView(MyLoginRequiredMixin, DMCreateOnlyMixin, CreateView):
         return context
 
 class QuestUpdateView(MyLoginRequiredMixin, DMOnlyMixin, UpdateView):
+    """
+    Define a view to update a Quest.
+    """
     model = Quest
     form_class = QuestForm
     template_name = 'dnd_manager/create_quest_form.html'
@@ -1327,12 +1494,18 @@ class QuestUpdateView(MyLoginRequiredMixin, DMOnlyMixin, UpdateView):
         return Quest.objects.filter(campaign__id=campaign_id)
 
     def get_success_url(self):
+        """
+        Redirect to the quest detail page.
+        """
         return reverse('quest_detail', kwargs={
             'campaign_id': self.kwargs['campaign_id'],
             'pk': self.kwargs['pk']
         })
 
     def get_context_data(self, **kwargs):
+        """
+        Add Campaign and Quest to context for the template. 
+        """
         context = super().get_context_data(**kwargs)
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
@@ -1345,6 +1518,9 @@ class QuestUpdateView(MyLoginRequiredMixin, DMOnlyMixin, UpdateView):
         return context
 
 class QuestDeleteView(MyLoginRequiredMixin, DMOnlyMixin, DeleteView):
+    """
+    Define a view to delete a Quest from the campaign. 
+    """
     model = Quest
     template_name = 'dnd_manager/delete_quest_confirm.html'
 
@@ -1362,6 +1538,9 @@ class QuestDeleteView(MyLoginRequiredMixin, DMOnlyMixin, DeleteView):
         return reverse('quest_list', kwargs={'campaign_id': self.kwargs['campaign_id']})
 
     def get_context_data(self, **kwargs):
+        """
+        Add Campaign to context for the template. 
+        """
         context = super().get_context_data(**kwargs)
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
@@ -1381,6 +1560,9 @@ class UserRegistrationView(CreateView):
     model = User
 
     def form_valid(self, form):
+        """
+        Automatically log the user in after they have registered/created an account.
+        """
         user = form.save()
         # Automatically log the user in
         login(self.request, user)
@@ -1397,6 +1579,9 @@ class UserRegistrationView(CreateView):
 
 
 class MyCharactersListView(MyLoginRequiredMixin, ListView):
+    """
+    Define a view to list all the Characters created by a user for a specific campaign. 
+    """
     model = Character
     template_name = 'dnd_manager/my_characters_list.html'
     context_object_name = 'characters'
@@ -1428,6 +1613,9 @@ class MyCharactersListView(MyLoginRequiredMixin, ListView):
 # -----------------
 
 class CharacterGeneralCreateView(MyLoginRequiredMixin, CreateView):
+    """
+    Define a view to make creating a Character for a campaign (if they ever need/want to) easier for the DM. 
+    """
     model = Character
     form_class = GeneralCharacterForm
     template_name = 'dnd_manager/create_character_general_form.html'
@@ -1447,7 +1635,8 @@ class CharacterGeneralCreateView(MyLoginRequiredMixin, CreateView):
     
 
     def form_valid(self, form):
-        """Assign the correct Campaign via the URL param before saving. 
+        """
+        Assign the correct Campaign via the URL param before saving. 
         """
         campaign_id = self.kwargs['campaign_id']
         campaign = Campaign.objects.get(pk=campaign_id)
@@ -1456,7 +1645,7 @@ class CharacterGeneralCreateView(MyLoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        """After creating a Character, go back to the Campaign detail page."""
+        """After creating a Character, go back to the character list page."""
         return reverse('character_list', kwargs={'campaign_id': self.kwargs['campaign_id']})
 
     def get_context_data(self, **kwargs):
@@ -1474,13 +1663,16 @@ class CharacterGeneralCreateView(MyLoginRequiredMixin, CreateView):
 # -----------------
 
 class CampaignMapView(DetailView):
+    """
+    Define a view that displays the main map of the entire campaign. 
+    """
     model = Campaign
     template_name = 'dnd_manager/campaign_map.html'
     context_object_name = 'campaign'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # 
+        # ...
         return context
 
 
@@ -1520,6 +1712,7 @@ def references_search_view(request, campaign_id):
 
     campaign = Campaign.objects.get(pk=campaign_id)
 
+    # Add to context for template
     context = {
         'campaign': campaign,
         'search_type': search_type,
@@ -1545,6 +1738,7 @@ def references_detail_view(request, campaign_id, search_type, slug):
 
     url = f"{base_url}/{slug}"
 
+    # retrieve detailed information about the monster or spell
     try:
         response = requests.get(url, headers={'Accept': 'application/json'})
         if response.status_code == 200:
@@ -1556,6 +1750,7 @@ def references_detail_view(request, campaign_id, search_type, slug):
 
     campaign = Campaign.objects.get(pk=campaign_id)
 
+    # Add to context for template
     context = {
         'campaign': campaign,
         'search_type': search_type,

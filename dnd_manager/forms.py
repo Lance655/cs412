@@ -1,10 +1,19 @@
+# File: forms.py
+# Author: Lance Sinson (ssinson@bu.edu), 5/1/25
+# Description: The forms file for the dnd campaign manager website. 
+
+# dnd_manager/forms.py
+# forms for the dnd campaign manager application
+
 from django import forms
 from .models import (
     Campaign, Session, Character, NPC, Item, Quest, AdventureLog, CalendarEvent
 )
 
 class CampaignForm(forms.ModelForm):
+    '''A form to add or update a campaign to the database'''
     class Meta:
+        '''Associate this form with a model from our database'''
         model = Campaign
         # fields = ['name', 'description', 'start_date', 'status', 'dm']
         fields = ['name', 'description', 'start_date', 'status', 'map_image', 'main_image']
@@ -12,7 +21,9 @@ class CampaignForm(forms.ModelForm):
 
 
 class SessionForm(forms.ModelForm):
+    '''A form to add or update a session to the database'''
     class Meta:
+        '''Associate this form with a model from our database'''
         model = Session
         # fields = ['name', 'campaign', 'session_date', 'summary', 'location']
         fields = ['name', 'session_date', 'summary', 'location']
@@ -20,7 +31,9 @@ class SessionForm(forms.ModelForm):
 
 
 class CharacterForm(forms.ModelForm):
+    '''A form to add or update a Character to the database'''
     class Meta:
+        '''Associate this form with a model from our database'''
         model = Character
         fields = [
             'name', 'player_name', 'class_type', 'level', 'race', 'backstory', 'strength', 
@@ -29,7 +42,9 @@ class CharacterForm(forms.ModelForm):
         ]
 
 class GeneralCharacterForm(forms.ModelForm):
+    '''A form to add or update a Character to the database from the general character list page'''
     class Meta:
+        '''Associate this form with a model from our database'''
         model = Character
         fields = [
             'name', 'player_name', 'class_type', 'level', 'race', 'backstory', 'strength', 
@@ -39,7 +54,9 @@ class GeneralCharacterForm(forms.ModelForm):
 
 
 class NPCForm(forms.ModelForm):
+    '''A form to add or update an NPC to the database'''
     class Meta:
+        '''Associate this form with a model from our database'''
         model = NPC
         # fields = ['name', 'description', 'location', 'campaign', 'npc_image']
         fields = ['name', 'description', 'location', 'npc_image']
@@ -47,7 +64,9 @@ class NPCForm(forms.ModelForm):
 
 
 class CreateItemForm(forms.ModelForm):
+    '''A form to add an item (specifically by a player, to their own inventory) to the database'''
     class Meta:
+        '''Associate this form with a model from our database'''
         model = Item
         # fields = [
         #     'name', 'description', 'item_type', 'rarity', 'owner_character', 'owner_npc', 
@@ -58,7 +77,9 @@ class CreateItemForm(forms.ModelForm):
 
         
 class UpdateItemForm(forms.ModelForm):
+    '''A form to update an item (specifically by a player modifying their inventory) to the database'''
     class Meta:
+        '''Associate this form with a model from our database'''
         model = Item
         fields = [
             'name', 'description', 'item_type', 'rarity', 'owner_character', 'item_image', 'price'
@@ -68,7 +89,9 @@ class UpdateItemForm(forms.ModelForm):
 
 
 class CreateGeneralItemForm(forms.ModelForm):
+    '''A form to add an item (specifically by a DM from the general item list page) to the database'''
     class Meta:
+        '''Associate this form with a model from our database'''
         model = Item
         fields = [
             'name', 'description', 'item_type', 'rarity', 'owner_character', 'owner_npc', 'item_image', 'price'
@@ -78,7 +101,9 @@ class CreateGeneralItemForm(forms.ModelForm):
 
 
 class QuestForm(forms.ModelForm):
+    '''A form to add or update a quest to the database'''
     class Meta:
+        '''Associate this form with a model from our database'''
         model = Quest
         # fields = ['title', 'quest_type', 'description', 'assigned_to', 'rewards', 'status', 'related_npc', 'campaign']
         fields = ['title', 'quest_type', 'description', 'assigned_to', 'rewards', 'status', 'related_npc', 'quest_date']
@@ -86,7 +111,9 @@ class QuestForm(forms.ModelForm):
 
 
 class AdventureLogForm(forms.ModelForm):
+    '''A form to add or update an adventure log to the database'''
     class Meta:
+        '''Associate this form with a model from our database'''
         model = AdventureLog
         # fields = ['session', 'character', 'details', 'xp_earned']
         fields = ['session', 'details', 'xp_earned', 'enemies_killed', 'number_of_downs']
@@ -94,7 +121,9 @@ class AdventureLogForm(forms.ModelForm):
 
 
 class CalendarEventForm(forms.ModelForm):
+    '''A form to add or update a calendar event to the database'''
     class Meta:
+        '''Associate this form with a model from our database'''
         model = CalendarEvent
         fields = ['campaign', 'event_name', 'event_date', 'notes']
 

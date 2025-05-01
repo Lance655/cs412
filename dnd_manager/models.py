@@ -1,3 +1,10 @@
+# File: models.py
+# Author: Lance Sinson (ssinson@bu.edu), 5/1/25
+# Description: The models file for the dnd campaign manager website. 
+
+# dnd_manager/models.py
+# models for the dnd campaign manager application
+
 from django.db import models
 from django.utils import timezone
 import datetime

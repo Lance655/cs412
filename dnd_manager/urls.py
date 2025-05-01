@@ -1,3 +1,10 @@
+# File: urls.py
+# Author: Lance Sinson (ssinson@bu.edu), 5/1/25
+# Description: The urls file for the dnd campaign manager website. 
+
+# dnd_manager/urls.py
+# urls for the dnd campaign manager application
+
 from django.urls import path
 from .views import *
 from django.contrib.auth import views as auth_views # NEW

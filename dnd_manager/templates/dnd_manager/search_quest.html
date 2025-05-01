@@ -1,3 +1,9 @@
+<!-- 
+File: search_quest.html
+Author: Lance Sinson (ssinson@bu.edu), 5/1/25
+Description: The html template to filter or search for quests in the quest list page for the dnd campaign manager website. 
+-->
+
 <form class="row g-2 mb-4" action="{% url 'quest_list' campaign.pk %}" method="get">
     <div class="col-auto">
         <select name="status" class="form-select">

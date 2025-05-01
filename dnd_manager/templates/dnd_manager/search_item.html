@@ -1,3 +1,9 @@
+<!-- 
+File: search_item.html
+Author: Lance Sinson (ssinson@bu.edu), 5/1/25
+Description: The html template to filter or search for items in the item list page for the dnd campaign manager website. 
+-->
+
 <form class="row g-2 mb-4" action="{% url 'item_list' campaign.pk %}" method="get">
     <div class="col-auto">
       <select class="form-select" name="type">
